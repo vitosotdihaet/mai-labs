@@ -1,0 +1,302 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\important\coding> wsl
+vitos@vitos-hp16:/mnt/c/important/coding$ ssh vitos-pop
+vitos@vitos-pop's password:
+Welcome to Pop!_OS 22.04 LTS (GNU/Linux 5.19.0-76051900-generic x86_64)
+
+ * Homepage: https://pop.system76.com
+ * Support:  https://support.system76.com
+
+Last login: Sat Sep 24 10:24:25 2022 from 192.168.1.102
+vitos@vitos-pop:~$ who
+vitos    :1           2022-09-22 22:46 (:1)
+vitos    pts/0        2022-09-22 23:01 (192.168.1.102)
+vitos    pts/2        2022-09-24 10:24 (192.168.1.102)
+vitos@vitos-pop:~$ sudo ruptime
+[sudo] password for vitos:
+vitos-pop     up    1+11:38,     1 user,   load 0.42, 0.29, 0.35
+vitos@vitos-pop:~$ ping vk.com
+PING vk.com (93.186.225.194) 56(84) bytes of data.
+64 bytes from 93.186.225.194 (93.186.225.194): icmp_seq=1 ttl=58 time=11.1 ms
+64 bytes from 93.186.225.194 (93.186.225.194): icmp_seq=2 ttl=58 time=11.1 ms
+64 bytes from 93.186.225.194 (93.186.225.194): icmp_seq=3 ttl=58 time=15.9 ms
+^C
+--- vk.com ping statistics ---
+4 packets transmitted, 3 received, 25% packet loss, time 3014ms
+rtt min/avg/max/mdev = 11.065/12.709/15.936/2.281 ms
+vitos@vitos-pop:~$ ping 192.168.1.102
+PING 192.168.1.102 (192.168.1.102) 56(84) bytes of data.
+64 bytes from 192.168.1.102: icmp_seq=1 ttl=128 time=12.6 ms
+64 bytes from 192.168.1.102: icmp_seq=2 ttl=128 time=2.77 ms
+64 bytes from 192.168.1.102: icmp_seq=3 ttl=128 time=3.50 ms
+64 bytes from 192.168.1.102: icmp_seq=4 ttl=128 time=2.27 ms
+^C
+--- 192.168.1.102 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3014ms
+rtt min/avg/max/mdev = 2.267/5.289/12.621/4.255 ms
+vitos@vitos-pop:~$ exit
+logout
+Connection to vitos-pop closed.
+vitos@vitos-hp16:/mnt/c/important/coding$ mkdir test
+vitos@vitos-hp16:/mnt/c/important/coding$ ls
+bash  cpp  py  rust  test  web
+vitos@vitos-hp16:/mnt/c/important/coding$ cd test/
+vitos@vitos-hp16:/mnt/c/important/coding/test$ touch a.txt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ nano a.txt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ cat a.txt
+hello from another pc
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp a.txt vitos-pop:/home/vitos/Studying
+vitos@vitos-pop's password:
+a.txt                                                                                 100%   22     7.4KB/s   00:00
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp vitos-pop:/home/vitos/Studying/coding/python/projects .
+vitos@vitos-pop's password:
+scp: /home/vitos/Studying/coding/python/projects: not a regular file
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp -r vitos-pop:/home/vitos/Studying/coding/python/projects .
+ssh: connect to host vitos-pop port 22: Invalid argument
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp vitos-pop:/home/vitos/Studying/coding/python/projects/Fractal-Builder-on-Python/main.py .
+vitos@vitos-pop's password:
+main.py                                                                               100% 9232     2.6MB/s   00:00
+vitos@vitos-hp16:/mnt/c/important/coding/test$ py main.py
+Command 'py' not found, but can be installed with:
+sudo apt install pythonpy
+vitos@vitos-hp16:/mnt/c/important/coding/test$ python3 main.py
+Traceback (most recent call last):
+  File "/mnt/c/important/coding/test/main.py", line 1, in <module>
+    import tkinter as tk
+ModuleNotFoundError: No module named 'tkinter'
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  main.py
+vitos@vitos-hp16:/mnt/c/important/coding/test$ mkdir files
+vitos@vitos-hp16:/mnt/c/important/coding/test$ mv a.txt files/
+vitos@vitos-hp16:/mnt/c/important/coding/test$ mv main.py  files/
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+files
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp -r files vitos-pop:/home/vitos/Studying
+vitos@vitos-pop's password:
+a.txt                                                                                 100%   22     5.8KB/s   00:00
+main.py                                                                               100% 9232     1.6MB/s   00:00
+vitos@vitos-hp16:/mnt/c/important/coding/test$ rsync -a vitos-pop:/home/vitos/Studying/coding/bash
+vitos@vitos-pop's password:
+drwxrwxr-x          4,096 2022/09/22 22:48:03 bash
+-rwxrwxr-x            255 2022/09/22 22:48:48 bash/guessing_game.sh
+vitos@vitos-hp16:/mnt/c/important/coding/test$ rsync -a ../bash vitos-pop:/home/vitos/Studying/coding/bash
+vitos@vitos-pop's password:
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ssh vitos-pop cd /home/vitos/Studying/coding/bash; ls
+vitos@vitos-pop's password:
+files
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ssh vitos-pop "cd /home/vitos/Studying/coding/bash; ls"
+vitos@vitos-pop's password:
+bash
+guessing_game.sh
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ssh vitos-pop "cd /home/vitos/Studying/coding/bash/bash; ls"
+vitos@vitos-pop's password:
+args.sh
+arrays.sh
+backed_up_20220903.tar.gz
+backup.sh
+guessing_game.sh
+hello_world.sh
+if.sh
+info_for_arr.txt
+shell_commands.sh
+trap.sh
+user_input.sh
+variables.sh
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls ../bash
+args.sh    backed_up_20220903.tar.gz  guessing_game.sh  if.sh             shell_commands.sh  user_input.sh
+arrays.sh  backup.sh                  hello_world.sh    info_for_arr.txt  trap.sh            variables.sh
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+files
+vitos@vitos-hp16:/mnt/c/important/coding/test$ cd files
+vitos@vitos-hp16:/mnt/c/important/coding/test/files$ cp
+a.txt    main.py
+vitos@vitos-hp16:/mnt/c/important/coding/test/files$ cp a.txt /net/vitos-pop/home/vitos/Studying
+cp: cannot create regular file '/net/vitos-pop/home/vitos/Studying': No such file or directory
+vitos@vitos-hp16:/mnt/c/important/coding/test/files$ scp a.txt vitos-pop:/home/vitos/Studying
+vitos@vitos-pop's password:
+a.txt                                                                                 100%   22     3.7KB/s   00:00
+vitos@vitos-hp16:/mnt/c/important/coding/test/files$ sftp vitos-pop
+vitos@vitos-pop's password:
+Connected to vitos-pop.
+sftp> ls
+Desktop     Documents   Downloads   Music       Pictures    Public      Studying    Templates   Videos
+sftp> cd Studying/
+sftp> ls
+a.txt   coding  files   mai
+sftp> rm a.txt
+Removing /home/vitos/Studying/a.txt
+sftp> cd files/
+sftp> ls
+a.txt    main.py
+sftp> cd ..
+sftp> rm -rf files/
+rm: Invalid flag -r
+sftp> rm -f files/
+rm: Invalid flag -f
+sftp> rm files/*
+Removing /home/vitos/Studying/files/a.txt
+Removing /home/vitos/Studying/files/main.py
+sftp> rmdir files/
+sftp> ls
+coding  mai
+sftp> pwd
+Remote working directory: /home/vitos/Studying
+sftp> !pwd
+/mnt/c/important/coding/test/files
+sftp> !ls
+a.txt  main.py
+sftp> dir
+coding  mai
+sftp> cd coding/
+sftp> ls
+bash    python  rust
+sftp> cd rust/
+rust-minesweeper/   rusty_reversi/      screensaver/
+sftp> cd rust/screensaver/
+sftp> cd src/
+sftp> get main.rs
+Fetching /home/vitos/Studying/coding/rust/screensaver/src/main.rs to main.rs
+main.rs                                                                               100% 2321   237.4KB/s   00:00
+sftp> cd ../../..
+sftp> ls
+bash    python  rust
+sftp> !ls
+a.txt  main.py  main.rs
+drwxr-xr-x    5 vitos    vitos        4096 Sep 22 22:48 rust
+sftp> rm a.txt
+Removing /home/vitos/Studying/coding/a.txt
+sftp> quit
+vitos@vitos-hp16:/mnt/c/important/coding/test/files$ cd ..
+vitos@vitos-hp16:/mnt/c/important/coding/test$ pax -w -x tar files > f.tar
+Command 'pax' not found, but can be installed with:
+sudo apt install pax
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sudo apt install pax
+[sudo] password for vitos:
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  pax
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 86.8 kB of archives.
+After this operation, 178 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 pax amd64 1:20201030-1build2 [86.8 kB]
+Fetched 86.8 kB in 1s (133 kB/s)
+Selecting previously unselected package pax.
+(Reading database ... 50513 files and directories currently installed.)
+Preparing to unpack .../pax_1%3a20201030-1build2_amd64.deb ...
+Unpacking pax (1:20201030-1build2) ...
+Setting up pax (1:20201030-1build2) ...
+Processing triggers for man-db (2.10.2-1) ...
+Scanning processes...
+Scanning processor microcode...
+Scanning linux images...
+
+Failed to retrieve available kernel versions.
+
+The processor microcode seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+vitos@vitos-hp16:/mnt/c/important/coding/test$ pax -w -x tar files > f.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+files  f.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tax -xf f.tar
+Command 'tax' not found, did you mean:
+  command 'tao' from deb taopm (1.0-7)
+  command 'stax' from deb stax (1.37-2)
+  command 'tac' from deb coreutils (8.32-4.1ubuntu1)
+  command 'tox' from deb tox (3.21.4-1ubuntu1)
+  command 'tx' from deb transifex-client (0.14.2-1)
+  command 'pax' from deb pax (1:20201030-1build2)
+  command 'rtax' from deb rtax (0.984-8)
+  command 'ttx' from deb fonttools (4.29.1-2build1)
+  command 'tex' from deb texlive-binaries (2021.20210626.59705-1build1)
+  command 'tap' from deb node-tap (12.0.1+ds-4)
+  command 'vax' from deb simh (3.8.1-6.1)
+  command 'fax' from deb efax (1:0.9a-20)
+  command 'tar' from deb tar (1.34+dfsg-1build3)
+Try: sudo apt install <deb name>
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tar -xf f.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+files  f.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tar -zcf f.tar.gz files/a.txt files/
+a.txt    main.py  main.rs
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tar -zcf f.tar.gz files/a.txt files/main.rs
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+files  f.tar  f.tar.gz
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sftp axp3.umc8.ru
+ssh: Could not resolve hostname axp3.umc8.ru: Name or service not known
+Connection closed.
+Connection closed
+vitos@vitos-hp16:/mnt/c/important/coding/test$ man mail
+No manual entry for mail
+vitos@vitos-hp16:/mnt/c/important/coding/test$ man mutt
+No manual entry for mutt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ mail
+Command 'mail' not found, but can be installed with:
+sudo apt install mailutils
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sudo apt install mailutils
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  gsasl-common guile-3.0-libs libgc1 libgsasl7 libidn12 libltdl7 libmailutils8 libmysqlclient21 libntlm0 libpq5 mailutils-common
+  mysql-common postfix ssl-cert
+After modifying main.cf, be sure to run 'systemctl reload postfix'.
+
+Running newaliases
+invoke-rc.d: could not determine current runlevel
+invoke-rc.d: could not determine current runlevel
+Created symlink /etc/systemd/system/multi-user.target.wants/postfix.service → /lib/systemd/system/postfix.service.
+Setting up gsasl-common (1.10.0-5) ...
+Setting up guile-3.0-libs:amd64 (3.0.7-1) ...
+Setting up libgsasl7:amd64 (1.10.0-5) ...
+Setting up libmailutils8:amd64 (1:3.14-1) ...
+Setting up mailutils (1:3.14-1) ...
+update-alternatives: using /usr/bin/frm.mailutils to provide /usr/bin/frm (frm) in auto mode
+update-alternatives: using /usr/bin/from.mailutils to provide /usr/bin/from (from) in auto mode
+update-alternatives: using /usr/bin/messages.mailutils to provide /usr/bin/messages (messages) in auto mode
+update-alternatives: using /usr/bin/movemail.mailutils to provide /usr/bin/movemail (movemail) in auto mode
+update-alternatives: using /usr/bin/readmsg.mailutils to provide /usr/bin/readmsg (readmsg) in auto mode
+update-alternatives: using /usr/bin/dotlock.mailutils to provide /usr/bin/dotlock (dotlock) in auto mode
+update-alternatives: using /usr/bin/mail.mailutils to provide /usr/bin/mailx (mailx) in auto mode
+Processing triggers for rsyslog (8.2112.0-2ubuntu2.2) ...
+invoke-rc.d: unknown initscript, /etc/init.d/rsyslog not found.
+invoke-rc.d: could not determine current runlevel
+Processing triggers for ufw (0.36.1-4build1) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.1) ...
+/sbin/ldconfig.real: /usr/lib/wsl/lib/libcuda.so.1 is not a symbolic link
+
+Scanning processes...
+Scanning processor microcode...
+Scanning linux images...
+
+Failed to retrieve available kernel versions.
+
+The processor microcode seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+vitos@vitos-hp16:/mnt/c/important/coding/test$ man mail
+vitos@vitos-hp16:/mnt/c/important/coding/test$ mail vitos-pop hi
+Cc: huh?
+Subject: bruh
+hello from vitos-hp16
+
+vitos@vitos-hp16:/mnt/c/important/coding/test$ exit
