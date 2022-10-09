@@ -299,4 +299,257 @@ Cc: huh?
 Subject: bruh
 hello from vitos-hp16
 
+
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sftp vitos-pop
+vitos@vitos-pop's password:
+Connected to vitos-pop.
+sftp> cd Studying/
+sftp> mkdir testing
+sftp> cd testing/
+sftp> pwd
+Remote working directory: /home/vitos/Studying/testing
+sftp> !ls
+sftp> !cat > a.txt
+hello, this is a file from vitos-hp16 machine
+sftp> !ls
+a.txt
+sftp> put a.txt
+Uploading a.txt to /home/vitos/Studying/testing/a.txt
+a.txt                                                                                 100%   46    10.9KB/s   00:00
+sftp> quit
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ssh vitos-pop
+vitos@vitos-pop's password:
+Welcome to Pop!_OS 22.04 LTS (GNU/Linux 5.19.0-76051900-generic x86_64)
+
+ * Homepage: https://pop.system76.com
+ * Support:  https://support.system76.com
+
+Last login: Thu Sep 29 22:55:13 2022 from 192.168.1.102
+vitos@vitos-pop:~$ cd Studying/testing/
+vitos@vitos-pop:~/Studying/testing$ cat > b.txt
+vitos-pop is here
+vitos@vitos-pop:~/Studying/testing$ exit
+logout
+Connection to vitos-pop closed.
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sftp vitos-pop
+vitos@vitos-pop's password:
+Connected to vitos-pop.
+sftp> cd Studying/testing/
+sftp> get b.txt
+Fetching /home/vitos/Studying/testing/b.txt to b.txt
+b.txt                                                                                 100%   18     1.0KB/s   00:00
+sftp> quit
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  b.txt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ssh vitos-pop
+vitos@vitos-pop's password:
+Welcome to Pop!_OS 22.04 LTS (GNU/Linux 5.19.0-76051900-generic x86_64)
+
+ * Homepage: https://pop.system76.com
+ * Support:  https://support.system76.com
+
+Last login: Sun Oct  9 13:06:13 2022 from 192.168.1.102
+vitos@vitos-pop:~$ cd Studying/testing/
+vitos@vitos-pop:~/Studying/testing$ mv a.txt b.txt
+vitos@vitos-pop:~/Studying/testing$ mv b.txt hi.txt
+vitos@vitos-pop:~/Studying/testing$ exit
+logout
+Connection to vitos-pop closed.
+vitos@vitos-hp16:/mnt/c/important/coding/test$ scp vitos-pop:Studying/testing/hi.txt c.txt
+vitos@vitos-pop's password:
+hi.txt                                                                                100%   46    15.4KB/s   00:00
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  b.txt  c.txt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tar -cf zipped.tar `pwd`
+tar: Removing leading `/' from member names
+tar: /mnt/c/important/coding/test/zipped.tar: file is the archive; not dumped
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  b.txt  c.txt  zipped.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ gzip -9 -c zipped.tar > gzip.tgz
+vitos@vitos-hp16:/mnt/c/important/coding/test$ gzip -d -c gzip.tgz > ungzip.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ tar -xf ungzip.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  b.txt  c.txt  gzip.tgz  mnt  ungzip.tar  zipped.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ rm -rf mnt ungzip.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ man bzip2
+No manual entry for bzip2
+vitos@vitos-hp16:/mnt/c/important/coding/test$ sudo apt install bzip2
+[sudo] password for vitos:
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Suggested packages:
+  bzip2-doc
+The following NEW packages will be installed:
+  bzip2
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 34.8 kB of archives.
+After this operation, 117 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 bzip2 amd64 1.0.8-5build1 [34.8 kB]
+Fetched 34.8 kB in 0s (117 kB/s)
+Selecting previously unselected package bzip2.
+(Reading database ... 51677 files and directories currently installed.)
+Preparing to unpack .../bzip2_1.0.8-5build1_amd64.deb ...
+Unpacking bzip2 (1.0.8-5build1) ...
+Setting up bzip2 (1.0.8-5build1) ...
+Processing triggers for man-db (2.10.2-1) ...
+Scanning processes...
+Scanning processor microcode...
+Scanning linux images...
+
+Failed to retrieve available kernel versions.
+
+The processor microcode seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+vitos@vitos-hp16:/mnt/c/important/coding/test$ man bzip2
+vitos@vitos-hp16:/mnt/c/important/coding/test$ bzip2 -z a.txt b.txt
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt.bz2  b.txt.bz2  c.txt  gzip.tgz  zipped.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ bzip2 -d a.txt.bz2
+vitos@vitos-hp16:/mnt/c/important/coding/test$ bzip2 -d b.txt.bz2
+vitos@vitos-hp16:/mnt/c/important/coding/test$ ls
+a.txt  b.txt  c.txt  gzip.tgz  zipped.tar
+vitos@vitos-hp16:/mnt/c/important/coding/test$ dict Bebra
+No definitions found for "Bebra", perhaps you mean:
+gcide:  Zebra
+wn:  zebra  beira  berra
+easton:  Bera
+hitchcock:  Bera  Beera
+vitos@vitos-hp16:/mnt/c/important/coding/test$ dict zebra
+3 definitions found
+
+From The Collaborative International Dictionary of English v.0.48 [gcide]:
+
+  Zebra \Ze"bra\, n. [Pg. zebra; cf. Sp. cebra; probably from a
+     native African name.] (Zool.)
+     Any member of three species of African wild horses remarkable
+     for having the body white or yellowish white, and
+     conspicuously marked with dark brown or brackish bands.
+     [1913 Webster]
+
+     Note: The true or mountain zebra ({Equus zebra} syn. {Asinus
+           zebra}) is nearly white, and the bands which cover the
+           body and legs are glossy black. Its tail has a tuft of
+           black hair at the tip. It inhabits the mountains of
+           Central and Southern Africa, and is noted for its
+           wariness and wildness, as well as for its swiftness.
+           The second species ({Equus Burchellii} syn. {Asinus
+           Burchellii} or {Equus quagga}), known as {Burchell's
+           zebra}, {plains zebra}, and {dauw}, is the most
+           abundant, inhabiting the grassy plains of tropical and
+           southern Africa, and differing from the preceding in
+           not having dark bands on the legs, while those on the
+           body are more irregular. It has a long tail, covered
+           with long white flowing hair. Grevy's zebra ({Equus
+           grevyi}) is distinct from the others in being placed in
+           the subgenus Dolichohippus, whereas the plains and
+           mountain zebras are placed in the subgenus Hippotigris.
+           More on zebras can be found at:
+           http://www.imh.org/imh/bw/zebra.html
+           [1913 Webster +PJC]
+
+     {Zebra caterpillar}, the larva of an American noctuid moth
+        ({Mamestra picta}). It is light yellow, with a broad black
+        stripe on the back and one on each side; the lateral
+        stripes are crossed with withe lines. It feeds on
+        cabbages, beets, clover, and other cultivated plants.
+
+     {Zebra opossum}, the zebra wolf. See under {Wolf}.
+
+     {Zebra parrakeet}, an Australian grass parrakeet, often kept
+        as a cage bird. Its upper parts are mostly pale greenish
+        yellow, transversely barred with brownish black crescents;
+        the under parts, rump, and upper tail coverts, are bright
+        green; two central tail feathers and the cheek patches are
+        blue. Called also {canary parrot}, {scallop parrot},
+        {shell parrot}, and {undulated parrot}.
+
+     {Zebra poison} (Bot.), a poisonous tree ({Euphorbia arborea})
+        of the Spurge family, found in South Africa. Its milky
+        juice is so poisonous that zebras have been killed by
+        drinking water in which its branches had been placed, and
+        it is also used as an arrow poison. --J. Smith (Dict.
+        Econ. Plants).
+
+     {Zebra shark}. Same as {Tiger shark}, under {Tiger}.
+
+     {Zebra spider}, a hunting spider.
+
+     {Zebra swallowtail}, a very large North American
+        swallow-tailed butterfly ({Iphiclides ajax}), in which the
+        wings are yellow, barred with black; -- called also
+        {ajax}.
+
+     {Zebra wolf}. See under {Wolf}.
+        [1913 Webster]
+
+From WordNet (r) 3.0 (2006) [wn]:
+
+  zebra
+      n 1: any of several fleet black-and-white striped African
+           equines
+
+From The Free On-line Dictionary of Computing (30 December 2018) [foldoc]:
+
+  ZEBRA
+
+     A data management package in the {CERN Program Library}.
+
+
+vitos@vitos-hp16:/mnt/c/important/coding/test$ dict giraffe | iconv -f utf-8 -t koi8-r
+4 definitions found
+
+From The Collaborative International Dictionary of English v.0.48 [gcide]:
+
+  giraffe \gi*raffe"\ (j[i^]*r[a^]f"; 277), n. [F. girafe, Sp.
+     girafa, from Ar. zur[=a]fa, zar[=a]fa.] (Zool.)
+     An African ruminant ({Giraffa camelopardalis} formerly
+     {Camelopardalis giraffa}) related to the deers and antelopes,
+     but placed in a family ({Giraffidae}) by itself; the
+     camelopard. It is the tallest of quadriped animals, being
+     sometimes twenty feet from the hoofs to the top of the head.
+     Its neck is very long, and its fore legs are much longer than
+     its hind legs. There are three types, having different
+     patterns of spots on the pelt and different territories: the
+     {Reticulated Giraffe}, the {Masai Giraffe}, and the {Uganda
+     Giraffe}. Intermediate crosses are also observed.
+     [1913 Webster +PJC]
+
+From The Collaborative International Dictionary of English v.0.48 [gcide]:
+
+  Camelopard \Ca*mel"o*pard\ (k[.a]*m[e^]l"[-o]*p[aum]rd or
+     k[a^]m"[e^]l*[-o]*p[aum]rd; 277), n. [LL. camelopardus, L.
+     camelopardalus, camelopardalis, fr. Gr. kamhlopa`rdalis;
+     ka`mhlos a camel + pa`rdalis pard, leopard: cf. F.
+     cam['e]lopard. The camelopard has a neck and head like a
+     camel, and is spotted like a pard. See {Camel}, and {Pard}.]
+     (Zool.)
+     An African ruminant; the {giraffe}. See {Giraffe}.
+     [1913 Webster]
+
+From WordNet (r) 3.0 (2006) [wn]:
+
+  giraffe
+      n 1: tallest living quadruped; having a spotted coat and small
+           horns and very long neck and legs; of savannahs of tropical
+           Africa [syn: {giraffe}, {camelopard}, {Giraffa
+           camelopardalis}]
+
+From Moby Thesaurus II by Grady Ward, 1.0 [moby-thesaurus]:
+
+  33 Moby Thesaurus words for "giraffe":
+     Cape elk, Virginia deer, antelope, buck, camel, camelopard,
+     caribou, deer, deerlet, doe, dromedary, eland, elk, fallow deer,
+     fawn, gazelle, gnu, hart, hartebeest, hind, kaama, moose,
+     mule deer, musk deer, okapi, red deer, reindeer, roe, roe deer,
+     roebuck, springbok, stag, wildebeest
+
+
 vitos@vitos-hp16:/mnt/c/important/coding/test$ exit
