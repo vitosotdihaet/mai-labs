@@ -1,8 +1,8 @@
-/* Лабораторная работа 8, вариант n.
+/* Лабораторная работа №8
  * Студент гр. М8О-103Б-22 Клименко В. М. */
 #include <stdio.h>
 
-// returns 0 if noone won, 1 if cross won, 2 if circle won
+// returns 0 if none won, 1 if cross won, 2 if circle won
 short int check(short int grid[3][3]) {
 	// check rows
 	for (short int i = 0; i < 3; ++i) {
@@ -37,9 +37,22 @@ short int check(short int grid[3][3]) {
 	return -1;
 }
 
-short int check_coords(short int x, short int y, short int grid[3][3]) {
-	if (4 > x && x > 0 && 4 > y && y > 0) {
-		if (grid[y - 1][x - 1] == 0) {
+short int input(short int *x, short int *y, short int grid[3][3]) {
+	char str[256], fn[256] = "", sn[256] = "";
+	short int fw = -1, off = 0;
+	gets(str);
+
+	for (short int i = 0; i < 256; ++i) {
+		if (str[i] != ' ' && fw != -1) 	  { sn[off] = str[i]; ++off;}
+		if (str[i] == ' ') 			      { fw = i; continue; 		}
+		if (str[i] == ' ' && fw != i - 1) { break; 					}
+		if (fw == -1) 					  { fn[i] = str[i]; 		}
+	}
+
+	*x = atoi(fn);
+	*y = atoi(sn);
+	if (4 > *x && *x > 0 && 4 > *y && *y > 0) {
+		if (grid[*y - 1][*x - 1] == 0) {
 			return 1;
 		} else {
 			printf("The cell is already occupied!\n");
@@ -76,7 +89,7 @@ int main() {
 	short int x = -1, y = -1, current_player = 1, win = 0;
 
 	while (win == 0) {
-		system("clear");
+		printf("\e[1;1H\e[2J");
 		switch (current_player) {
 			case 1: printf("X's turn!"); break;
 			case 2: printf("O's turn!"); break;
@@ -84,20 +97,18 @@ int main() {
 		printf("\n");
 		print(grid);
 
-		printf("Input x (horizontal) and y (vertical):\n");
-		scanf("%hu %hu", &x, &y);
-		while (check_coords(x, y, grid) == 0) {
+		printf("Input x (horizontal) and y (vertical):\n");		
+		while (input(&x, &y, grid) == 0) {
 			printf("Try again:\n");
-			scanf("%hu %hu", &x, &y);
 		}
-		
+
 		grid[y - 1][x - 1] = current_player;
 		current_player = current_player % 2 + 1;
 
 		win = check(grid);
 	}
 
-	system("clear");
+	printf("\e[1;1H\e[2J");
 	print(grid);
 
 	switch (win) {
