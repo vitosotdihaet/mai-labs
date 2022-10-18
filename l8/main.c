@@ -1,6 +1,7 @@
 /* Лабораторная работа №8
  * Студент гр. М8О-103Б-22 Клименко В. М. */
 #include <stdio.h>
+#include <stdlib.h>
 
 // returns 0 if none won, 1 if cross won, 2 if circle won
 short int check(short int grid[3][3]) {
@@ -40,7 +41,7 @@ short int check(short int grid[3][3]) {
 short int input(short int *x, short int *y, short int grid[3][3]) {
 	char str[256], fn[256] = "", sn[256] = "";
 	short int fw = -1, off = 0;
-	gets(str);
+	fgets(str, 256, stdin);
 
 	for (short int i = 0; i < 256; ++i) {
 		if (str[i] != ' ' && fw != -1) 	  { sn[off] = str[i]; ++off;}
