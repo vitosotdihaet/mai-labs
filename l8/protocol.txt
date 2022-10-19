@@ -1,0 +1,190 @@
+vitos@vitos-pop:~/Studying/mai/labs/l8$ touch main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ code main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    printf("Hello, world!\n")
+    return 0;
+}vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+main.c: In function ‘main’:
+main.c:6:30: error: expected ‘;’ before ‘return’
+    6 |     printf("Hello, world!\n")
+      |                              ^
+      |                              ;
+    7 |     return 0;
+      |     ~~~~~~                    
+vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -v -o main main.c
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+OFFLOAD_TARGET_DEFAULT=1
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.2.0-19ubuntu1' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-11-gBFGDP/gcc-11-11.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-11-gBFGDP/gcc-11-11.2.0/debian/tmp-gcn/usr --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 11.2.0 (Ubuntu 11.2.0-19ubuntu1) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'main' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/11/cc1 -quiet -v -imultiarch x86_64-linux-gnu main.c -quiet -dumpbase main.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cco4zbYc.s
+GNU C17 (Ubuntu 11.2.0-19ubuntu1) version 11.2.0 (x86_64-linux-gnu)
+	compiled by GNU C version 11.2.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/11/include-fixed"
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/11/../../../../x86_64-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/gcc/x86_64-linux-gnu/11/include
+ /usr/local/include
+ /usr/include/x86_64-linux-gnu
+ /usr/include
+End of search list.
+GNU C17 (Ubuntu 11.2.0-19ubuntu1) version 11.2.0 (x86_64-linux-gnu)
+	compiled by GNU C version 11.2.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: ead6677a8de2192bf1e5ee7b28d13856
+main.c: In function ‘main’:
+main.c:6:30: error: expected ‘;’ before ‘return’
+    6 |     printf("Hello, world!\n")
+      |                              ^
+      |                              ;
+    7 |     return 0;
+      |     ~~~~~~                    
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    printf("Hello, world!\n");
+    return 0;
+}vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ ./main
+Hello, world!
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    int a, exp = 1;
+    printf("Input a power of 2:\n");
+    for (int i = 1; i <= a; ++i) {
+        exp *= 2;
+    }
+    printf("Here is 2 to the power of %d: %d\n", a, exp);
+    return 0;
+}vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ ./main 
+Input a power of 2:
+Here is 2 to the power of 22092: 0
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    int a, exp = 1;
+    printf("Input a power of 2:\n");
+    scanf("%d", &a);
+    for (int i = 1; i <= a; ++i) {
+        exp *= 2;
+    }
+    printf("Here is 2 to the power of %d: %d\n", a, exp);
+    return 0;
+}vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ ./main 
+Input a power of 2:
+4
+Here is 2 to the power of 4: 16
+vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -g -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ gdb main
+GNU gdb (Ubuntu 12.0.90-0ubuntu1) 12.0.90
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from main...
+(gdb) run
+Starting program: /home/vitos/Studying/mai/labs/l8/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Input a power of 2:
+3
+Here is 2 to the power of 3: 8
+[Inferior 1 (process 11689) exited normally]
+(gdb) quit
+vitos@vitos-pop:~/Studying/mai/labs/l8$ ./main
+Input a power of 2:
+100
+Here is 2 to the power of 100: 0
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    long long a, exp = 1;
+    printf("Input a power of 2:\n");
+    scanf("%d", &a);
+    for (long long i = 1; i <= a; ++i) {
+        exp *= 2;
+    }
+    printf("Here is 2 to the power of %d: %d\n", a, exp);
+    return 0;
+vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+main.c: In function ‘main’:
+main.c:8:13: warning: format ‘%d’ expects argument of type ‘int *’, but argument 2 has type ‘long long int *’ [-Wformat=]
+    8 |     scanf("%d", &a);
+      |            ~^   ~~
+      |             |   |
+      |             |   long long int *
+      |             int *
+      |            %lld
+main.c:12:40: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long long int’ [-Wformat=]
+   12 |     printf("Here is 2 to the power of %d: %d\n", a, exp);
+      |                                       ~^         ~
+      |                                        |         |
+      |                                        int       long long int
+      |                                       %lld
+main.c:12:44: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long long int’ [-Wformat=]
+   12 |     printf("Here is 2 to the power of %d: %d\n", a, exp);
+      |                                           ~^        ~~~
+      |                                            |        |
+      |                                            int      long long int
+      |                                           %lld
+vitos@vitos-pop:~/Studying/mai/labs/l8$ cat main.c
+/* Лабораторная работа №8
+ * Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+
+int main() {
+    long long a, exp = 1;
+    printf("Input a power of 2:\n");
+    scanf("%lld", &a);
+    for (long long i = 1; i <= a; ++i) {
+        exp *= 2;
+    }
+    printf("Here is 2 to the power of %lld: %lld\n", a, exp);
+    return 0;
+}vitos@vitos-pop:~/Studying/mai/labs/l8$ gcc -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l8$ ./main
+Input a power of 2:
+60
+Here is 2 to the power of 60: 1152921504606846976
+
