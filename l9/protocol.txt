@@ -1,3 +1,4 @@
+vitos@vitos-pop:~/Studying/mai/labs/l9$ cat main.c
 /* Лабораторная работа №9, вариант №13
  * Студент гр. М8О-103Б-22 Клименко В. М. */
 #include<stdio.h>
@@ -76,4 +77,10 @@ int main() {
 
     // fclose(fp);
     return 0;
-}
+}vitos@vitos-pop:~/Studying/mai/labs/l9$ gcc -o main main.c
+vitos@vitos-pop:~/Studying/mai/labs/l9$ ./main
+Point is in at k = 19!
+i = -14.400000
+j = -18.164445
+l = -12.835555
+
