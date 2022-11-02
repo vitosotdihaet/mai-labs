@@ -14,7 +14,7 @@ int main() {
     unsigned long long a, n, answ;
     printf("Only natural numbers are allowed!\n");
     printf("Input a number you want to raise to a power:\n");
-    scanf("%lld", a);
+    scanf("%lld", &a);
     printf("Input a power you want to raise %lld to:\n", a);
     scanf("%lld", &n);
 
