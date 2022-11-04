@@ -32,37 +32,40 @@ long long sign(long long a) {
 }
 
 long long mod(long long a, long long b) {
-    // printf("%Lf -> %lld; %Lf -> %lld\n", a, na, b, nb);
-    return a - a / b * b;
+    long long fl = floor((double) a / (double) b); 
+    return a - fl * b;
+}
+
+long long floor(double x) {
+    if (x - (long long) x >= 0) {
+        return (long long) x;
+    }
+    return (long long) x - 1;
 }
 
 int main() {
     //! for writing i, j, k for graphics
-    // FILE *fp;
-    // fp = fopen("for_graphics.txt", "a");
+    FILE *fp;
+    fp = fopen("for_graphics.txt", "w");
 
-    long long i[51] = {13}, j[51] = {-9}, l[51] = {-4}, ii, jj, ll;
+    long long ip = 13, jp = -9, lp = -4, ii, jj, ll;
     int kk;
     short gg = 0;
-
-    // for (int x = 0; x < 51; ++x) {
-    //     printf("%Lf ", l[x]);
-    // }
 
     for (int k = 1; k < 50; ++k) {
         kk = k - 1;
         
-        ii = i[kk];
-        jj = j[kk];
-        ll = l[kk];
+        ii = ip;
+        jj = jp;
+        ll = lp;
 
-        i[k] = mod(ii + jj, 30) / (mod(abs(ll), 5) + 1) + mod(ii + ll, 30)/(mod(abs(jj), 5) + 1);
-        j[k] = mod(max(kk * ii, (kk + 1) * jj), 25) - abs(jj - ll)/10;
-        l[k] = abs(jj - ll)/10 + min(mod(ii + ll, 20), mod(jj * kk, 20)) - 10;
-        // fprintf(fp, "k = %d:\ni = %lld\nj = %lld\nl = %lld\n", k, i[k], j[k], l[k]);
+        ip = mod(ii + jj, 30) / (mod(abs(ll), 5) + 1) + mod(ii + ll, 30)/(mod(abs(jj), 5) + 1);
+        jp = mod(max(kk * ii, (kk + 1) * jj), 25) - abs(jj - ll)/10;
+        lp = abs(jj - ll)/10 + min(mod(ii + ll, 20), mod(jj * kk, 20)) - 10;
+        fprintf(fp, "k = %d:\ni = %lld\nj = %lld\nl = %lld\n", k, ip, jp, lp);
         
-        if (calc(i[k], j[k]) == 1) {
-            printf("Point is in at k = %d!\ni = %lld\nj = %lld\nl = %lld\n", k, i[k], j[k], l[k]);
+        if (calc(ip, jp) == 1) {
+            printf("Point is in at k = %d!\ni = %lld\nj = %lld\nl = %lld\n", k, ip, jp, lp);
             gg = 1;
             break;
         }
@@ -72,6 +75,6 @@ int main() {
         printf("Couldn't make it in 50 iterations! :(\n");
     }
 
-    // fclose(fp);
+    fclose(fp);
     return 0;
 }

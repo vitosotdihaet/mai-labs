@@ -1,9 +1,9 @@
-vitos@vitos-pop:~/Studying/mai/labs/l9$ cat main.c
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l9$ cat main.c
 /* Лабораторная работа №9, вариант №13
  * Студент гр. М8О-103Б-22 Клименко В. М. */
 #include<stdio.h>
 
-short calc(long double i, long double j) {
+short calc(long long i, long long j) {
     if ((i + 10)*(i + 10) + (j + 10)*(j + 10) <= 100
     &&  (i + 20)*(i + 20) + (j + 20)*(j + 20) <= 100) {
         return 1;
@@ -11,61 +11,62 @@ short calc(long double i, long double j) {
     return 0;
 }
 
-long double max(long double a, long double b) {
+long long max(long long a, long long b) {
     if (a > b) { return a; }
     return b;
 }
 
-long double min(long double a, long double b) {
+long long min(long long a, long long b) {
     if (a < b) { return a; }
     return b;
 }
 
-long double abs(long double a) {
+long long abs(long long a) {
     if (a < 0) { return -a; }
     return a;
 }
 
-long double sign(long double a) {
+long long sign(long long a) {
     if (a >  0) { return  1; }
-    if (a == 0) { return  0; } 
+    if (a == 0) { return  0; }
                   return -1;
 }
 
-long double mod(long double a, long double b) {
-    long long na = a;
-    long long nb = b;
-    // printf("%Lf -> %lld; %Lf -> %lld\n", a, na, b, nb);
-    return na - na / nb * nb;
+long long mod(long long a, long long b) {
+    long long fl = floor((double) a / (double) b);
+    return a - fl * b;
+}
+
+long long floor(double x) {
+    if (x - (long long) x >= 0) {
+        return (long long) x;
+    }
+    return (long long) x - 1;
 }
 
 int main() {
     //! for writing i, j, k for graphics
-    // FILE *fp;
-    // fp = fopen("for_graphics.txt", "a");
+    FILE *fp;
+    fp = fopen("for_graphics.txt", "w");
 
-    long double i[51] = {13.}, j[51] = {-9.}, l[51] = {-4.}, ii, jj, ll;
+    long long ip = 13, jp = -9, lp = -4, ii, jj, ll;
     int kk;
     short gg = 0;
 
-    // for (int x = 0; x < 51; ++x) {
-    //     printf("%Lf ", l[x]);
-    // }
-
-    for (int k = 1; k <= 50; ++k) {
+    for (int k = 1; k < 50; ++k) {
         kk = k - 1;
-        
-        ii = i[kk];
-        jj = j[kk];
-        ll = l[kk];
 
-        i[k] = mod(ii + jj, 30.0) / (mod(abs(ll), 5.0) + 1.0) + mod(ii + ll, 30.0)/(mod(abs(jj), 5.0) + 1.0);
-        j[k] = mod(max(kk * ii, (kk + 1.0) * jj), 25.0) - abs(jj - ll)/10.0;
-        l[k] = abs(jj - ll)/10.0 + min(mod(ii + ll, 20.0), mod(jj * kk, 20.0)) - 10.0;
-        // fprintf(fp, "k = %d:\ni = %Lf\nj = %Lf\nl = %Lf\n", k, i[k], j[k], l[k]);
-        
-        if (calc(i[k], j[k]) == 1) {
-            printf("Point is in at k = %d!\ni = %Lf\nj = %Lf\nl = %Lf\n", k, i[k], j[k], l[k]);
+        ii = ip;
+        jj = jp;
+        ll = lp;
+
+        ip = mod(ii + jj, 30) / (mod(abs(ll), 5) + 1) + mod(ii + ll, 30)/(mod(abs(jj), 5) + 1);
+        jp = mod(max(kk * ii, (kk + 1) * jj), 25) - abs(jj - ll)/10;
+        lp = abs(jj - ll)/10 + min(mod(ii + ll, 20), mod(jj * kk, 20)) - 10;
+        fprintf(fp, "k = %d:\ni = %lld\nj = %lld\nl = %lld\n", k, ip, jp, lp);
+
+        if (calc(ip, jp) == 1) {
+            printf("Point is in at k = %d!\ni = %lld\nj = %lld\nl = %lld\n", k, ip, jp, lp);
             gg = 1;
             break;
         }
@@ -75,12 +76,11 @@ int main() {
         printf("Couldn't make it in 50 iterations! :(\n");
     }
 
-    // fclose(fp);
+    fclose(fp);
     return 0;
-}vitos@vitos-pop:~/Studying/mai/labs/l9$ gcc -o main main.c
-vitos@vitos-pop:~/Studying/mai/labs/l9$ ./main
+}vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l9$ gcc main.c -o main
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l9$ ./main
 Point is in at k = 19!
-i = -14.400000
-j = -18.164445
-l = -12.835555
-
+i = -17
+j = -15
+l = -17
