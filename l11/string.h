@@ -38,4 +38,7 @@ int push_string(string* s1, string s2);
 // Fully changes parameters of s1 to s2
 int set_string(string* s1, string s2);
 
+// Reads string char by char returning 1 if EOF
+int read_string(string* s);
+
 #endif

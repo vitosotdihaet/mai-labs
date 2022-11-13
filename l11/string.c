@@ -93,3 +93,22 @@ int set_string(string* s1, string s2) {
     *s1 = s2;
     return SUCCESS;
 }
+
+// Reads string char by char returning 1 if EOF
+int read_string(string* s) {
+    char c = ' ';
+    int end = 0;
+
+    while (1) {
+        c = getchar();
+        if (c == ' ' || c == ',' || c == '\t' || c == '\n') {
+            break;
+        } else if ((int) c == EOF) {
+            end = 1;
+            break;
+        }
+        add_char(s, c);
+    }
+
+    return end;
+}
