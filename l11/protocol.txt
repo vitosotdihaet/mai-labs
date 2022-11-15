@@ -1,7 +1,40 @@
 vitos@vitos-pop:~/Studying/mai/labs/l11$ cat makefile 
 all:
 	gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
-	./mainvitos@vitos-pop:~/Studying/mai/labs/l11$ 
+	./mainvitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.h
+#ifndef STRING_H
+
+#define STRING_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
+
+typedef struct string {
+    char *values;
+    uint64_t last_element;
+    uint64_t memory_size;
+} string;
+
+
+// Initialize string with default capacity
+int init_string(string* s);
+
+// Sets all struct's parameters to zero
+int free_string(string* s);
+
+// Adds memory
+int string_resize(string* s, uint64_t capacity);
+
+// Adds a char to string, adding more memory if needed 
+int add_char(string* s, char value);
+
+// Reads string char by char returning 1 if EOF
+int read_string(string* s);
+
+#endifvitos@vitos-pop:~/Studying/mai/labs/l11$ cat str
+string.c  string.h  
 vitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.c
 #include "string.h"
 
@@ -78,39 +111,7 @@ int read_string(string* s) {
 
     return end;
 }
-vitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.h
-#ifndef STRING_H
-
-#define STRING_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
-
-typedef struct string {
-    char *values;
-    uint64_t last_element;
-    uint64_t memory_size;
-} string;
-
-
-// Initialize string with default capacity
-int init_string(string* s);
-
-// Sets all struct's parameters to zero
-int free_string(string* s);
-
-// Adds memory
-int string_resize(string* s, uint64_t capacity);
-
-// Adds a char to string, adding more memory if needed 
-int add_char(string* s, char value);
-
-// Reads string char by char returning 1 if EOF
-int read_string(string* s);
-
-#endifvitos@vitos-pop:~/Studying/mai/labs/l11$ cat main.c
+vitos@vitos-pop:~/Studying/mai/labs/l11$ cat main.c
 /* Лабораторная работа №11 вариант №30    */
 /* Студент гр. М8О-103Б-22 Клименко В. М. */
 #include <stdio.h>
@@ -128,9 +129,9 @@ int main() {
         END = read_string(&num);
         if (END) break;
         if (atoll(num.values) <= __INT_MAX__) {
-            printf("This number is less than INT_MAX! Remain %s!\n", num.values);
+            printf("This number is less than INT_MAX! Delete!\n");
         } else {
-            printf("This number is greater than INT_MAX! Delete!\n");
+            printf("This number is greater than INT_MAX! Remain %s!\n", num.values);
         }
     }
     printf("End of programm...\n");
@@ -140,25 +141,23 @@ int main() {
 vitos@vitos-pop:~/Studying/mai/labs/l11$ make
 gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
 ./main
+1
+This number is less than INT_MAX! Delete!
 0
-This number is less than INT_MAX! Remain 0!
-1111111111      
-This number is less than INT_MAX! Remain 1111111111!
-11111111111
-This number is greater than INT_MAX! Delete!
--50000
-This number is less than INT_MAX! Remain -50000!
--1000000000
-This number is less than INT_MAX! Remain -1000000000!
--11111111111111111111999999999999999922222222222222222222222222222222
-This number is less than INT_MAX! Remain -11111111111111111111999999999999999922222222222222222222222222222222!
-39845723908475320984753209485778584758848484848448844848484884848484848
-This number is greater than INT_MAX! Delete!
-11111111111111111111111111111111111111111111111111
-This number is greater than INT_MAX! Delete!
--1       
-This number is less than INT_MAX! Remain -1!
-17
-This number is less than INT_MAX! Remain 17!
+This number is less than INT_MAX! Delete!
+-100
+This number is less than INT_MAX! Delete!
+11111111111111111111111111111111111
+This number is greater than INT_MAX! Remain 11111111111111111111111111111111111!
+9892389482938948239498293948293948928398492939849283984298394829384982938492839849283948923
+This number is greater than INT_MAX! Remain 9892389482938948239498293948293948928398492939849283984298394829384982938492839849283948923!
+-1111111111111111111111111111111111111111111111111
+This number is less than INT_MAX! Delete!
+-11111111111111111
+This number is less than INT_MAX! Delete!
+-11111
+This number is less than INT_MAX! Delete!
+-999999999999999999999999999999999999997777777777777777777777777777777555555555555555555555555
+This number is less than INT_MAX! Delete!
 End of programm...
 vitos@vitos-pop:~/Studying/mai/labs/l11$ 
