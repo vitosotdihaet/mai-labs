@@ -1,7 +1,7 @@
 vitos@vitos-pop:~/Studying/mai/labs/l11$ cat makefile 
 all:
-	gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
-	./mainvitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.h
+    gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
+    ./mainvitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.h
 #ifndef STRING_H
 
 #define STRING_H
@@ -150,7 +150,8 @@ This number is less than INT_MAX! Delete!
 11111111111111111111111111111111111
 This number is greater than INT_MAX! Remain 11111111111111111111111111111111111!
 9892389482938948239498293948293948928398492939849283984298394829384982938492839849283948923
-This number is greater than INT_MAX! Remain 9892389482938948239498293948293948928398492939849283984298394829384982938492839849283948923!
+This number is greater than INT_MAX! Remain 989238948293894823949829394829394892839849293984928398429839482938
+4982938492839849283948923!
 -1111111111111111111111111111111111111111111111111
 This number is less than INT_MAX! Delete!
 -11111111111111111
