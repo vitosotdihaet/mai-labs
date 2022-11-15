@@ -1,0 +1,164 @@
+vitos@vitos-pop:~/Studying/mai/labs/l11$ cat makefile 
+all:
+	gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
+	./mainvitos@vitos-pop:~/Studying/mai/labs/l11$ 
+vitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.c
+#include "string.h"
+
+//? Maybe deprecated, but those are for error handling
+#define UNDEFINED 0
+#define SUCCESS 1
+#define ERROR -1
+
+// How big initial memory is
+const uint64_t INIT_CAPACITY = 2;
+// How big relative to previous allocated memory new memory should be
+const uint64_t EXTENDED_CAPACITY = 2;
+
+// Memory-related macros 
+#define new(a, n) (a*)calloc(n, sizeof(a) * n)
+#define reallocate(ptr, a, n) (a*)realloc(ptr, sizeof(a) * n)
+
+#define max(a, b) (a > b ? a : b)
+#define min(a, b) (a < b ? a : b)
+
+// Initialize string with default capacity
+int init_string(string* s) {
+    int result = UNDEFINED;
+    s->memory_size = INIT_CAPACITY;
+    s->values = new(char, INIT_CAPACITY);
+    s->last_element = 0;
+    return result;
+}
+
+// Sets all struct's parameters to zero
+int free_string(string* s) {
+    s->memory_size = INIT_CAPACITY;
+    s->values = new(char, 0);
+    s->last_element = 0;
+    return SUCCESS;
+}
+
+// Adds memory
+int string_resize(string* s, uint64_t capacity) {
+    uint64_t new_capacity = s->memory_size * capacity;
+    s->memory_size = new_capacity;
+    s->values = reallocate(s->values, char, new_capacity);
+    return SUCCESS;
+}
+
+// Adds a char to string, adding more memory if needed 
+int add_char(string* s, char value) {
+    int result = UNDEFINED;
+    if (s->last_element < s->memory_size) {
+        result = SUCCESS;
+    } else {
+        result = string_resize(s, EXTENDED_CAPACITY);
+    }
+    s->values[s->last_element] = value;
+    s->last_element++;
+    return result;
+}
+
+// Reads string char by char returning 1 if EOF
+int read_string(string* s) {
+    char c = ' ';
+    int end = 0;
+
+    while (1) {
+        c = getchar();
+        if (c == ' ' || c == ',' || c == '\t' || c == '\n') {
+            break;
+        } else if ((int) c == EOF) {
+            end = 1;
+            break;
+        }
+        add_char(s, c);
+    }
+
+    return end;
+}
+vitos@vitos-pop:~/Studying/mai/labs/l11$ cat string.h
+#ifndef STRING_H
+
+#define STRING_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
+
+typedef struct string {
+    char *values;
+    uint64_t last_element;
+    uint64_t memory_size;
+} string;
+
+
+// Initialize string with default capacity
+int init_string(string* s);
+
+// Sets all struct's parameters to zero
+int free_string(string* s);
+
+// Adds memory
+int string_resize(string* s, uint64_t capacity);
+
+// Adds a char to string, adding more memory if needed 
+int add_char(string* s, char value);
+
+// Reads string char by char returning 1 if EOF
+int read_string(string* s);
+
+#endifvitos@vitos-pop:~/Studying/mai/labs/l11$ cat main.c
+/* Лабораторная работа №11 вариант №30    */
+/* Студент гр. М8О-103Б-22 Клименко В. М. */
+#include <stdio.h>
+#include "string.h"
+
+
+int main() {
+    int END = 0;
+    string num;
+
+    init_string(&num);
+
+    while (1) {
+        free_string(&num);
+        END = read_string(&num);
+        if (END) break;
+        if (atoll(num.values) <= __INT_MAX__) {
+            printf("This number is less than INT_MAX! Remain %s!\n", num.values);
+        } else {
+            printf("This number is greater than INT_MAX! Delete!\n");
+        }
+    }
+    printf("End of programm...\n");
+
+    return 0;
+}
+vitos@vitos-pop:~/Studying/mai/labs/l11$ make
+gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
+./main
+0
+This number is less than INT_MAX! Remain 0!
+1111111111      
+This number is less than INT_MAX! Remain 1111111111!
+11111111111
+This number is greater than INT_MAX! Delete!
+-50000
+This number is less than INT_MAX! Remain -50000!
+-1000000000
+This number is less than INT_MAX! Remain -1000000000!
+-11111111111111111111999999999999999922222222222222222222222222222222
+This number is less than INT_MAX! Remain -11111111111111111111999999999999999922222222222222222222222222222222!
+39845723908475320984753209485778584758848484848448844848484884848484848
+This number is greater than INT_MAX! Delete!
+11111111111111111111111111111111111111111111111111
+This number is greater than INT_MAX! Delete!
+-1       
+This number is less than INT_MAX! Remain -1!
+17
+This number is less than INT_MAX! Remain 17!
+End of programm...
+vitos@vitos-pop:~/Studying/mai/labs/l11$ 

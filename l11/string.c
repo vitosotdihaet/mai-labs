@@ -26,14 +26,6 @@ int init_string(string* s) {
     return result;
 }
 
-// Initialize string with set capacity
-int init_string_with_set_capacity(string* s, uint64_t capacity) {
-    s->memory_size = capacity;
-    s->values = new(char, capacity);
-    s->last_element = 0;
-    return SUCCESS;
-}
-
 // Sets all struct's parameters to zero
 int free_string(string* s) {
     s->memory_size = INIT_CAPACITY;
@@ -61,37 +53,6 @@ int add_char(string* s, char value) {
     s->values[s->last_element] = value;
     s->last_element++;
     return result;
-}
-
-// Copies s2 to s1 (taking minimal memory size) -> s1='aboba', s2='bobr' -> s1='bobr '
-int copy_string(string* s1, string s2) {
-    int result = UNDEFINED;
-    uint64_t minimal = min(s1->last_element, s2.last_element);
-    for (uint64_t i = 0; i < s1->last_element; ++i) {
-        if (i < minimal) {
-            s1->values[i] = s2.values[i];
-        } else {
-            s1->values[i] = ' ';
-        }
-    }
-    s1->last_element = minimal;
-    return result;
-}
-
-// Pushes whole s2 to s1
-int push_string(string* s1, string s2) {
-    int result = UNDEFINED;
-    for (uint64_t i = 0; i < s2.last_element; ++i) {
-        result = add_char(s1, s2.values[i]);
-        if (result != SUCCESS) { return result; }
-    }
-    return SUCCESS;
-}
-
-// Fully changes parameters of s1 to s2
-int set_string(string* s1, string s2) {
-    *s1 = s2;
-    return SUCCESS;
 }
 
 // Reads string char by char returning 1 if EOF
