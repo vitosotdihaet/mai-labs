@@ -1,41 +1,37 @@
 /* Лабораторная работа №12 вариант №30    */
 /* Студент гр. М8О-103Б-22 Клименко В. М. */
 #include <stdio.h>
+#include "string.h"
 
-#define ENOUGH ((CHAR_BIT * sizeof(int) - 1) / 3 + 2);
-
-short is_split(char c) {
-    return (c == ' ' || c == ',' || c == '\n' || c == '\t');
-}
-
-unsigned long long change_number(unsigned long long a) {
-    unsigned long long answ  = 0;
-    char str[ENOUGH(a)];
+char solve(string* s) {
+    char t1, t2;
+    strrev(s->values);
+    for (int i = 0; i < s->last_element - s->last_element % 2; i += 2) {
+        t1 = s->values[i];
+        t2 = s->values[i + 1];
+        if (t2 == '-') continue;
+        if (t1 - '0' > t2 - '0') {
+            s->values[i] = t2;
+            s->values[i + 1] = t1;
+        } 
+    }
+    strrev(s->values);
 }
 
 int main() {
-    unsigned long long number = 0;
-    int last_a = 0;
-    char c;
+    int END = 0;
+    string inp;
+
+    init_string(&inp);
 
     while (1) {
-        c = getchar();
-        if (c == EOF) { break; }
-        switch (last_a) {
-            case 0:
-                if (is_split(c)) {
-                    last_a = -1;
-                } else {
-                    last_a = 1;
-                    number = number * 10 + (int) (c - '0');
-                }
-                break;
-            case -1:
-                printf("%lld\n", change_num(number));
-                number = 0;
-                break;
-        }
+        init_string(&inp);
+        END = read_string(&inp);
+        if (END) break;
+        solve(&inp);
+        printf("%s\n", inp.values);
     }
 
+    printf("End of programm...\n");
     return 0;
 }
