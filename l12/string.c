@@ -35,6 +35,21 @@ int string_resize(string* s, uint64_t capacity) {
     return SUCCESS;
 }
 
+// Copies s2 to s1 (taking minimal memory size): s1='aboba', s2='bobr' -> s1='bobr '
+int copy_string(string* s1, string s2) {
+    int result = UNDEFINED;
+    uint64_t minimal = min(s1->last_element, s2.last_element);
+    for (uint64_t i = 0; i < s1->last_element; ++i) {
+        if (i < minimal) {
+            s1->values[i] = s2.values[i];
+        } else {
+            s1->values[i] = ' ';
+        }
+    }
+    s1->last_element = minimal;
+    return result;
+}
+
 // Adds a char to string, adding more memory if needed 
 int add_char(string* s, char value) {
     int result = UNDEFINED;
@@ -66,4 +81,16 @@ int read_string(string* s) {
     }
 
     return end;
+}
+
+int reverse_string(string* s) {
+    int result = UNDEFINED;
+    string s1;
+    result = init_string(&s1);
+    result = copy_string(&s1, *s);
+    for (uint64_t i = 0; i < s->last_element; ++i) {
+        add_char(&s1, s->values[s->last_element - 1 - i]);
+    }
+    *s = s1;
+    return result;
 }
