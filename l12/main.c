@@ -11,7 +11,7 @@ void solve(string* s) {
         t1 = s->values[i];
         t2 = s->values[i + 1];
         if (t2 == '-') continue;
-        if (t1 - '0' > t2 - '0') {
+        if (t1 - '0' < t2 - '0') {
             s->values[i] = t2;
             s->values[i + 1] = t1;
         } 
