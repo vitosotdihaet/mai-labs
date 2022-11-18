@@ -27,6 +27,6 @@ int string_resize(string* s, uint64_t capacity);
 int add_char(string* s, char value);
 
 // Reads string char by char returning 1 if EOF
-int read_string(string* s);
+int read_string(string* s, int* t, int* n, char* lc);
 
 #endif

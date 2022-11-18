@@ -56,13 +56,20 @@ int add_char(string* s, char value) {
 }
 
 // Reads string char by char returning 1 if EOF
-int read_string(string* s) {
+int read_string(string* s, int* t, int* n, char* lc) {
     char c = ' ';
+    *t = 0;
+    *n = 0;
+    *lc = ' ';
     int end = 0;
 
     while (1) {
         c = getchar();
+        if (c == '\n') *n = 1;
+        // if (c == ' ' || c == ',' || c == '\t') printf("%c", c);
+        if ((c < '0' || c > '9') && c != '-' && !(c == ' ' || c == ',' || c == '\t' || c == '\n')) *t = 1;
         if (c == ' ' || c == ',' || c == '\t' || c == '\n') {
+            if (c != '\n') *lc = c;
             break;
         } else if ((int) c == EOF) {
             end = 1;
