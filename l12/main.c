@@ -25,7 +25,6 @@ long long solve(long long n) {
     for (int i = 0; i < l - 1; i += 2) {
         n1 = n / mpow(10, i) % 10;
         n2 = n / mpow(10, i + 1) % 10;
-        printf("i = %d:\nn1 = %d, n2 = %d\n", i, n1, n2);
         if (n1 < n2) {
             n -= n1 * mpow(10, i);
             n -= n2 * mpow(10, i + 1);
