@@ -1,205 +1,82 @@
 vitos@vitos-pop:~/Studying/mai/labs/l12$ cat makefile 
 all:
-	gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
-	./mainvitos@vitos-pop:~/Studying/mai/labs/l12$ cat string.c
-#include "string.h"
-
-//? Maybe deprecated, but those are for error handling
-#define UNDEFINED 0
-#define SUCCESS 1
-#define ERROR -1
-
-// How big initial memory is
-const uint64_t INIT_CAPACITY = 2;
-// How big relative to previous allocated memory new memory should be
-const uint64_t EXTENDED_CAPACITY = 2;
-
-// Memory-related macros 
-#define new(a, n) (a*)calloc(n, sizeof(a) * n)
-#define reallocate(ptr, a, n) (a*)realloc(ptr, sizeof(a) * n)
-
-#define max(a, b) (a > b ? a : b)
-#define min(a, b) (a < b ? a : b)
-
-// Initialize string with default capacity
-int init_string(string* s) {
-    int result = UNDEFINED;
-    s->memory_size = INIT_CAPACITY;
-    s->values = new(char, INIT_CAPACITY);
-    s->last_element = 0;
-    s->values[0] = '\0';
-    return result;
-}
-
-// Adds memory
-int string_resize(string* s, uint64_t capacity) {
-    uint64_t new_capacity = s->memory_size * capacity;
-    s->memory_size = new_capacity;
-    s->values = reallocate(s->values, char, new_capacity);
-    return SUCCESS;
-}
-
-// Copies s2 to s1 (taking minimal memory size): s1='aboba', s2='bobr' -> s1='bobr '
-int copy_string(string* s1, string s2) {
-    int result = UNDEFINED;
-    uint64_t minimal = min(s1->last_element, s2.last_element);
-    for (uint64_t i = 0; i < s1->last_element; ++i) {
-        if (i < minimal) {
-            s1->values[i] = s2.values[i];
-        } else {
-            s1->values[i] = ' ';
-        }
-    }
-    s1->last_element = minimal;
-    return result;
-}
-
-// Adds a char to string, adding more memory if needed 
-int add_char(string* s, char value) {
-    int result = UNDEFINED;
-    if (s->last_element < s->memory_size + 1) {
-        result = SUCCESS;
-    } else {
-        result = string_resize(s, EXTENDED_CAPACITY);
-    }
-    s->values[s->last_element] = value;
-    s->values[s->last_element + 1] = '\0';
-    s->last_element++;
-    return result;
-}
-
-// Reads string char by char returning 1 if EOF
-int read_string(string* s) {
-    char c = ' ';
-    int end = 0;
-
-    while (1) {
-        c = getchar();
-        if (c == ' ' || c == ',' || c == '\t' || c == '\n') {
-            break;
-        } else if ((int) c == EOF) {
-            end = 1;
-            break;
-        }
-        add_char(s, c);
-    }
-
-    return end;
-}
-
-int reverse_string(string* s) {
-    int result = UNDEFINED;
-    string s1;
-    result = init_string(&s1);
-    result = copy_string(&s1, *s);
-    for (uint64_t i = 0; i < s->last_element; ++i) {
-        add_char(&s1, s->values[s->last_element - 1 - i]);
-    }
-    *s = s1;
-    return result;
-}
-vitos@vitos-pop:~/Studying/mai/labs/l12$ cat string.h
-#ifndef STRING_H
-
-#define STRING_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
-
-typedef struct string {
-    char *values;
-    uint64_t last_element;
-    uint64_t memory_size;
-} string;
-
-
-// Initialize string with default capacity
-int init_string(string* s);
-
-// Adds memory
-int string_resize(string* s, uint64_t capacity);
-
-// Copies s2 to s1 (taking minimal memory size) -> s1='aboba', s2='bobr' -> s1='bobr '
-int copy_string(string* s1, string s2);
-
-// Adds a char to string, adding more memory if needed 
-int add_char(string* s, char value);
-
-// Reads string char by char returning 1 if EOF
-int read_string(string* s);
-
-int reverse_string(string* s);
-
-#endifvitos@vitos-pop:~/Studying/mai/labs/l12$ cat main.c
+	gcc -std=c99 -g -Wall -Wextra -o main main.c -lm
+	./mainvitos@vitos-pop:~/Studying/mai/labs/l12$ cat main.c
 /* Лабораторная работа №12 вариант №30    */
 /* Студент гр. М8О-103Б-22 Клименко В. М. */
 #include <stdio.h>
-#include <string.h>
-#include "string.h"
+#include <stdlib.h>
+#include <math.h>
 
-void solve(string* s) {
-    char t1, t2;
-    reverse_string(s);
-    for (unsigned long i = 0; i < s->last_element - s->last_element % 2; i += 2) {
-        t1 = s->values[i];
-        t2 = s->values[i + 1];
-        if (t2 == '-') continue;
-        if (t1 - '0' > t2 - '0') {
-            s->values[i] = t2;
-            s->values[i + 1] = t1;
-        } 
+unsigned long long mpow(unsigned long long a, unsigned long long n) {
+    unsigned long long exp = 1;
+    for (unsigned long long i = 1; i <= n; ++i) {
+        exp *= a;
     }
-    reverse_string(s);
+    return exp;
+}
+
+long long solve(long long n) {
+    // long long answ = 0;
+    long long l = (long long) log10((double) abs(n)) + 1;
+    int n1, n2;
+    short otr = -1;
+    if (n < 0) {
+        n = -n;
+        otr = 1;
+    }
+
+    for (int i = 0; i < l - 1; i += 2) {
+        n1 = n / mpow(10, i) % 10;
+        n2 = n / mpow(10, i + 1) % 10;
+        if (n1 < n2) {
+            n -= n1 * mpow(10, i);
+            n -= n2 * mpow(10, i + 1);
+            n += n2 * mpow(10, i);
+            n += n1 * mpow(10, i + 1);
+        }
+    }
+
+    return n * -1 * otr;
 }
 
 int main() {
     int END = 0;
-    string inp;
-
-    init_string(&inp);
+    long long inp = 0;
+    long long out = 0;
 
     while (1) {
-        init_string(&inp);
-        END = read_string(&inp);
-        if (END) break;
-        solve(&inp);
-        printf("Number after processing: %s\n", inp.values);
+        END = scanf("%lld", &inp);
+        if (END == -1) break;
+        out = solve(inp);
+        printf("%lld\n", out);
+
     }
 
     printf("End of programm...\n");
     return 0;
 }
 vitos@vitos-pop:~/Studying/mai/labs/l12$ make
-gcc -std=c99 -g -Wall -Wextra -o main main.c string.c
+gcc -std=c99 -g -Wall -Wextra -o main main.c -lm
 ./main
 123
-Number after processing: 132
+123
 132
-Number after processing: 132
-1234
-Number after processing: 2143
--100
-Number after processing: -100
--101
-Number after processing: -110
-90955843
-Number after processing: 90958543
-983724502398475320945872309485723948057754848484875
-Number after processing: 983725420938475329054873290847532948075758484848475
-92837459832744747474747
-Number after processing: 98273549832747474747474
+123
+-11131
+-11113
 0
-Number after processing: 0
+0
 1
-Number after processing: 1
+1
 -1
-Number after processing: -1
--21111111111111111111111111111111111111
-Number after processing: -21111111111111111111111111111111111111
--11111111111111111111111111111111111112
-Number after processing: -11111111111111111111111111111111111121
+-1
+-101010
+-10101
+-1010101
+-1010101
+8777778794
+8777777849
 End of programm...
 vitos@vitos-pop:~/Studying/mai/labs/l12$ 
 
