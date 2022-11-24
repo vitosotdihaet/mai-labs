@@ -21,9 +21,18 @@ long double f_factorial(long double a) {
 }
 
 long double taylor(long double x, unsigned long long n) {
-    long double k = 1, eps = 1, sum = 0;
+    long double k = 1, eps = 0.001, sum = 0;
+    long double curr, next = 1;
     for (unsigned long long i = 0; i <= n; ++i) {
-        sum += pow(-1, i) * (2 * pow(i, 2) + 1) / f_factorial(2 * i) * pow(x, 2 * i);
+        curr = next;
+        next = pow(-1, i + 1) * (2 * pow(i + 1, 2) + 1) / f_factorial(2 * (i + 1)) * pow(x, 2 * (i + 1));
+        if (abs(curr - next) < k * eps) {
+            eps /= 2;
+            if (abs(curr - next) < k * eps) {
+                break;
+            }
+        }
+        sum += curr;
     }
     return sum;
 }
