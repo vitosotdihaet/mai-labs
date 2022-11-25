@@ -18,13 +18,28 @@ unsigned long long int_to_bin(unsigned long long a) {
     return answ;
 }
 
+void print_bin(unsigned long long a) {
+    if (a != 0) {
+        print_bin(a / 2);
+    }
+    printf("%lld", a % 2);
+}
+
 int main() {
     set s;
     init_set(&s);
+    int read = read_set(&s);
 
-    printf("Count of repeated letters: %d\n", read_set(&s));
-    printf("Set as binary: %lld\n", int_to_bin(s.set));
-    printf("Size of set: %d\n", set_size(&s));
+    while (read != EOF) {
+        printf("Count of repeated letters: %d\n", read);
+        printf("Set as binary: ");
+        print_bin(s.set);
+        printf("\n");
+        printf("Size of set: %d\n\n", set_size(&s));
+        init_set(&s);
+        read = read_set(&s);
+    }
+    printf("End of programm...\n");
 
     return 0;
 }
