@@ -48,7 +48,7 @@ long double taylor(long double x, unsigned long long *iters) {
 
 int main() {
     unsigned long long n_t = 0;
-    long double n = 50;
+    long double n = 5;
     long double a = 0.1, b = 0.6, dx = (b - a)/n, x = a - dx;
 
     printf("x         taylor's row  c function   taylor iterations\n");
