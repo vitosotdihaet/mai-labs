@@ -27,10 +27,11 @@ long double mabs(long double a) {
     return a;
 }
 
-long double taylor(long double x, unsigned long long n) {
+long double taylor(long double x, unsigned long long *iters) {
     long double k = 1, eps = 0.00001, sum = 0;
     long double curr, next = 1;
-    for (unsigned long long i = 0; i <= n; ++i) {
+    for (unsigned long long i = 0; i <= 1000; ++i) {
+        *iters = i;
         curr = next;
         next = pow(-1, i + 1) * (2 * pow(i + 1, 2) + 1) / f_factorial(2 * (i + 1)) * pow(x, 2 * (i + 1));
         if (mabs(curr - next) < k * eps) {
@@ -45,7 +46,7 @@ long double taylor(long double x, unsigned long long n) {
 }
 
 int main() {
-    unsigned long long n_t = 100;
+    unsigned long long n_t = 0;
     long double n = 10;
     long double a = 0.1, b = 0.6, dx = (b - a)/n, x = a - dx;
 
@@ -54,7 +55,7 @@ int main() {
     for (int i = 0; i <= n; ++i) {
         x += dx;
         printf("%Lf  ", x);
-        printf("%Lf      ", taylor(x, n_t));
+        printf("%Lf      ", taylor(x, &n_t));
         printf("%Lf     ", (1 - x * x/2) * cos(x) - x/2 * sin(x));
         printf("%lld", n_t);
         printf("\n");
