@@ -20,15 +20,22 @@ long double f_factorial(long double a) {
     return answ;
 }
 
+long double mabs(long double a) {
+    if (a < 0) {
+        return -a;
+    }
+    return a;
+}
+
 long double taylor(long double x, unsigned long long n) {
-    long double k = 1, eps = 0.001, sum = 0;
+    long double k = 1, eps = 0.00001, sum = 0;
     long double curr, next = 1;
     for (unsigned long long i = 0; i <= n; ++i) {
         curr = next;
         next = pow(-1, i + 1) * (2 * pow(i + 1, 2) + 1) / f_factorial(2 * (i + 1)) * pow(x, 2 * (i + 1));
-        if (abs(curr - next) < k * eps) {
+        if (mabs(curr - next) < k * eps) {
             eps /= 2;
-            if (abs(curr - next) < k * eps) {
+            if (mabs(curr - next) < k * eps) {
                 break;
             }
         }
@@ -38,7 +45,7 @@ long double taylor(long double x, unsigned long long n) {
 }
 
 int main() {
-    unsigned long long n_t = 10;
+    unsigned long long n_t = 100;
     long double n = 10;
     long double a = 0.1, b = 0.6, dx = (b - a)/n, x = a - dx;
 
