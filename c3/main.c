@@ -4,17 +4,19 @@
 #include <stdio.h>
 #include <math.h>
 
-unsigned long long mpow(unsigned long long a, unsigned long long n) {
-    unsigned long long exp = 1;
-    for (unsigned long long i = 1; i <= n; ++i) {
-        exp *= a;
+long double epsillon() {
+    long double e = 1;
+    long double eps;
+    while(1 < (1 + e)){
+        eps = e;
+        e /= 2;
     }
-    return exp;
+    return eps;
 }
 
-long double f_factorial(long double a) {
-    long double answ = 1;
-    for (long double i = 1; i <= a; ++i) {
+unsigned long long factorial(unsigned long long a) {
+    unsigned long long answ = 1;
+    for (unsigned long long i = 1; i <= a; ++i) {
         answ *= i;
     }
     return answ;
@@ -27,19 +29,19 @@ long double mabs(long double a) {
     return a;
 }
 
-long double taylor(long double x, unsigned long long *iters) {
-    long double k = 1.5, eps = 1, sum = 0;
-    long double curr, next = 1, temp;
+long double f(long double x) {
+    return (1 - x * x/2) * cos(x) - x/2 * sin(x);
+}
+
+long double taylor(long double x, unsigned long long *iters, long double eps, long double k) {
+    long double sum = 0, curr, next = 1, temp;
     for (unsigned long long i = 0; i <= 1000; ++i) {
         *iters = i;
         curr = next;
-        next = pow(-1, i + 1) * (2 * pow(i + 1, 2) + 1) / f_factorial(2 * (i + 1)) * pow(x, 2 * (i + 1));
+        next = pow(-1, i + 1) * (2 * pow(i + 1, 2) + 1) / (long double) factorial(2 * (i + 1)) * pow(x, 2 * (i + 1));
         temp = mabs(curr - next);
         if (temp < k * eps) {
-            eps = temp / k;
-            if (temp < k * eps) {
-                break;
-            }
+            break;
         }
         sum += curr;
     }
@@ -47,20 +49,25 @@ long double taylor(long double x, unsigned long long *iters) {
 }
 
 int main() {
-    unsigned long long n_t = 0;
-    long double n = 5;
-    long double a = 0.1, b = 0.6, dx = (b - a)/n, x = a - dx;
+    unsigned long long n_t, n;
+    long double eps = epsillon(), k = 1.5, a = 0.1, b = 0.6, x = a;
 
-    printf("x         taylor's row  c function   taylor iterations\n");
+    printf("\nEnter number of x's iterations: ");
+    scanf("%lld", &n);
 
-    for (int i = 0; i <= n; ++i) {
-        x += dx;
-        printf("%Lf  ", x);
-        printf("%Lf      ", taylor(x, &n_t));
-        printf("%Lf     ", (1 - x * x/2) * cos(x) - x/2 * sin(x));
-        printf("%lld", n_t);
+    long double dx = (b - a) / (long double) n;
+
+    printf("\n|x       |taylor's row           |native functions       |itrs\n");
+
+    for (; x <= b; x += dx) {
+        printf("|%.5Lf ", x);
+        printf("|%.20Lf ", taylor(x, &n_t, eps, k));
+        printf("|%.20Lf ", f(x));
+        printf("|%3lld ", n_t);
         printf("\n");
     }
+    printf("\nMachine-calculated epsillon = %.30Lf\n", eps);
+    printf("Coefficient = %Lf\n\n", k);
 
     return 0;
 }
