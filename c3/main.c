@@ -59,7 +59,7 @@ int main() {
 
     printf("\n|x       |taylor's row           |native functions       |itrs\n");
 
-    for (; x <= b; x += dx) {
+    for (; x <= b + eps; x += dx) {
         printf("|%.5Lf ", x);
         printf("|%.20Lf ", taylor(x, &n_t, eps, k));
         printf("|%.20Lf ", f(x));
