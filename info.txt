@@ -12,6 +12,9 @@ variants (labs):
 11: 29
 12: 30
 13: 13
+14: 13
+15: 13
 
 varinats (coursework):
 3:  11
+4:  11, 12
