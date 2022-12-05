@@ -52,18 +52,19 @@ int main() {
     unsigned long long n_t, n;
     long double eps = epsillon(), k = 1.5, a = 0.1, b = 0.6, x = a;
 
+    printf("\nZadannaya functsiya: f(x) = (1 - x^2/2) * cos x - x/2 * sin x");
     printf("\nEnter number of x's iterations: ");
     scanf("%lld", &n);
 
     long double dx = (b - a) / (long double) n;
 
-    printf("\n|x       |taylor's row           |native functions       |itrs\n");
+    printf("\n|x       |chast. summa ryada dlya f |znachenie functsii f(x)   |chislo iteratsiy\n");
 
     for (; x <= b + eps; x += dx) {
         printf("|%.5Lf ", x);
-        printf("|%.20Lf ", taylor(x, &n_t, eps, k));
-        printf("|%.20Lf ", f(x));
-        printf("|%3lld ", n_t);
+        printf("|%.23Lf ", taylor(x, &n_t, eps, k));
+        printf("|%.23Lf ", f(x));
+        printf("|%2lld ", n_t);
         printf("\n");
     }
     printf("\nMachine-calculated epsillon = %.30Lf\n", eps);
