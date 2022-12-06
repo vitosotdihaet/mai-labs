@@ -18,7 +18,7 @@ long double fd1(long double x) {
     return powl(M_E, x) + 1/(sqrtl(1 + powl(M_E, 2*x)));
 }
 
-long double fn1(long double x) {
+long double fi1(long double x) {
     return logl(2 - sqrtl(1 + powl(M_E, 2*x)));
 }
 
@@ -31,7 +31,7 @@ long double fd2(long double x) {
     return 1/x - 1;
 }
 
-long double fn2(long double x) {
+long double fi2(long double x) {
     return logl(x) + 1.8;
 }
 
@@ -51,12 +51,12 @@ long double dichotomy(long double a, long double b, long double e, long double (
 }
 
 
-long double iterations(long double x, long double e, long double (*f) (long double), long double (*fn) (long double)) {
-    long double fx = fn(x);
+long double iterations(long double x, long double e, long double (*f) (long double), long double (*fi) (long double)) {
+    long double fx = fi(x);
     if (mabs(x - fx) < e) {
         return x;
     }
-    return iterations(fx, e, f, fn);
+    return iterations(fx, e, f, fi);
 }
 
 long double newton(long double x, long double e, long double (*f) (long double), long double (*fd) (long double)) {
@@ -85,17 +85,18 @@ int main() {
     long double a2 = 2., b2 = 3.;
 
     long double d1 = dichotomy(a1, b1, k * eps, f1), d2 = dichotomy(a2, b2, k * eps, f2);
-    long double i1 = iterations((a1 + b1)/2., k * eps * 10000., f1, fn1), i2 = iterations((a2 + b2)/2., k * eps, f2, fn2);
-    long double n1 = newton((a1 + b1)/2., k * eps, f1, fd1), n2 = newton((a2 + b2)/2., k * eps * 10., f2, fd2);
+    long double i1 = iterations((a1 + b1)/2., k * eps, f1, fi1), i2 = iterations((a2 + b2)/2., k * eps, f2, fi2);
+    long double n1 = newton((a1 + b1)/2., k * eps, f1, fd1), n2 = newton((a2 + b2)/2., k * eps, f2, fd2);
 
-    printf("___________________________________________________________________________________________\n");
-    printf("Function:                  | Method:    | Root:                   | Function at found x:   \n");
-    printf("e^x + sqrt(1 + e^(2x)) - 2 | Dichotomy  | %.20Lf | %.21Lf\n", d1, f1(d1));
-    printf("e^x + sqrt(1 + e^(2x)) - 2 | Iterations | %.20Lf | %.21Lf\n", i1, f1(d1));
-    printf("e^x + sqrt(1 + e^(2x)) - 2 | Newton     | %.20Lf | %.21Lf\n", n1, f1(d1));
-    printf("lnx - x + 1.8              | Dichotomy  | %.21Lf | %.21Lf\n", d2, f2(d2));
-    printf("lnx - x + 1.8              | Iterations | %.21Lf | %.21Lf\n", i2, f2(d2));
-    printf("lnx - x + 1.8              | Newton     | %.21Lf | %.21Lf\n", n2, f2(d2));
+    printf("\n____________________________________________________________________________________\n");
+    printf("Function:            | Method:    | Root:                   | Function at found x:  \n");
+    printf("e^x+sqrt(1+e^(2x))-2 | Dichotomy  | %.20Lf | %.20Lf\n", d1, f1(d1));
+    printf("e^x+sqrt(1+e^(2x))-2 | Iterations | %.20Lf | %.20Lf\n", i1, f1(d1));
+    printf("e^x+sqrt(1+e^(2x))-2 | Newton     | %.20Lf | %.20Lf\n", n1, f1(d1));
+    printf("lnx - x + 1.8        | Dichotomy  | %.21Lf | %.20Lf\n", d2, f2(d2));
+    printf("lnx - x + 1.8        | Iterations | %.21Lf | %.20Lf\n", i2, f2(d2));
+    printf("lnx - x + 1.8        | Newton     | %.21Lf | %.20Lf\n", n2, f2(d2));
 
+    printf("\nMachine-calculated epsilon: %.54Lf\n", eps);
     return 0;
 }
