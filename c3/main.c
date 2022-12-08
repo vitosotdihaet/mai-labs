@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
-long double epsillon() {
+long double epsilon() {
     long double e = 1;
     long double eps;
     while(1 < (1 + e)){
