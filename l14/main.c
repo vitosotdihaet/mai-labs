@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void printmd(long long** m, long long n) {
     for (long long i = 0; i < n; ++i) {
@@ -10,11 +11,41 @@ void printmd(long long** m, long long n) {
 }
 
 void printm(long long** m, long long n) {
-    for (long long i = 0; i < n; ++i) {
-        for (long long j = 0; j < n; ++j) {
-            printf("%lld ", m[i][j]);
+    long long j1 = n - 1, j2 = 1;
+
+    while (1) {
+        if (j1 > -1) {
+            long long  i = 0, j = j1;
+            for (; j > -1; --j) {
+                printf("%lld ", m[i][j]);
+                ++i;
+            }
+            i -= 2;
+            ++j;
+            for (; i > -1; --i) {
+                printf("%lld ", m[i][j]);
+                ++j;
+            }
         }
-        printf("\n");
+        if (j2 < n) {
+            long long  i = n - 1, j = j2;
+            for (; j < n; ++j) {
+                printf("%lld ", m[i][j]);
+                --i;
+            }
+            i += 2;
+            --j;
+            for (; i < n; ++i) {
+                printf("%lld ", m[i][j]);
+                --j;
+            }
+        }
+        j1 -= 2;
+        j2 += 2;
+        if (j1 < 0 && j2 > n - 1) {
+            printf("\n");
+            break;
+        }
     }
 }
 
@@ -33,7 +64,9 @@ int main() {
         }
     }
 
+    // printf("\n");
     // printmd(m, n);
+    printf("\n");
     printm(m, n);
 
     return 0;
