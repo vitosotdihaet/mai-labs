@@ -51,23 +51,25 @@ void printm(long long** m, long long n) {
 
 int main() {
     long long n;
-    scanf("%lld", &n);
 
-    long long** m = (long long**) malloc(n * sizeof(long long*));
-    for (long long i = 0; i < n; ++i) {
-        m[i] = (long long*) malloc(sizeof(long long) * n);
-    }
-
-    for (long long i = 0; i < n; ++i) {
-        for (long long j = 0; j < n; ++j) {
-            scanf("%lld", &m[i][j]);
+    while (scanf("%lld", &n) != EOF){   
+        long long** m = (long long**) malloc(n * sizeof(long long*));
+        for (long long i = 0; i < n; ++i) {
+            m[i] = (long long*) malloc(sizeof(long long) * n);
         }
+
+        for (long long i = 0; i < n; ++i) {
+            for (long long j = 0; j < n; ++j) {
+                scanf("%lld", &m[i][j]);
+            }
+        }
+
+        printf("\n");
+        printm(m, n);
+        printf("\n");
     }
 
-    // printf("\n");
-    // printmd(m, n);
-    printf("\n");
-    printm(m, n);
+    printf("End of program.\n");
 
     return 0;
 }
