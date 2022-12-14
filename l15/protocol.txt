@@ -1,0 +1,112 @@
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l15$ cat makefile
+CC = gcc
+CFLAGS = -Wall -Wextra
+
+main:
+        $(CC) $(CFLAGS) -o main.out main.c
+        ./main.out
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l15$ cat main.c
+#include <stdio.h>
+#include <stdlib.h>
+
+#define max(a, b) (a > b) ? (a) : (b)
+
+void printmd(long long** m, long long n) {
+    for (long long i = 0; i < n; ++i) {
+        for (long long j = 0; j < n; ++j) {
+            printf("%lld ", m[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void foo(long long** m, long long n, long long a) {
+    for (long long i = 0; i < n; ++i) {
+        for (long long j = 0; j < n; ++j) {
+            if (i < j + 1) {
+                m[i][j] *= a;
+            }
+        }
+    }
+    printmd(m, n);
+}
+
+int main() {
+    long long n, maxi;
+
+    while (scanf("%lld", &n) != EOF) {
+        long long** m = (long long**) malloc(n * sizeof(long long*));
+        maxi = 0;
+        for (long long i = 0; i < n; ++i) {
+            m[i] = (long long*) malloc(sizeof(long long) * n);
+        }
+
+        for (long long i = 0; i < n; ++i) {
+            for (long long j = 0; j < n; ++j) {
+                scanf("%lld", &m[i][j]);
+                if (j < i + 1) {
+                    maxi = max(m[i][j], maxi);
+                }
+            }
+        }
+
+        printf("\n");
+        foo(m, n, maxi);
+        printf("\n");
+    }
+
+    printf("End of program.\n");
+
+    return 0;
+}
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l15$ make
+gcc -Wall -Wextra -o main.out main.c
+./main.out
+2
+1 2
+3 4
+
+4 8
+3 16
+
+3
+1 1 1
+1 1 1
+1 1 3
+
+3 3 3
+1 3 3
+1 1 9
+
+7
+1 1 1 1 1 1 2
+2 1 1 1 1 1 3
+5 1 6 1 1 1 1
+1 1 1 1 1 1 1
+1 1 1 1 1 1 1
+1 1 7 1 1 1 1
+1 1 1 1 1 1 1
+
+7 7 7 7 7 7 14
+2 7 7 7 7 7 21
+5 1 42 7 7 7 7
+1 1 1 7 7 7 7
+1 1 1 1 7 7 7
+1 1 7 1 1 7 7
+1 1 1 1 1 1 7
+
+5
+1 2 3
+4 5
+6 7 8 9 1
+2 3 4 5 6
+7 8 9 1 2
+3 4 5 6 7
+
+9 18 27 36 45
+6 63 72 81 9
+2 3 36 45 54
+7 8 9 9 18
+3 4 5 6 63
+
+End of program.
