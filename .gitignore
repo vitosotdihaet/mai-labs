@@ -1,3 +1,7 @@
 *.exe
 *.out
 */main
+
+# tex stuff
+*.aux
+*.log
