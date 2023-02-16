@@ -1,0 +1,355 @@
+vitos@vitos-pop:~$ cd Studying/
+vitos@vitos-pop:~/Studying$ mkdir temp
+vitos@vitos-pop:~/Studying$ cd temp
+vitos@vitos-pop:~/Studying/temp$ man cmp
+vitos@vitos-pop:~/Studying/temp$ touch a.txt
+vitos@vitos-pop:~/Studying/temp$ cat > b.txt
+hello
+this is b file
+vitos@vitos-pop:~/Studying/temp$ wc b.txt
+ 2  5 21 b.txt
+vitos@vitos-pop:~/Studying/temp$ man dd
+vitos@vitos-pop:~/Studying/temp$ dd if=b.txt conv=ibm
+�����%����@��@�@����%0+1 records in
+0+1 records out
+21 bytes copied, 8.6593e-05 s, 243 kB/s
+vitos@vitos-pop:~/Studying/temp$ dd if=b.txt conv=ebcdic
+�����%����@��@�@����%0+1 records in
+0+1 records out
+21 bytes copied, 7.7179e-05 s, 272 kB/s
+vitos@vitos-pop:~/Studying/temp$ dd if=b.txt conv=ucase
+HELLO
+THIS IS B FILE
+0+1 records in
+0+1 records out
+21 bytes copied, 8.1945e-05 s, 256 kB/s
+vitos@vitos-pop:~/Studying/temp$ dd if=b.txt conv=ucase of=c.txt
+0+1 records in
+0+1 records out
+21 bytes copied, 0.000442972 s, 47.4 kB/s
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt  c.txt
+vitos@vitos-pop:~/Studying/temp$ cat c.txt
+HELLO
+THIS IS B FILE
+vitos@vitos-pop:~/Studying/temp$ cat > a.txt
+HELLo
+vitos@vitos-pop:~/Studying/temp$ diff a.txt c.txt
+1c1,2
+< HELLo
+---
+> HELLO
+> THIS IS B FILE
+vitos@vitos-pop:~/Studying/temp$ man diff
+vitos@vitos-pop:~/Studying/temp$ comm a.txt c.txt
+HELLo
+	HELLO
+	THIS IS B FILE
+vitos@vitos-pop:~/Studying/temp$ cmp a.txt c.txt
+a.txt c.txt differ: byte 5, line 1
+vitos@vitos-pop:~/Studying/temp$ grep "HE" *
+a.txt:HELLo
+c.txt:HELLO
+vitos@vitos-pop:~/Studying/temp$ grep "hello" *
+b.txt:hello
+vitos@vitos-pop:~/Studying/temp$ cat > a.txt
+HELLO
+vitos@vitos-pop:~/Studying/temp$ join -t " " -j 1 a.txt c.txt
+HELLO
+vitos@vitos-pop:~/Studying/temp$ cat > a.txt
+1
+3
+4
+8
+13
+vitos@vitos-pop:~/Studying/temp$ cat > b.txt
+2
+4
+8
+7
+6
+vitos@vitos-pop:~/Studying/temp$ join -t " " -j 1 a.txt b.txt
+4
+join: a.txt:5: is not sorted: 13
+join: b.txt:4: is not sorted: 7
+8
+join: input is not in sorted order
+vitos@vitos-pop:~/Studying/temp$ join -t " " -j 1 <(sort a.txt) <(sort b.txt)
+4
+8
+vitos@vitos-pop:~/Studying/temp$ cat <(sort a.txt)
+1
+13
+3
+4
+8
+vitos@vitos-pop:~/Studying/temp$ tail a.txt -n 2
+8
+13
+vitos@vitos-pop:~/Studying/temp$ tail b.txt -n 2
+7
+6
+vitos@vitos-pop:~/Studying/temp$ tail c.txt -n 2
+HELLO
+THIS IS B FILE
+vitos@vitos-pop:~/Studying/temp$ tail c.txt -n 3
+HELLO
+THIS IS B FILE
+vitos@vitos-pop:~/Studying/temp$ tee -a c.txt
+actually it is file c.txt
+actually it is file c.txt
+vitos@vitos-pop:~/Studying/temp$ tail c.txt -n 3
+HELLO
+THIS IS B FILE
+actually it is file c.txt
+vitos@vitos-pop:~/Studying/temp$ tr -d delete
+this example deletes characters 
+his xamp s characrs 
+damn
+amn
+vitos@vitos-pop:~/Studying/temp$ man tr
+vitos@vitos-pop:~/Studying/temp$ tr -t word snap
+snappy
+snappy
+wordy
+snapy
+this actually says word
+this actually says snap
+vitos@vitos-pop:~/Studying/temp$ man uniq
+vitos@vitos-pop:~/Studying/temp$ tr -t word snap > a.txt
+snap
+word
+goodbye sir
+bullshit
+vitos@vitos-pop:~/Studying/temp$ uniq -c
+vitos@vitos-pop:~/Studying/temp$ uniq -c a.txt
+      2 snap
+      1 gnnpbye sia
+      1 bullshit
+vitos@vitos-pop:~/Studying/temp$ uniq -cd a.txt
+      2 snap
+vitos@vitos-pop:~/Studying/temp$ uniq -u a.txt
+gnnpbye sia
+bullshit
+vitos@vitos-pop:~/Studying/temp$ od -a a.txt
+0000000   s   n   a   p  nl   s   n   a   p  nl   g   n   n   p   b   y
+0000020   e  sp   s   i   a  nl   b   u   l   l   s   h   i   t  nl
+0000037
+vitos@vitos-pop:~/Studying/temp$ od -i a.txt
+0000000  1885433459  1634628362  1852246640  2036494446
+0000020  1769152613  1969359457  1752394860      685161
+0000037
+vitos@vitos-pop:~/Studying/temp$ od -i a.txt | cut -f 1-2 -d ' '
+0000000 
+0000020 
+0000037
+vitos@vitos-pop:~/Studying/temp$ od -i a.txt | cut -f 1-4 -d ' ' -s
+0000000  1885433459 
+0000020  1769152613 
+vitos@vitos-pop:~/Studying/temp$ man sum
+vitos@vitos-pop:~/Studying/temp$ sum a.txt
+18344     1
+vitos@vitos-pop:~/Studying/temp$ sum c.txt
+08905     1
+vitos@vitos-pop:~/Studying/temp$ sum b.txt
+29489     1
+vitos@vitos-pop:~/Studying/temp$ sum b.txt -s
+317 1 b.txt
+vitos@vitos-pop:~/Studying/temp$ sum -s a.txt
+2883 1 a.txt
+vitos@vitos-pop:~/Studying/temp$ mc
+
+vitos@vitos-pop:~/Studying/temp$ ls -l
+total 24K
+drwxrwxr-x 3 vitos vitos 4.0K Feb 15 18:16 ./
+drwxrwxr-x 5 vitos vitos 4.0K Feb 15 17:18 ../
+-rw-rw-r-- 1 vitos vitos   31 Feb 15 18:09 a.txt
+-rw-rw-r-- 1 vitos vitos   10 Feb 15 17:58 b.txt
+-rw-rw-r-- 1 vitos vitos   47 Feb 15 18:01 c.txt
+drwxrwxr-x 2 vitos vitos 4.0K Feb 15 18:16 newdir/
+vitos@vitos-pop:~/Studying/temp$ tar -cvf mytararchive.tar a.txt b.txt c.txt 
+a.txt
+b.txt
+c.txt
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt  c.txt  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ rm a.txt b.txt
+rm: remove regular file 'a.txt'? 
+rm: remove regular file 'b.txt'? 
+vitos@vitos-pop:~/Studying/temp$ tar -xf mytararchive.tar 
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt  c.txt  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ man gzip
+vitos@vitos-pop:~/Studying/temp$ gzip a.txt b.txt c.txt
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt.gz  b.txt.gz  c.txt.gz  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ cat a.txt.gz 
+���ca.txt+�K,�*�yyI��
+ř�\I�99��%\E�g�vitos@vitos-pop:~/Studying/temp$ gzip -d a.txt.gz 
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt.gz  c.txt.gz  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ bzip2 b.txt.gz 
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt.gz.bz2  c.txt.gz  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ cat b.txt.gz.bz2 
+���vitos@vitos-pop:~/Studying/temp$ �3V���rvp����w$S�	
+vitos@vitos-pop:~/Studying/temp$ 
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt.gz.bz2  c.txt.gz  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ bzip2 b.txt.gz.bz2
+bzip2: Input file b.txt.gz.bz2 already has .bz2 suffix.
+vitos@vitos-pop:~/Studying/temp$ bzip2 -d b.txt.gz.bz2
+vitos@vitos-pop:~/Studying/temp$ ls
+./  ../  a.txt  b.txt.gz  c.txt.gz  mytararchive.tar  newdir/
+vitos@vitos-pop:~/Studying/temp$ gzip -d b.txt.gz 
+vitos@vitos-pop:~/Studying/temp$ head b.txt -n 1 
+2
+vitos@vitos-pop:~/Studying/temp$ head b.txt -c 1 
+2vitos@vitos-pop:~/Studying/temp$ head b.txt -c 5 
+2
+4
+8vitos@vitos-pop:~/Studying/temp$ ed b.txt
+10
+a
+сейчас добавим этот текст и сломаем кодировку*718)*?!0190%жЭ№;э41
+.
+w b.txt
+120
+vitos@vitos-pop:~/Studying/temp$ cat b.txt 
+2
+4
+8
+7
+6
+сейчас добавим этот текст и сломаем кодировку*718)*?!0190%жЭ№;э41
+vitos@vitos-pop:~/Studying/temp$ iconv b.txt -t ASCII
+2
+4
+8
+7
+6
+iconv: illegal input sequence at position 10
+vitos@vitos-pop:~/Studying/temp$ iconv b.txt -t ASCII -c
+2
+4
+8
+7
+6
+      *718)*?!0190%;41
+vitos@vitos-pop:~/Studying/temp$ mktemp
+/tmp/tmp.KItkfekglW
+vitos@vitos-pop:~/Studying/temp$ ls /tmp
+./
+../
+.font-unix/
+gdm3-config-err-dXxUwW
+.ICE-unix/
+mc-vitos/
+MozillaUpdateLock-4F96D1932A9F858E
+remote-file-71752ccfe2464e99/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-bluetooth.service-UzCZXE/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-chrony.service-RaHsON/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-colord.service-XLeU6G/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-dbus-broker.service-ul5BsH/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-fwupd.service-Zf7cZB/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-ModemManager.service-JDlGTG/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-switcheroo-control.service-HVBi31/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-systemd-logind.service-CGYeOi/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-systemd-resolved.service-YCY1Ef/
+systemd-private-b103e170e0a3426fa87ba5786f6a110a-upower.service-4OM76l/
+Temp-e1d8e299-15ed-449d-8258-829b535b5719/
+.Test-unix/
+tmp.KItkfekglW
+tracker-extract-3-files.1000/
+tracker-extract-3-files.111/
+VSLiveshareLogs/
+.X11-unix/
+.XIM-unix/
+vitos@vitos-pop:~/Studying/temp$ cat > /tmp/tmp.KItkfekglW 
+that's a tmp file
+vitos@vitos-pop:~/Studying/temp$ cat /tmp/tmp.KItkfekglW 
+that's a tmp file
+vitos@vitos-pop:~/Studying/temp$ find ./*.txt
+./a.txt
+./b.txt
+vitos@vitos-pop:~/Studying/temp$ find ./*/*file.txt
+./newdir/newfile.txt
+./newdir/somefile.txt
+vitos@vitos-pop:~/Studying/temp$ find ./*a*
+./a.txt
+./mytararchive.tar
+vitos@vitos-pop:~/Studying/temp$ du mytararchive.tar 
+12	mytararchive.tar
+vitos@vitos-pop:~/Studying/temp$ man du
+vitos@vitos-pop:~/Studying/temp$ du -ab
+31	./a.txt
+120	./b.txt
+10240	./mytararchive.tar
+71	./c.txt.gz
+0	./newdir/somefile.txt
+0	./newdir/newfile.txt
+4096	./newdir
+18654	.
+vitos@vitos-pop:~/Studying/temp$ file mytararchive.tar 
+mytararchive.tar: POSIX tar archive (GNU)
+vitos@vitos-pop:~/Studying/temp$ sudo df -a
+[sudo] password for vitos: 
+Filesystem     1K-blocks     Used Available Use% Mounted on
+sysfs                  0        0         0    - /sys
+proc                   0        0         0    - /proc
+udev             8070112        0   8070112   0% /dev
+devpts                 0        0         0    - /dev/pts
+tmpfs            1626744     2032   1624712   1% /run
+/dev/sda8      198549892 46343864 142047440  25% /
+securityfs             0        0         0    - /sys/kernel/security
+tmpfs            8133716    15096   8118620   1% /dev/shm
+tmpfs               5120        0      5120   0% /run/lock
+cgroup2                0        0         0    - /sys/fs/cgroup
+pstore                 0        0         0    - /sys/fs/pstore
+efivarfs               0        0         0    - /sys/firmware/efi/efivars
+bpf                    0        0         0    - /sys/fs/bpf
+systemd-1              -        -         -    - /proc/sys/fs/binfmt_misc
+mqueue                 0        0         0    - /dev/mqueue
+debugfs                0        0         0    - /sys/kernel/debug
+tracefs                0        0         0    - /sys/kernel/tracing
+hugetlbfs              0        0         0    - /dev/hugepages
+fusectl                0        0         0    - /sys/fs/fuse/connections
+configfs               0        0         0    - /sys/kernel/config
+ramfs                  0        0         0    - /run/credentials/systemd-sysusers.service
+/dev/sda6         510952   262048    248904  52% /boot/efi
+tmpfs            1626740      200   1626540   1% /run/user/1000
+gvfsd-fuse             0        0         0    - /run/user/1000/gvfs
+portal                 0        0         0    - /run/user/1000/doc
+binfmt_misc            0        0         0    - /proc/sys/fs/binfmt_misc
+vitos@vitos-pop:~/Studying/temp$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           1.6G  2.0M  1.6G   1% /run
+/dev/sda8       190G   45G  136G  25% /
+tmpfs           7.8G   15M  7.8G   1% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda6       499M  256M  244M  52% /boot/efi
+tmpfs           1.6G  200K  1.6G   1% /run/user/1000
+vitos@vitos-pop:~/Studying/temp$ diff -u a.txt b.txt > a.patch
+vitos@vitos-pop:~/Studying/temp$ cat a.patch
+--- a.txt	2023-02-15 18:09:31.000000000 +0300
++++ b.txt	2023-02-15 18:46:02.569260515 +0300
+@@ -1,4 +1,6 @@
+-snap
+-snap
+-gnnpbye sia
+-bullshit
++2
++4
++8
++7
++6
++сейчас добавим этот текст и сломаем кодировку*718)*?!0190%жЭ№;э41
+vitos@vitos-pop:~/Studying/temp$ patch < a.patch
+patching file a.txt
+vitos@vitos-pop:~/Studying/temp$ cat a.txt
+2
+4
+8
+7
+6
+сейчас добавим этот текст и сломаем кодировку*718)*?!0190%жЭ№;э41
