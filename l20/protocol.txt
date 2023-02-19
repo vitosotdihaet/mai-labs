@@ -353,3 +353,336 @@ vitos@vitos-pop:~/Studying/temp$ cat a.txt
 7
 6
 сейчас добавим этот текст и сломаем кодировку*718)*?!0190%жЭ№;э41
+vitos@vitos-pop:~/Studying/temp$ rm -rf *
+removed 'a.txt'
+removed 'b.txt.gz'
+removed 'c.txt.gz'
+removed 'mytararchive.tar'
+removed directory 'newdir'
+vitos@vitos-pop:~/Studying/temp$ touch newfile.txt
+vitos@vitos-pop:~/Studying/temp$ vim newfile.txt 
+vitos@vitos-pop:~/Studying/temp$ cat newfile.txt 
+hello
+this is newfile.txt
+sometext
+aboba
+joe biden wake up
+
+vitos@vitos-pop:~/Studying/temp$ wc -m newfile.txt 
+60 newfile.txt
+vitos@vitos-pop:~/Studying/temp$ wc -c newfile.txt 
+60 newfile.txt
+vitos@vitos-pop:~/Studying/temp$ wc -l newfile.txt 
+6 newfile.txt
+vitos@vitos-pop:~/Studying/temp$ wc -L newfile.txt > maxlength.txt
+vitos@vitos-pop:~/Studying/temp$ cat maxlength.txt 
+19 newfile.txt
+vitos@vitos-pop:~/Studying/temp$ indent ../mai/labs/l14/main.c
+vitos@vitos-pop:~/Studying/temp$ cat ../mai/labs/l14/main.c
+#include <stdio.h>
+#include <stdlib.h>
+
+void
+printmd (long long **m, long long n)
+{
+  for (long long i = 0; i < n; ++i)
+    {
+      for (long long j = 0; j < n; ++j)
+	{
+	  printf ("%lld ", m[i][j]);
+	}
+      printf ("\n");
+    }
+}
+
+void
+printm (long long **m, long long n)
+{
+  long long j1 = n - 1, j2 = 1;
+
+  while (1)
+    {
+      if (j1 > -1)
+	{
+	  long long i = 0, j = j1;
+	  for (; j > -1; --j)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      ++i;
+	    }
+	  i -= 2;
+	  ++j;
+	  for (; i > -1; --i)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      ++j;
+	    }
+	}
+      if (j2 < n)
+	{
+	  long long i = n - 1, j = j2;
+	  for (; j < n; ++j)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      --i;
+	    }
+	  i += 2;
+	  --j;
+	  for (; i < n; ++i)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      --j;
+	    }
+	}
+      j1 -= 2;
+      j2 += 2;
+      if (j1 < 0 && j2 > n - 1)
+	{
+	  printf ("\n");
+	  break;
+	}
+    }
+}
+
+int
+main ()
+{
+  long long n;
+
+  while (scanf ("%lld", &n) != EOF)
+    {
+      long long **m = (long long **) malloc (n * sizeof (long long *));
+      for (long long i = 0; i < n; ++i)
+	{
+	  m[i] = (long long *) malloc (sizeof (long long) * n);
+	}
+
+      for (long long i = 0; i < n; ++i)
+	{
+	  for (long long j = 0; j < n; ++j)
+	    {
+	      scanf ("%lld", &m[i][j]);
+	    }
+	}
+
+      printf ("\n");
+      printm (m, n);
+      printf ("\n");
+    }
+
+  printf ("End of program.\n");
+
+  return 0;
+}
+vitos@vitos-pop:~/Studying/temp$ indent -bad -bap -bbb -bbo -bc ../mai/labs/l14/main.c
+vitos@vitos-pop:~/Studying/temp$ cat ../mai/labs/l14/main.c
+#include <stdio.h>
+#include <stdlib.h>
+
+void
+printmd (long long **m, long long n)
+{
+  for (long long i = 0; i < n; ++i)
+    {
+      for (long long j = 0; j < n; ++j)
+	{
+	  printf ("%lld ", m[i][j]);
+	}
+      printf ("\n");
+    }
+}
+
+void
+printm (long long **m, long long n)
+{
+  long long j1 = n - 1,
+    j2 = 1;
+
+  while (1)
+    {
+      if (j1 > -1)
+	{
+	  long long i = 0,
+	    j = j1;
+
+	  for (; j > -1; --j)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      ++i;
+	    }
+	  i -= 2;
+	  ++j;
+	  for (; i > -1; --i)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      ++j;
+	    }
+	}
+      if (j2 < n)
+	{
+	  long long i = n - 1,
+	    j = j2;
+
+	  for (; j < n; ++j)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      --i;
+	    }
+	  i += 2;
+	  --j;
+	  for (; i < n; ++i)
+	    {
+	      printf ("%lld ", m[i][j]);
+	      --j;
+	    }
+	}
+      j1 -= 2;
+      j2 += 2;
+      if (j1 < 0 && j2 > n - 1)
+	{
+	  printf ("\n");
+	  break;
+	}
+    }
+}
+
+int
+main ()
+{
+  long long n;
+
+  while (scanf ("%lld", &n) != EOF)
+    {
+      long long **m = (long long **) malloc (n * sizeof (long long *));
+
+      for (long long i = 0; i < n; ++i)
+	{
+	  m[i] = (long long *) malloc (sizeof (long long) * n);
+	}
+
+      for (long long i = 0; i < n; ++i)
+	{
+	  for (long long j = 0; j < n; ++j)
+	    {
+	      scanf ("%lld", &m[i][j]);
+	    }
+	}
+
+      printf ("\n");
+      printm (m, n);
+      printf ("\n");
+    }
+
+  printf ("End of program.\n");
+
+  return 0;
+}
+vitos@vitos-pop:~/Studying/temp$ split --bytes=4 newfile.txt 
+vitos@vitos-pop:~/Studying/temp$ ls
+./   maxlength.txt  xaa  xac  xae  xag  xai  xak  xam  xao
+../  newfile.txt    xab  xad  xaf  xah  xaj  xal  xan
+vitos@vitos-pop:~/Studying/temp$ cat xaa
+hellvitos@vitos-pop:~/Studying/temp$ cat xac
+is ivitos@vitos-pop:~/Studying/temp$ cat xah
+metevitos@vitos-pop:~/Studying/temp$ cat xaa xab xac xad xaf xah xaj 
+hello
+this is nee.txmetebobavitos@vitos-pop:~/Studying/temp$ rm -f x*
+removed 'xaa'
+removed 'xab'
+removed 'xac'
+removed 'xad'
+removed 'xae'
+removed 'xaf'
+removed 'xag'
+removed 'xah'
+removed 'xai'
+removed 'xaj'
+removed 'xak'
+removed 'xal'
+removed 'xam'
+removed 'xan'
+removed 'xao'
+vitos@vitos-pop:~/Studying/temp$ grep -r "printmd" ../mai/labs/*/*.c
+../mai/labs/l14/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l15/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l15/main.c:    printmd(m, n);
+vitos@vitos-pop:~/Studying/temp$ grep -r "print*" ../mai/labs/*/*.c
+../mai/labs/c3/main.c:    printf("\nZadannaya functsiya: f(x) = (1 - x^2/2) * cos x - x/2 * sin x");
+../mai/labs/c3/main.c:    printf("\nEnter number of x's iterations: ");
+../mai/labs/c3/main.c:    printf("\n|x       |chast. summa ryada dlya f |znachenie functsii f(x)   |chislo iteratsiy\n");
+../mai/labs/c3/main.c:        printf("|%.5Lf ", x);
+../mai/labs/c3/main.c:        printf("|%.23Lf ", taylor(x, &n_t, eps, k));
+../mai/labs/c3/main.c:        printf("|%.23Lf ", f(x));
+../mai/labs/c3/main.c:        printf("|%2lld ", n_t);
+../mai/labs/c3/main.c:        printf("\n");
+../mai/labs/c3/main.c:    printf("\nMachine-calculated epsillon = %.30Lf\n", eps);
+../mai/labs/c3/main.c:    printf("Coefficient = %Lf\n\n", k);
+../mai/labs/c4/main.c:    printf("\n____________________________________________________________________________________\n");
+../mai/labs/c4/main.c:    printf("Function:            | Method:    | Root:                   | Function at found x:  \n");
+../mai/labs/c4/main.c:    printf("e^x+sqrt(1+e^(2x))-2 | Dichotomy  | %.20Lf | %.20Lf\n", d1, f1(d1));
+../mai/labs/c4/main.c:    printf("e^x+sqrt(1+e^(2x))-2 | Iterations | %.20Lf | %.20Lf\n", i1, f1(d1));
+../mai/labs/c4/main.c:    printf("e^x+sqrt(1+e^(2x))-2 | Newton     | %.20Lf | %.20Lf\n", n1, f1(d1));
+../mai/labs/c4/main.c:    printf("lnx - x + 1.8        | Dichotomy  | %.21Lf | %.20Lf\n", d2, f2(d2));
+../mai/labs/c4/main.c:    printf("lnx - x + 1.8        | Iterations | %.21Lf | %.20Lf\n", i2, f2(d2));
+../mai/labs/c4/main.c:    printf("lnx - x + 1.8        | Newton     | %.21Lf | %.20Lf\n", n2, f2(d2));
+../mai/labs/c4/main.c:    printf("\nMachine-calculated epsilon: %.54Lf\n", eps);
+../mai/labs/l10/main.c:    printf("Only natural numbers are allowed!\n");
+../mai/labs/l10/main.c:    printf("Input a number you want to raise to a power:\n");
+../mai/labs/l10/main.c:    printf("Input a power you want to raise %lld to:\n", a);
+../mai/labs/l10/main.c:    printf("Here is %lld to the power of %lld: %lld\n", a, n, answ);
+../mai/labs/l11/main.c:            printf("%s%c", num.values, lc);
+../mai/labs/l11/main.c:            printf("%c", lc);
+../mai/labs/l11/main.c:        if (n == 1) printf("\n");
+../mai/labs/l11/main.c:    printf("End of programm...\n");
+../mai/labs/l11/string.c:        // if (c == ' ' || c == ',' || c == '\t') printf("%c", c);
+../mai/labs/l12/main.c:        printf("%lld\n", out);
+../mai/labs/l12/main.c:    printf("End of programm...\n");
+../mai/labs/l13/main.c:void print_bin(unsigned long long a) {
+../mai/labs/l13/main.c:        print_bin(a / 2);
+../mai/labs/l13/main.c:    printf("%lld", a % 2);
+../mai/labs/l13/main.c:    printf("Input words:\n");
+../mai/labs/l13/main.c:                printf("Vowels that are not presented in these words: ");
+../mai/labs/l13/main.c:                print_missing_chars(temp);
+../mai/labs/l13/main.c:                printf("All the vowels were presented in these words\n");
+../mai/labs/l13/main.c:    printf("End of programm...\n");
+../mai/labs/l13/set.c:void print_missing_chars(set s) {
+../mai/labs/l13/set.c:            printf("%c ", off + 'a');
+../mai/labs/l13/set.c:    printf("\n");
+../mai/labs/l14/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l14/main.c:            printf("%lld ", m[i][j]);
+../mai/labs/l14/main.c:        printf("\n");
+../mai/labs/l14/main.c:void printm(long long** m, long long n) {
+../mai/labs/l14/main.c:                printf("%lld ", m[i][j]);
+../mai/labs/l14/main.c:                printf("%lld ", m[i][j]);
+../mai/labs/l14/main.c:                printf("%lld ", m[i][j]);
+../mai/labs/l14/main.c:                printf("%lld ", m[i][j]);
+../mai/labs/l14/main.c:            printf("\n");
+../mai/labs/l14/main.c:        printf("\n");
+../mai/labs/l14/main.c:        printm(m, n);
+../mai/labs/l14/main.c:        printf("\n");
+../mai/labs/l14/main.c:    printf("End of program.\n");
+../mai/labs/l15/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l15/main.c:            printf("%lld ", m[i][j]);
+../mai/labs/l15/main.c:        printf("\n");
+../mai/labs/l15/main.c:    printmd(m, n);
+../mai/labs/l15/main.c:        printf("\n");
+../mai/labs/l15/main.c:        printf("\n");
+../mai/labs/l15/main.c:    printf("End of program.\n");
+../mai/labs/l8/main.c:    printf("Input a power of 2:\n");
+../mai/labs/l8/main.c:    printf("Here is 2 to the power of %lld: %lld\n", a, exp);
+../mai/labs/l9/main.c:        fprintf(fp, "k = %d:\ni = %d\nj = %d\nl = %d\n", k, ik, jk, lk);
+../mai/labs/l9/main.c:            printf("Point is in at k = %d!\ni = %d\nj = %d\nl = %d\n", k, ik, jk, lk);
+../mai/labs/l9/main.c:        printf("Couldn't make it in 50 iterations! :(\n");
+../mai/labs/l9/main.c:        printf("Last point:\ni = %d\nj = %d\nl = %d\n", ik, jk, lk);
+vitos@vitos-pop:~/Studying/temp$ grep -r "printmd" ../mai/labs/*/*.c -B 1 -A 1 --group-separator=next_context:
+../mai/labs/l14/main.c-
+../mai/labs/l14/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l14/main.c-    for (long long i = 0; i < n; ++i) {
+next_context:
+../mai/labs/l15/main.c-
+../mai/labs/l15/main.c:void printmd(long long** m, long long n) {
+../mai/labs/l15/main.c-    for (long long i = 0; i < n; ++i) {
+next_context:
+../mai/labs/l15/main.c-    }
+../mai/labs/l15/main.c:    printmd(m, n);
+../mai/labs/l15/main.c-}
