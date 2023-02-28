@@ -73,6 +73,11 @@ fi
 echo "Start copying..."
 
 char=${char::1}
+asciicode=$(printf "%d" "'$char'")
+let asciicode--
+
+char=$(printf "\x$(printf %x $asciicode)")
+
 
 for (( i=0; $i<$copy_count; ++i ))
 do

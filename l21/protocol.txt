@@ -1,187 +1,31 @@
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs$ cat l21/copy.sh
-#! /usr/bin/bash
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs$
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs$ l21/copy.sh ?
+Info:
 
-set -e
+Usage:
+REQUIRED ARGUMENTS:
 
-print_usage() {
-    echo -e "Usage:"
-    echo -e "REQUIRED ARGUMENTS:\n"
-    echo -e "\t-f, --file [FILE_PATH]\t\t path to a file that needs to be copied\n"
-    echo -e "OPTIONAL ARGUMENTS:\n"
-    echo -e "\t-l, --first_char '[CHAR]'\t\t from which character, file prefixes start"
-    echo -e "\t-c, --copy_count [COPY_COUNT]\t how many times file should be copied"
-    echo -e "\t-v, --verbose\t\t\t verbosely make copies of a file\n"
-}
+        -f, --file [FILE_PATH]           path to a file that needs to be copied
 
-bail() {
-    echo -e "$1\n"
-    print_usage
-    exit 1
-}
+OPTIONAL ARGUMENTS:
 
-# default parameters
-file=""
-char='a'
-copy_count=1
-verbose=false
+        -l, --first_char '[CHAR]'                from which character, file prefixes start
+        -c, --copy_count [COPY_COUNT]    how many times file should be copied
+        -v, --verbose                    verbosely make copies of a file
 
-while [[ $# -gt 0 ]]; do # handle flags
-    case $1 in
-        -f|--file)
-            file=$2
-
-            if [ ${#file} -eq 0 ]; then
-                bail "Empty filename!"
-            elif [ ${file:0:1} = - ]; then
-                bail "Invalid filename!"
-            fi
-
-            shift
-            shift ;;
-        -c|--copy_count) 
-            copy_count=$2
-
-            if [ ${#copy_count} -eq 0 ]; then
-                bail "Copy count is not present"
-            elif [ $copy_count -eq 0 ]; then
-                bail "Why would you want to copy your file zero times?"
-            fi
-
-            shift
-            shift ;;
-        -l|--first_char)
-            char=$2
-
-            if [ ${#char} -eq 0 ]; then
-                bail "Empty initial character"
-            fi
-
-            shift
-            shift ;;
-        -v|--verbose)
-            shift
-            verbose=true ;;
-        *)
-            bail "Info:" ;;
-    esac
-done
-
-if [ ${#file} -eq 0 ]; then
-    bail "You need to input file that needs to be copied!"
-fi
-
-
-echo "Start copying..."
-
-char=${char::1}
-
-for (( i=0; $i<$copy_count; ++i ))
-do
-    asciicode=$(printf "%d" "'$char'")
-    let asciicode++
-
-    newchar=$(printf "\x$(printf %x $asciicode)")
-    char=$newchar
-
-    last_dot_index=${#file}
-    for (( j=0; $j<${#file}; ++j )); do
-        if [ "${file:$j:1}" = "." ]; then
-            last_dot_index=$j
-        fi
-    done
-    extension_length=$(( ${#file} - $last_dot_index ))
-
-    filename=${file:0:$last_dot_index}$char
-    extension=${file:$last_dot_index:$extension_length}
-
-    new_file=$filename$extension
-
-    if [ $verbose = true ]; then
-        echo "$i: copying $file to $new_file..."
-    fi
-
-    eval "cp \$file \$new_file"
-done
-
-echo "Done!"vitos@vitos-hp16:/mnt/c/important/docs/mai/labs$ . l21/copy.sh -f l21/test
-Start copying...
-Done!
 vitos@vitos-hp16:/mnt/c/important/docs/mai/labs$ cd l21
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -v -c 5 -f test_file.txt
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f test -l 'c' -c 5
 Start copying...
-0: copying test_file.txt to test_fileb.txt...
-1: copying test_file.txt to test_filec.txt...
-2: copying test_file.txt to test_filed.txt...
-3: copying test_file.txt to test_filee.txt...
-4: copying test_file.txt to test_filef.txt...
 Done!
 vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ls
-./   copy.sh*     l21-2012.djvu*  testb*           test_filec.txt*  test_filee.txt*  test_file.txt*
-../  .gitignore*  test*           test_fileb.txt*  test_filed.txt*  test_filef.txt*  test.text.a*
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -v -c 3 -f test_file.txt -l 'M'
+./  ../  copy.sh*  .gitignore*  l21-2012.djvu*  protocol.txt*  report.pdf*  test*  testc*  testd*  teste*  testf*  testg*
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f test -v
 Start copying...
-0: copying test_file.txt to test_fileN.txt...
-1: copying test_file.txt to test_fileO.txt...
-2: copying test_file.txt to test_fileP.txt...
-Done!vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -v -c 3 -f test.text.a -l 'M'
-Start copying...
-0: copying test.text.a to test.textN.a...
-1: copying test.text.a to test.textO.a...
-2: copying test.text.a to test.textP.a...
+0: copying test to testa...
 Done!
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ls
-./   copy.sh*     l21-2012.djvu*  testb*           test_filec.txt*  test_filee.txt*  test_fileN.txt*  test_fil
-eP.txt*  test.text.a*   test.textO.a*
-../  .gitignore*  test*           test_fileb.txt*  test_filed.txt*  test_filef.txt*  test_fileO.txt*  test_fil
-e.txt*   test.textN.a*  test.textP.a*
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ rm -f test_file*.txt
-removed 'test_fileb.txt'
-removed 'test_filec.txt'
-removed 'test_filed.txt'
-removed 'test_filee.txt'
-removed 'test_filef.txt'
-removed 'test_fileN.txt'
-removed 'test_fileO.txt'
-removed 'test_fileP.txt'
-removed 'test_file.txt'
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ rm -f test.text*.a
-removed 'test.text.a'
-removed 'test.textN.a'
-removed 'test.textO.a'
-removed 'test.textP.a'
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ rm testb
-rm: remove regular file 'testb'? y
-removed 'testb'
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -c -l
-./copy.sh: line 47: [: -l: integer expression expected
-You need to input file that needs to be copied!
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f
+Empty filename!
 
-Usage:
-REQUIRED ARGUMENTS:
-
-        -f, --file [FILE_PATH]           path to a file that needs to be copied
-
-OPTIONAL ARGUMENTS:
-
-        -l, --first_char '[CHAR]'                from which character, file prefixes start
-        -c, --copy_count [COPY_COUNT]    how many times file should be copied
-        -v, --verbose                    verbosely make copies of a file
-
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -l '5' -f test -c
-Copy count is not present
-
-Usage:
-REQUIRED ARGUMENTS:
-
-        -f, --file [FILE_PATH]           path to a file that needs to be copied
-
-OPTIONAL ARGUMENTS:
-
-        -l, --first_char '[CHAR]'                from which character, file prefixes start
-        -c, --copy_count [COPY_COUNT]    how many times file should be copied
-        -v, --verbose                    verbosely make copies of a file
-
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -l '5' -f test -m
 Usage:
 REQUIRED ARGUMENTS:
 
@@ -206,8 +50,77 @@ OPTIONAL ARGUMENTS:
         -l, --first_char '[CHAR]'                from which character, file prefixes start
         -c, --copy_count [COPY_COUNT]    how many times file should be copied
         -v, --verbose                    verbosely make copies of a file
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f
-Empty filename!
+
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -m asdb
+Info:
+
+Usage:
+REQUIRED ARGUMENTS:
+
+        -f, --file [FILE_PATH]           path to a file that needs to be copied
+
+OPTIONAL ARGUMENTS:
+
+        -l, --first_char '[CHAR]'                from which character, file prefixes start
+        -c, --copy_count [COPY_COUNT]    how many times file should be copied
+        -v, --verbose                    verbosely make copies of a file
+
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f test -v -c 10
+Start copying...
+0: copying test to testa...
+1: copying test to testb...
+2: copying test to testc...
+3: copying test to testd...
+4: copying test to teste...
+5: copying test to testf...
+6: copying test to testg...
+7: copying test to testh...
+8: copying test to testi...
+9: copying test to testj...
+Done!
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ls
+./   copy.sh*     l21-2012.djvu*  report.pdf*  testa*  testc*  teste*  testg*  testi*
+../  .gitignore*  protocol.txt*   test*        testb*  testd*  testf*  testh*  testj*
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f copy.sh -c 3 -v
+Start copying...
+0: copying copy.sh to copya.sh...
+1: copying copy.sh to copyb.sh...
+2: copying copy.sh to copyc.sh...
+Done!
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f copy.sh -c -v
+./copy.sh: line 45: [: -v: integer expression expected
+Start copying...
+Done!
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f copy.sh -c
+Copy count is not present
+
+Usage:
+REQUIRED ARGUMENTS:
+
+        -f, --file [FILE_PATH]           path to a file that needs to be copied
+
+OPTIONAL ARGUMENTS:
+
+        -l, --first_char '[CHAR]'                from which character, file prefixes start
+        -c, --copy_count [COPY_COUNT]    how many times file should be copied
+        -v, --verbose                    verbosely make copies of a file
+
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh -f -c
+Invalid filename!
+
+Usage:
+REQUIRED ARGUMENTS:
+
+        -f, --file [FILE_PATH]           path to a file that needs to be copied
+
+OPTIONAL ARGUMENTS:
+
+        -l, --first_char '[CHAR]'                from which character, file prefixes start
+        -c, --copy_count [COPY_COUNT]    how many times file should be copied
+        -v, --verbose                    verbosely make copies of a file
+
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/l21$ ./copy.sh
+You need to input file that needs to be copied!
 
 Usage:
 REQUIRED ARGUMENTS:
