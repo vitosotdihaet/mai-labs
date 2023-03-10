@@ -1,0 +1,203 @@
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs (master)
+$ cd l22
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l22 (master)
+$ pdflatex main.tex
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2022-11-01> patch level 1
+L3 programming layer <2023-02-07>
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
+*************************************
+* Local config file bblopts.cfg used
+*
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/babel-russian\russianb.
+ldf
+
+Package babel Warning: No Cyrillic font encoding has been loaded so far.
+(babel)                A font encoding should be declared before babel.
+(babel)                Default `T2A' encoding will be loaded  on input line 78.
+
+
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/cyrillic\t2aenc.def
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/base\t2aenc.dfu))))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/ru\babel
+-russian.tex)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty)
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
+tex.def) (main.aux
+(C:\Users\vital\AppData\Local\Programs\MiKTeX\tex/latex/cyrillic\t2acmr.fd))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+Overfull \hbox (43.90503pt too wide) detected at line 38
+\OML/cmm/m/it/17.28 f\OT1/cmr/m/n/17.28 (\OML/cmm/m/it/17.28 tx; ty\OT1/cmr/m/n
+/17.28 ) = \OML/cmm/m/it/17.28 t[]f\OT1/cmr/m/n/17.28 (\OML/cmm/m/it/17.28 x; y
+\OT1/cmr/m/n/17.28 ) = [][] \OML/cmm/m/it/17.28 f\OT1/cmr/m/n/17.28 (\OML/cmm/m
+/it/17.28 x; y\OT1/cmr/m/n/17.28 ) = \OML/cmm/m/it/17.28 f [] \OT1/cmr/m/n/17.2
+8 = \OML/cmm/m/it/17.28 f [] \OT1/cmr/m/n/17.28 = \OML/cmm/m/it/17.28 ' []
+
+Overfull \hbox (3.06079pt too wide) in paragraph at lines 38--43
+\T2A/cmr/m/n/17.28 ����� ��-��-���, ���-��-���-��-���-��� ����-��-��� 1-�� ��-�
+��-��, ���-
+
+Overfull \hbox (12.19838pt too wide) in paragraph at lines 38--43
+\T2A/cmr/m/n/17.28 ��-���-��� ��-��-��-����-�� ���-��-���-���, ��-��-��-�� \T2A
+/cmr/m/it/17.28 ���-��-���-��� ����-
+[28{C:/Users/vital/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [29]
+(main.aux) )
+(see the transcript file for additional information) <C:\Users\vital\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\labi1728.pk> <C:\Users\vital\AppDat
+a\Local\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\lati1728.pk> <C:\Users\vital\Ap
+pData\Local\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\larm1728.pk><C:/Users/vital
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Us
+ers/vital/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.p
+fb><C:/Users/vital/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmmi12.pfb><C:/Users/vital/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr12.pfb><C:/Users/vital/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmr17.pfb><C:/Users/vital/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on main.pdf (2 pages, 101415 bytes).
+Transcript written on main.log.
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l22 (master)
+$ ls
+./  ../  l22-2012.djvu  main.aux  main.fdb_latexmk  main.fls  main.log  main.pdf  main.tex  protocol.txt
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l22 (master)
+$ cat main.tex
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage[russian]{babel}
+
+\usepackage[top=1.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+% remove header line
+\renewcommand{\headrulewidth}{0pt}
+
+\setcounter{page}{28}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\LARGE\thepage}
+
+
+\begin{document}
+\LARGE
+\begin{justify}
+
+
+
+для $(6.1)$, так как, если $(6.1)$ записать в виде $y'=-\dfrac{M(x,y)}{N(x,y)}=f(x,y)$,
+то, очевидно, в этом случае будет выполняться равенство
+\begin{equation}
+    f(tx,ty)=t^0f(x,y)=f(x,y) \tag{6.2} \label{eq:first}
+\end{equation}
+
+\quad 2) Если в (\ref{eq:first}) принять $t = \dfrac{1}{x}(x \ne 0)$, то (\ref{eq:first})
+преобразуется к следующему эквивалентному виду:
+\begin{equation*}
+    f(tx, ty)=t^0f(x,y)=\left(\dfrac{1}{x}\right)^0f(x,y)=
+    f\left(\dfrac{1}{x}x\dfrac{1}{x}y\right)=
+    f\left(1,\dfrac{y}{x}\right)=\varphi\left(\dfrac{y}{x}\right)
+\end{equation*}
+\\
+Таким образом, дифференциальное уравнение 1-го порядка, разрешённое относительно производной,
+является \textit{одонородным уравнением}, если его можно в \textit{следующем виде}:
+$y'=\varphi\left(\dfrac{y}{x}\right)$
+
+\quad Однородное дифференциальное уравнение решается приведением к уравнению с
+разделяющимися переменными с помощью \textit{подстановки} (замены переменных):
+\begin{equation}
+    \begin{cases}
+        y=ux,\\
+        x=x
+    \end{cases}
+    \textnormal{или} \quad
+    \begin{cases}
+        x=uy,\\
+        y=y
+    \end{cases}
+    \tag{6.3} \label{eq:system}
+\end{equation}
+\\
+Действительно, применяя первую из (\ref{eq:system}) подстановку в уравнении $(6.1)$,
+полагая, что функции $M(x,y)$ и $N(x, y)$ являются одонородными функциями относительно
+аргументов одинаковой степени однородности $m$, получаем $M(x,ux)dx + N(x,ux)(xdu + udx) = 0$
+или $x^mM(1,u)dx + x^mN(1, u)(xdx+udx) = 0$ и, сократив на множитель $x^m$, получаем
+следующее уравнение с разделяющимися переменными, к которому сводится данное уравнеие:
+\begin{equation*}
+    [M(1,u) + N(1,u)u]dx + [xN(1,u)]du = 0
+\end{equation*}
+
+
+\newpage
+\textbf{\textit{Пример.}} Решить дифференциальное уравнение $(x+y)dx=xdy$.
+
+\textbf{\textit{Решение.}} Так как функция $x+y$ и $x$ являются однородными функциями первой
+степени однородности, данное уравнение -- однородное. Применяем для его решения подстановку
+$\begin{aligned}
+    \begin{cases}
+        y=ux,\\
+        x=x
+    \end{cases}
+\end{aligned}$
+и в результате получаем $(x+ux)dx=x(xdu+udx)$. Отметив, что $x=0$ является, очевидно, решением
+данного уравнения, полагая, что $x\ne0$ и сокращая на $x\ne0$, имеем $dx+udx=xdu+udx, dx=xdu,
+du=\dfrac{dx}{x}, u=\ln x+ \ln C, e^u=Cx$. Проведя обратную замену и учитывая решение $x=0$,
+получаем окончательный ответ: $e^{\frac{y}{x}}=Cx, x=0$.
+
+\quad Рассмотрим теперь виды дифференциальных уравнений, приводящихся к однородным уравнениям.
+Дифференциальное уравнение вида
+\begin{equation}
+    y'=f\left(\dfrac{a_1x+b_1y+c_1}{a_2x+b_2y+c_2}\right), \tag{6.4}
+\end{equation}
+где
+$\begin{aligned}
+    \begin{vmatrix}
+        a_1 && b_1 \\
+        a_2 && b_2
+    \end{vmatrix}
+\end{aligned} \ne 0$
+и $c_1^2+c_2^2 \ne 0$ (при этих условиях данное уравнение не относится к уже рассмотренным
+типам), решается с помощью \textit{подстановки}:
+\begin{equation}
+    \begin{cases}
+        x=u+\alpha; \\
+        y=v+\beta.
+    \end{cases} \tag{6.5}
+\end{equation}
+Здесь числа $\alpha$ и $\beta$ -- решения системы
+\begin{equation}
+    \begin{cases}
+        a_1\alpha+b_1\beta+c_1=0; \\
+        a_2\alpha+b_2\beta+c_2=0.
+    \end{cases} \tag{6.6}
+\end{equation}
+
+
+
+\end{justify}
+\end{document}

@@ -1,0 +1,116 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage[russian]{babel}
+
+\usepackage[top=1.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+% remove header line
+\renewcommand{\headrulewidth}{0pt}
+
+\setcounter{page}{28}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\LARGE\thepage}
+
+
+\begin{document}
+\LARGE
+\begin{justify}
+
+
+
+для $(6.1)$, так как, если $(6.1)$ записать в виде $y'=-\dfrac{M(x,y)}{N(x,y)}=f(x,y)$,
+то, очевидно, в этом случае будет выполняться равенство
+\begin{equation}
+    f(tx,ty)=t^0f(x,y)=f(x,y) \tag{6.2} \label{eq:first}
+\end{equation}
+
+\quad 2) Если в (\ref{eq:first}) принять $t = \dfrac{1}{x}(x \ne 0)$, то (\ref{eq:first})
+преобразуется к следующему эквивалентному виду:
+\begin{equation*}
+    f(tx, ty)=t^0f(x,y)=\left(\dfrac{1}{x}\right)^0f(x,y)=
+    f\left(\dfrac{1}{x}x\dfrac{1}{x}y\right)=
+    f\left(1,\dfrac{y}{x}\right)=\varphi\left(\dfrac{y}{x}\right)
+\end{equation*}
+\\
+Таким образом, дифференциальное уравнение 1-го порядка, разрешённое относительно производной,
+является \textit{одонородным уравнением}, если его можно в \textit{следующем виде}:
+$y'=\varphi\left(\dfrac{y}{x}\right)$
+
+\quad Однородное дифференциальное уравнение решается приведением к уравнению с
+разделяющимися переменными с помощью \textit{подстановки} (замены переменных):
+\begin{equation}
+    \begin{cases}
+        y=ux,\\
+        x=x
+    \end{cases}
+    \textnormal{или} \quad
+    \begin{cases}
+        x=uy,\\
+        y=y
+    \end{cases}
+    \tag{6.3} \label{eq:system}
+\end{equation}
+\\
+Действительно, применяя первую из (\ref{eq:system}) подстановку в уравнении $(6.1)$,
+полагая, что функции $M(x,y)$ и $N(x, y)$ являются одонородными функциями относительно
+аргументов одинаковой степени однородности $m$, получаем $M(x,ux)dx + N(x,ux)(xdu + udx) = 0$
+или $x^mM(1,u)dx + x^mN(1, u)(xdx+udx) = 0$ и, сократив на множитель $x^m$, получаем
+следующее уравнение с разделяющимися переменными, к которому сводится данное уравнеие:
+\begin{equation*}
+    [M(1,u) + N(1,u)u]dx + [xN(1,u)]du = 0
+\end{equation*}
+
+
+\newpage
+\textbf{\textit{Пример.}} Решить дифференциальное уравнение $(x+y)dx=xdy$.
+
+\textbf{\textit{Решение.}} Так как функция $x+y$ и $x$ являются однородными функциями первой
+степени однородности, данное уравнение -- однородное. Применяем для его решения подстановку
+$\begin{aligned}
+    \begin{cases}
+        y=ux,\\
+        x=x
+    \end{cases}
+\end{aligned}$
+и в результате получаем $(x+ux)dx=x(xdu+udx)$. Отметив, что $x=0$ является, очевидно, решением
+данного уравнения, полагая, что $x\ne0$ и сокращая на $x\ne0$, имеем $dx+udx=xdu+udx, dx=xdu,
+du=\dfrac{dx}{x}, u=\ln x+ \ln C, e^u=Cx$. Проведя обратную замену и учитывая решение $x=0$,
+получаем окончательный ответ: $e^{\frac{y}{x}}=Cx, x=0$.
+
+\quad Рассмотрим теперь виды дифференциальных уравнений, приводящихся к однородным уравнениям.
+Дифференциальное уравнение вида
+\begin{equation}
+    y'=f\left(\dfrac{a_1x+b_1y+c_1}{a_2x+b_2y+c_2}\right), \tag{6.4}
+\end{equation}
+где
+$\begin{aligned}
+    \begin{vmatrix}
+        a_1 && b_1 \\
+        a_2 && b_2
+    \end{vmatrix}
+\end{aligned} \ne 0$
+и $c_1^2+c_2^2 \ne 0$ (при этих условиях данное уравнение не относится к уже рассмотренным
+типам), решается с помощью \textit{подстановки}:
+\begin{equation}
+    \begin{cases}
+        x=u+\alpha; \\
+        y=v+\beta.
+    \end{cases} \tag{6.5}
+\end{equation}
+Здесь числа $\alpha$ и $\beta$ -- решения системы
+\begin{equation}
+    \begin{cases}
+        a_1\alpha+b_1\beta+c_1=0; \\
+        a_2\alpha+b_2\beta+c_2=0.
+    \end{cases} \tag{6.6}
+\end{equation}
+
+
+
+\end{justify}
+\end{document}
