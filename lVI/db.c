@@ -164,6 +164,73 @@ void database_print_all_max(Database db, char *field, short max) {
     }
 }
 
+void database_print_matching(Database db, char **fields, char **values, int count) {
+    int field_count = count;
+    short **ops = (short**) calloc(field_count, sizeof(short*));
+    for (int i = 0; i < field_count; ++i) {
+        ops[i] = (short*) calloc(3, sizeof(short));
+    }
+    // ops = [[1, 0, 1], [4, 1, 50], [-1, -1], ...]
+    // where ops[i][0] = field, ops[i][1] = greater?, ops[i][2] = value
+    // ops[i][0] in [0, 4], ops[i][1] in [0, 1], ops[i][2] in [_SHORT_MIN, _SHORT_MAX]
+
+    short value = 0;
+    for (int i = 0; i < field_count; ++i) {
+        short fieldname = -1;
+        switch (tolower(fields[i][0])) {
+            case 'g': fieldname = 0; break;
+            case 's': fieldname = 1; break;
+            case 'm': fieldname = 2; break;
+            case 'p': fieldname = 3; break;
+            case 'e': fieldname = 4; break; 
+        }
+
+        if (values[i][0] == 'l') { // l for less than, m for more than
+            if (values[i][1] == '=') {
+                memmove(values[i], values[i] + 2, strlen(values[i]));
+                value = (short) atoi(values[i]) + 1;
+            } else {
+                memmove(values[i], values[i] + 1, strlen(values[i]));
+                value = (short) atoi(values[i]);
+            }
+        } else if (values[i][0] == 'm') {
+            ops[i][1] = 1;
+            if (values[i][1] == '=') {
+                memmove(values[i], values[i] + 2, strlen(values[i]));
+                value = (short) atoi(values[i]) - 1;
+            } else {
+                memmove(values[i], values[i] + 1, strlen(values[i]));
+                value = (short) atoi(values[i]);
+            }
+        }
+        ops[i][0] = fieldname;
+        ops[i][2] = value;
+    }
+
+    database_print_header();
+
+    for (unsigned long long i = 0; i < db.size; ++i) {
+        if (db.essay[i] == -1) break;
+        short condition = 1;
+        for (int j = 0; j < field_count; ++j) {
+            short to_check = 0;
+            switch (ops[j][0]) {
+                case 0: to_check = db.gender[i]; break;
+                case 1: to_check = db.school[i]; break;
+                case 2: to_check = db.medal[i]; break;
+                case 3: to_check = db.points[i]; break;
+                case 4: to_check = db.essay[i]; break;
+            }
+            if (ops[j][1] == 1) {
+                condition = condition && (to_check > ops[j][2]);
+            } else {
+                condition = condition && (to_check < ops[j][2]);
+            }
+        }
+        if (condition) database_print_row(db, i);
+    }
+}
+
 
 void database_add
 (
