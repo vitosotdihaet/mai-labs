@@ -28,8 +28,8 @@ int main(int argc, char const *argv[]) {
     char *filename = (char*) calloc(256, sizeof(char));
 
     char *field = (char*) calloc(10, sizeof(char));
-    char *minimal_value_string = (char*) calloc(10, sizeof(char));
-    short minimal_value = 0;
+    char *maximal_value_string = (char*) calloc(10, sizeof(char));
+    short maximal_value = 0;
 
     for (int arg_ind = 1; arg_ind < argc; ++arg_ind) {
         switch (argv[arg_ind][1]) {
@@ -41,7 +41,7 @@ int main(int argc, char const *argv[]) {
             case 'p':
                 if (arg_ind + 2 < argc) {
                     field = argv[arg_ind + 1];
-                    minimal_value_string = argv[arg_ind + 2];
+                    maximal_value_string = argv[arg_ind + 2];
                 }
                 break;
         }
@@ -53,17 +53,17 @@ int main(int argc, char const *argv[]) {
         crash();
     }
 
-    minimal_value = (short) atoi(minimal_value_string);
+    maximal_value = (short) atoi(maximal_value_string);
 
     // printf("%s\n", filename);
-    // printf("%s\n%d\n", field, minimal_value);
+    // printf("%s\n%d\n", field, maximal_value);
 
     Database db;
     FILE *f = fopen(filename, "rb");
 
     database_read(&db, f);
     // database_print(db);
-    database_print_all_min(db, field, minimal_value);
+    database_print_all_max(db, field, maximal_value);
 
     fclose(f);
     return 0;

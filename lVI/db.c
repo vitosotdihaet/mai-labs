@@ -125,10 +125,41 @@ void database_print_all_min(Database db, char *field, short min) {
     database_print_header();
 
     for (unsigned long long i = 0; i < db.size; ++i) {
-        if (
-            (g && db.gender[i] >= min) || (s && db.school[i] >= min) ||
-            (m && db.medal[i] >= min)  || (p && db.points[i] >= min) ||
-            (e && db.essay[i] >= min)
+        if (db.essay[i] != -1 &&
+            (
+                (g && db.gender[i] >= min) || (s && db.school[i] >= min) ||
+                (m && db.medal[i] >= min)  || (p && db.points[i] >= min) ||
+                (e && db.essay[i] >= min)
+            )
+        ) database_print_row(db, i);
+    }
+}
+
+void database_print_all_max(Database db, char *field, short max) {
+    short g = 0, s = 0, m = 0, p = 0, e = 0; // every single field
+
+    switch (tolower(field[0])) {
+        case 'g': g = 1; break;
+        case 's': s = 1; break;
+        case 'm': m = 1; break;
+        case 'p': p = 1; break;
+        case 'e': e = 1; break; 
+    }
+
+    if (g == s && s == m && m == p && p == e) { // can't be all 1 because of switch case
+        printf("No field with such name!\n");
+        return;
+    }
+
+    database_print_header();
+
+    for (unsigned long long i = 0; i < db.size; ++i) {
+        if (db.essay[i] != -1 &&
+            (
+                (g && db.gender[i] < max) || (s && db.school[i] < max) ||
+                (m && db.medal[i] < max)  || (p && db.points[i] < max) ||
+                (e && db.essay[i] < max)
+            )
         ) database_print_row(db, i);
     }
 }

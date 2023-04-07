@@ -20,6 +20,7 @@ void database_print_header();
 void database_print_row(Database db, unsigned long long i);
 void database_print(Database db);
 void database_print_all_min(Database db, char *field, short min);
+void database_print_all_max(Database db, char *field, short max);
 
 void database_add
 (
