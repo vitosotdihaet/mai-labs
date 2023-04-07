@@ -2,22 +2,23 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "db.h"
 
 void database_init(Database *db, unsigned long long size) {
     db->size = size;
-    db->name = (char**) calloc(size, sizeof(char**));
-    db->initials = (char*) calloc(size, sizeof(char*));
-    db->gender = (short*) calloc(size, sizeof(short*));
-    db->school = (short*) calloc(size, sizeof(short*));
-    db->medal = (short*) calloc(size, sizeof(short*));
-    db->points = (short*) calloc(size, sizeof(short*));
-    db->essay = (short*) calloc(size, sizeof(short*));
+    db->name = (char**) calloc(size, sizeof(char*));
+    db->initials = (char**) calloc(size, sizeof(char*));
+    db->gender = (short*) calloc(size, sizeof(short));
+    db->school = (short*) calloc(size, sizeof(short));
+    db->medal = (short*) calloc(size, sizeof(short));
+    db->points = (short*) calloc(size, sizeof(short));
+    db->essay = (short*) calloc(size, sizeof(short));
 
     for (unsigned long long i = 0; i < size; ++i) {
-        db->name[i] = (char*) calloc(15, sizeof(char*));
-        db->initials[i] = (char*) calloc(10, sizeof(char*));
+        db->name[i] = (char*) calloc(15, sizeof(char));
+        db->initials[i] = (char*) calloc(10, sizeof(char));
         db->gender[i] = -1;
         db->school[i] = -1;
         db->medal[i] = -1;
@@ -29,7 +30,7 @@ void database_init(Database *db, unsigned long long size) {
 void database_dump(Database db, FILE *f) {
     fwrite(&db.size, sizeof(unsigned long long), 1, f);
     for (unsigned long long i = 0; i < db.size; ++i) {
-        if (db.essay == -1) break;
+        if (db.essay[i] == -1) break;
         fwrite("\n", sizeof(char), 1, f);
 
         int for_name = strlen(db.name[i]);
@@ -72,7 +73,8 @@ void database_read(Database *db, FILE *f) {
     }
 }
 
-void database_print(Database db) {
+
+void database_print_header() {
     printf(
             "Name            |"
             "Initials   |"
@@ -83,23 +85,59 @@ void database_print(Database db) {
             "Essay      |"
             "\n"
         );
+}
+
+void database_print_row(Database db, unsigned long long i) {
+    printf("%16s|" , db.name[i]);
+    printf("%11s|" , db.initials[i]);
+    printf("%11hd|", db.gender[i]);
+    printf("%11hd|", db.school[i]);
+    printf("%11hd|", db.medal[i]);
+    printf("%11hd|" , db.points[i]);
+    printf("%11hd|", db.essay[i]);
+    printf("\n");
+}
+
+void database_print(Database db) {
+    database_print_header();
 
     for (unsigned long long i = 0; i < db.size; ++i) {
-        printf("%16s|" , db.name[i]);
-        printf("%11s|" , db.initials[i]);
-        printf("%11hd|", db.gender[i]);
-        printf("%11hd|", db.school[i]);
-        printf("%11hd|", db.medal[i]);
-        printf("%11hd|" , db.points[i]);
-        printf("%11hd|", db.essay[i]);
-        printf("\n");
+        database_print_row(db, i);
     }
 }
+
+void database_print_all_min(Database db, char *field, short min) {
+    short g = 0, s = 0, m = 0, p = 0, e = 0; // every single field
+
+    switch (tolower(field[0])) {
+        case 'g': g = 1; break;
+        case 's': s = 1; break;
+        case 'm': m = 1; break;
+        case 'p': p = 1; break;
+        case 'e': e = 1; break; 
+    }
+
+    if (g == s && s == m && m == p && p == e) { // can't be all 1 because of switch case
+        printf("No field with such name!\n");
+        return;
+    }
+
+    database_print_header();
+
+    for (unsigned long long i = 0; i < db.size; ++i) {
+        if (
+            (g && db.gender[i] >= min) || (s && db.school[i] >= min) ||
+            (m && db.medal[i] >= min)  || (p && db.points[i] >= min) ||
+            (e && db.essay[i] >= min)
+        ) database_print_row(db, i);
+    }
+}
+
 
 void database_add
 (
     Database *db,
-    char const *name[], char const *initials[],
+    char *name, char *initials,
     short gender, short school, short medal, short points, short essay
 ) {
     unsigned long long i;
