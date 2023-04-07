@@ -1,30 +1,27 @@
 #ifndef DB_H
-
 #define DB_H
 
-
-#include <stdio.h>
-
-#ifndef DB_SIZE
-
-#define DB_SIZE 5
-
-#endif
-
 typedef struct Database {
-    char *name[DB_SIZE];
-    char *initials[DB_SIZE];
-    short gender[DB_SIZE];
-    short school[DB_SIZE];
-    short medal[DB_SIZE];
-    int points[DB_SIZE];
-    short essay[DB_SIZE];
+    unsigned long long size;
+    char **name;
+    char **initials;
+    short *gender;
+    short *school;
+    short *medal;
+    short *points;
+    short *essay;
 } Database;
 
-
-void database_init(Database *db);
+void database_init(Database *db, unsigned long long size);
+void database_dump(Database db, FILE *f);
+void database_read(Database *db, FILE *f);
 void database_print(Database db);
-void database_add(Database *db);
-
+void database_add
+(
+    Database *db,
+    char const *name[], char const *initials[],
+    short gender, short school, short medal, short points, short essay
+);
+void database_add_stdin(Database *db);
 
 #endif

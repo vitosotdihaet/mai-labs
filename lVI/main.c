@@ -1,13 +1,36 @@
+#include <stdio.h>
+
 #include "db.h"
+#include "sample_db.h"
 
-#define DB_ROWS 50
-#define DB_COLS 7
 
-int main() {
+void print_usage() {
+    printf(
+        "Usage of program:\n"
+        "\t-f\t Input file of database\n"
+        "\t-p\t Parameters\n"
+    );
+}
+
+void crash() {
+    print_usage();
+    exit(1);
+}
+
+
+int main(int argc, char const *agrv[]) {
+    // if (argc < 2) {
+    //     crash();
+    // }
+
+    create_sample_db();
+
     Database db;
-    database_init(&db);
-    database_add(&db);
+    FILE *f = fopen("test.db4l", "rb");
+
+    database_read(&db, f);
     database_print(db);
 
+    fclose(f);
     return 0;
 }
