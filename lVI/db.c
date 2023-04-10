@@ -171,8 +171,10 @@ void database_print_matching(Database db, char **fields, char **values, int coun
         ops[i] = (short*) calloc(3, sizeof(short));
     }
     // ops = [[1, 0, 1], [4, 1, 50], [-1, -1], ...]
-    // where ops[i][0] = field, ops[i][1] = greater?, ops[i][2] = value
-    // ops[i][0] in [0, 4], ops[i][1] in [0, 1], ops[i][2] in [_SHORT_MIN, _SHORT_MAX]
+    // where ops[i][0] = field
+    // ops[i][1] = 0 - less, 1 - greater, 2 - equals, 3 - not equals
+    // ops[i][2] = value
+    // ops[i][0] in 0..=4, ops[i][1] in 0..=3, ops[i][2] in [_SHORT_MIN, _SHORT_MAX]
 
     short value = 0;
     for (int i = 0; i < field_count; ++i) {
@@ -185,35 +187,53 @@ void database_print_matching(Database db, char **fields, char **values, int coun
             case 'e': fieldname = 4; break; 
         }
 
-        if (values[i][0] == 'l') { // l for less than, m for more than
-            if (values[i][1] == '=') {
+        if (values[i][0] == 'l') { // bash-style comparison
+            // ops[i][1] = 0;
+            if (values[i][1] == 'e') {
                 memmove(values[i], values[i] + 2, strlen(values[i]));
                 value = (short) atoi(values[i]) + 1;
             } else {
-                memmove(values[i], values[i] + 1, strlen(values[i]));
+                memmove(values[i], values[i] + 2, strlen(values[i]));
                 value = (short) atoi(values[i]);
             }
-        } else if (values[i][0] == 'm') {
+        } else if (values[i][0] == 'g') {
             ops[i][1] = 1;
-            if (values[i][1] == '=') {
+            if (values[i][1] == 'e') {
                 memmove(values[i], values[i] + 2, strlen(values[i]));
                 value = (short) atoi(values[i]) - 1;
             } else {
-                memmove(values[i], values[i] + 1, strlen(values[i]));
+                memmove(values[i], values[i] + 2, strlen(values[i]));
                 value = (short) atoi(values[i]);
             }
+        } else if (values[i][0] == 'e') {
+            ops[i][1] = 2;
+            memmove(values[i], values[i] + 2, strlen(values[i]));
+            value = (short) atoi(values[i]);
+        } else if (values[i][0] == 'n') {
+            ops[i][1] = 3;
+            memmove(values[i], values[i] + 2, strlen(values[i]));
+            value = (short) atoi(values[i]);
+        } else if ('9' >= values[i][0] && values[i][0] >= '0') {
+            ops[i][1] = 2;
+            value = (short) atoi(values[i]);
+        } else {
+            printf("Invalid input!\n");
+            return;
         }
+
         ops[i][0] = fieldname;
         ops[i][2] = value;
     }
 
     database_print_header();
 
+    short condition, to_check;
     for (unsigned long long i = 0; i < db.size; ++i) {
         if (db.essay[i] == -1) break;
-        short condition = 1;
+        condition = 1;
+        to_check = 0;
         for (int j = 0; j < field_count; ++j) {
-            short to_check = 0;
+            value = ops[j][2];
             switch (ops[j][0]) {
                 case 0: to_check = db.gender[i]; break;
                 case 1: to_check = db.school[i]; break;
@@ -221,10 +241,11 @@ void database_print_matching(Database db, char **fields, char **values, int coun
                 case 3: to_check = db.points[i]; break;
                 case 4: to_check = db.essay[i]; break;
             }
-            if (ops[j][1] == 1) {
-                condition = condition && (to_check > ops[j][2]);
-            } else {
-                condition = condition && (to_check < ops[j][2]);
+            switch (ops[j][1]) {
+                case 0: condition &= to_check < value; break;
+                case 1: condition &= to_check > value; break;
+                case 2: condition &= to_check == value; break;
+                case 3: condition &= to_check != value; break;
             }
         }
         if (condition) database_print_row(db, i);
