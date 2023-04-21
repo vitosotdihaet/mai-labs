@@ -96,6 +96,7 @@ void node_add_children(Node* n) {
 void node_empty_tokens(Node* n) {
     unsigned long long length;
     for (length = 0; n->tokens[length] != NULL; ++length);
+    printf("len: %llu\n", length)
     if (length > 0) {
         node_add_children(n);
         node_empty_tokens(n->left);
