@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "tree.h"
+#include "misc.h"
 
 
 void node_zero(Node* n) {
-    n->lex = (char*) calloc(1, sizeof(char));
+    n->tokens = NULL;
     n->op = ' ';
     n->constant = ' ';
     n->value = -1;
@@ -17,63 +19,95 @@ void node_zero(Node* n) {
 
 void node_create_root(Node* n, char* lex) {
     node_zero(n);
-    n->lex = lex;
-}
-
-void node_create_children_from_lex(Node* left, Node* right, char* lex) {
-    unsigned long long length = 0;
-    printf("[LEX]: %s\n", lex);
+    char** tokens = (char**) calloc(strlen(lex), sizeof(char*));
 
     char lop = ' ';
-    unsigned long long i, last_i = 0;
+    unsigned long long i, j, t = 0;
 
     for (i = 0; lex[i] != '\0'; ++i) {
-        length = i + 1;
-        char cop = lex[i];
-        printf("[COP]: %c\n", cop);
-        if (cop == '+' || cop == '-' || cop == '*' || cop == '/' || cop == '^') {
-            last_i = i;
-            lop = cop;
+        j = 0;
+        if (lex[i] == ' ') continue;
+
+        if (char_is_operation(lex[i])) {
+            tokens[t] = (char*) calloc(1, sizeof(char));
+            tokens[t][0] = lex[i];
+            j = 1;
+        } else {
+            tokens[t] = (char*) calloc(10, sizeof(char));
+
+            if ('0'<= lex[i] && lex[i] <= '9') {
+                for (j = 0; lex[i + j] != '\0' && char_is_number(lex[i + j]); ++j);
+            } else {
+                for (j = 0; lex[i + j] != '\0' && !char_is_operation(lex[i + j]) && lex[i + j] != ' '; ++j);
+            }
+
+            memcpy(tokens[t], lex + i, j);
         }
 
-        if (lex[i + 1] == '\0') {
-            if ('0' <= cop && cop <= '9') {
-                char* value_buf = (char*) calloc(10, sizeof(char));
-                memcpy(value_buf, lex + last_i + 1, length - last_i - 1);
-                right->value = atoll(value_buf);
-                printf("[INFO]: atolling: %lld\n", right->value);
-            } else {
-                printf("[INFO]: const!\n");
-                right->constant = cop;
+        i += j - 1;
+        ++t;
+    }
+
+    n->tokens = tokens;
+}
+
+
+void node_create_children(Node* n) {
+    n->left = (Node *) calloc(1, sizeof(Node));
+    n->right = (Node *) calloc(1, sizeof(Node));
+    node_zero(n->left);
+    node_zero(n->right);
+
+    unsigned long long length, i, j;
+
+    for (length = 0; n->tokens[length] != NULL; ++length);
+
+    if (char_is_number(n->tokens[length - 1][0])) {
+        n->right->value = atoll(n->tokens[length - 1]);
+    } else {
+        n->right->constant = n->tokens[length - 1];
+    }
+
+    if (length == 3) {
+        n->left->op = n->tokens[1][0];
+        if (char_is_number(n->tokens[0][0])) {
+            n->left->value = atoll(n->tokens[0]);
+        } else {
+            n->left->constant = n->tokens[0];
+        }
+    } else {
+        n->left->tokens = (char**) calloc(length - 2, sizeof(char*));
+        for (i = 0; i < length - 2; ++i) {
+            n->left->tokens[i] = (char*) calloc(strlen(n->tokens[i]), sizeof(char));
+            for (j = 0; j < strlen(n->tokens[i]); ++j) {
+                n->left->tokens[i][j] = n->tokens[i][j];
             }
         }
     }
-
-    memcpy(left->lex, lex, last_i);
-    printf("[LEX LEFT]: %s\n", left->lex);
-    left->op = lop;
-    printf("[LOP]: %c\n", left->op);
 }
 
 void node_add_children(Node* n) {
-    if (sizeof(n->lex) == 0) {
+    if (n->tokens == NULL) {
         return;
     }
-    Node l, r;
-    node_zero(&l);
-    node_zero(&r);
-    node_create_children_from_lex(&l, &r, n->lex);
-    n->left = &l;
-    n->right = &r;
+    node_create_children(n);
 }
 
+void node_empty_tokens(Node* n) {
+    unsigned long long length;
+    for (length = 0; n->tokens[length] != NULL; ++length);
+    if (length > 0) {
+        node_add_children(n);
+        node_empty_tokens(n->left);
+        node_empty_tokens(n->right);
+    }
+}
+
+
 void node_print(Node n) {
-    printf("[PRINTING...]\n");
     if (n.left != NULL) {
-        printf("left:\n");
         printf("(");
         node_print(*n.left);
-        printf("\nend of left\n");
     }
 
     if (n.constant == ' ') {
@@ -89,10 +123,7 @@ void node_print(Node n) {
     }
 
     if (n.right != NULL) {
-        printf("right:\n");
         node_print(*n.right);
         printf(")");
-        printf("\nend of right\n");
     }
-    printf("\n");
 }
