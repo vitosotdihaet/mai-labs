@@ -4,7 +4,7 @@
 struct Node {
     char** tokens;
     char op;
-    char constant;
+    char* constant;
     long long value;
     struct Node* left;
     struct Node* right;

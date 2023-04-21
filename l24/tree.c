@@ -10,7 +10,7 @@
 void node_zero(Node* n) {
     n->tokens = NULL;
     n->op = ' ';
-    n->constant = ' ';
+    n->constant = NULL;
     n->value = -1;
     n->left = NULL;
     n->right = NULL;
@@ -61,6 +61,7 @@ void node_create_children(Node* n) {
     unsigned long long length, i, j;
 
     for (length = 0; n->tokens[length] != NULL; ++length);
+    n->left->tokens = (char**) calloc(length - 1, sizeof(char*)); // one extra for NULL
 
     if (char_is_number(n->tokens[length - 1][0])) {
         n->right->value = atoll(n->tokens[length - 1]);
@@ -68,15 +69,16 @@ void node_create_children(Node* n) {
         n->right->constant = n->tokens[length - 1];
     }
 
+    n->left->op = n->tokens[length - 2][0]; 
+    // TODO: move to right node tokens whole expression and handle them; example: 2^(3 + 5)
+    // TODO: handle priorities of operations
     if (length == 3) {
-        n->left->op = n->tokens[1][0];
         if (char_is_number(n->tokens[0][0])) {
             n->left->value = atoll(n->tokens[0]);
         } else {
             n->left->constant = n->tokens[0];
         }
     } else {
-        n->left->tokens = (char**) calloc(length - 2, sizeof(char*));
         for (i = 0; i < length - 2; ++i) {
             n->left->tokens[i] = (char*) calloc(strlen(n->tokens[i]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[i]); ++j) {
@@ -84,6 +86,7 @@ void node_create_children(Node* n) {
             }
         }
     }
+    n->left->tokens[length - 2] = NULL;
 }
 
 void node_add_children(Node* n) {
@@ -94,13 +97,17 @@ void node_add_children(Node* n) {
 }
 
 void node_empty_tokens(Node* n) {
+    // printf("[NET]\n");
     unsigned long long length;
     for (length = 0; n->tokens[length] != NULL; ++length);
-    printf("len: %llu\n", length)
+    // printf("\n");
+    // printf("len: %llu\n", length);
     if (length > 0) {
         node_add_children(n);
+        // printf("children have ben added succesfully\n");
+        // printf("%lld and %lld\n", n->left->value, n->right->value);
+        // printf("\n");
         node_empty_tokens(n->left);
-        node_empty_tokens(n->right);
     }
 }
 
@@ -109,18 +116,15 @@ void node_print(Node n) {
     if (n.left != NULL) {
         printf("(");
         node_print(*n.left);
+        printf("%c", n.left->op);
     }
 
-    if (n.constant == ' ') {
+    if (n.constant == NULL) {
         if (n.value != -1) {
             printf("%lld", n.value);
         }
     } else {
-        printf("%c", n.constant);
-    }
-
-    if (n.op != ' ') {
-        printf("%c", n.op);
+        printf("%s", n.constant);
     }
 
     if (n.right != NULL) {
