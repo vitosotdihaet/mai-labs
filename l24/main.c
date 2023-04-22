@@ -4,15 +4,19 @@
 int main() {
     Node root;
 
-    node_create_root(&root, "(1+12)- (bebra * 13)^45/1");
-    // node_create_root(&root, "(1+12)-3*7");
+    char initial_expression[256];
+    // printf("Input math expression: ");
+    // scanf("%s", &initial_expression);
+
+    // node_create_root(&root, "((1+(12)))- (bebra * 13)^(45/1)");
+    node_create_root(&root, "(1+b)*13^195");
+    // node_create_root(&root, initial_expression);
+    printf("INIT:\n");
     for (int i = 0; root.tokens[i] != NULL; ++i) {
         printf("%s", root.tokens[i]);
     }
-    printf("\n");
-    // node_create_children(&root);
-    // printf("%lld\n", root.right->value);
-    node_empty_tokens(&root);
+    printf("\n\n");
+    node_build_tree(&root);
     node_print(root);
     printf("\n");
 

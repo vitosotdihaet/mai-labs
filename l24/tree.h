@@ -16,8 +16,7 @@ void node_zero(Node* n);
 void node_create_root(Node* n, char* lex);
 
 void node_create_children(Node* n);
-void node_add_children(Node* n);
-void node_empty_tokens(Node* n);
+void node_build_tree(Node* n);
 
 void node_print(Node n);
 

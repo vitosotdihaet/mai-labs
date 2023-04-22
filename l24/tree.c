@@ -28,7 +28,7 @@ void node_create_root(Node* n, char* lex) {
         j = 0;
         if (lex[i] == ' ') continue;
 
-        if (char_is_operation(lex[i]) || lex[i] == '(' || lex[i] == ')') {
+        if (char_is_operation(lex[i]) || char_is_bracket(lex[i])) {
             tokens[t] = (char*) calloc(1, sizeof(char));
             tokens[t][0] = lex[i];
             j = 1;
@@ -38,7 +38,8 @@ void node_create_root(Node* n, char* lex) {
             if ('0'<= lex[i] && lex[i] <= '9') {
                 for (j = 0; lex[i + j] != '\0' && char_is_number(lex[i + j]); ++j);
             } else {
-                for (j = 0; lex[i + j] != '\0' && !char_is_operation(lex[i + j]) && lex[i + j] != ' '; ++j);
+                for (j = 0; lex[i + j] != '\0' && !char_is_operation(lex[i + j]) &&
+                            lex[i + j] != ' ' && !char_is_bracket(lex[i + j]); ++j);
             }
 
             memcpy(tokens[t], lex + i, j);
@@ -77,41 +78,48 @@ void node_create_children(Node* n) {
         if (bracket_depth > last_bracket_depth) continue;
 
         if (char_is_operation(n->tokens[length][0])) {
+            // printf("found op: %c; type: ", n->tokens[length][0]);
             last_bracket_depth = bracket_depth;
 
             if (op == ' ') {
+                // printf("1");
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             } else if (op == '^') {
+                // printf("2");
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             } else if ((op == '*' || op == '/') && (n->tokens[length][0] == '+' || n->tokens[length][0] == '-')) {
+                // printf("3");
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             }
+            printf("\n");
         }
     }
     n->left->op = op;
+    printf("OP: %c\n\n", n->left->op);
 
     unsigned long long left_length = lowest_priority_op_ind;
     unsigned long long right_length = length - left_length - 1;
 
     unsigned long long left_braces = 0, right_braces = 0;
-    for (i = 0; i < left_length; ++i) {
-        if (n->tokens[i][0] == '(' && n->tokens[left_length - 1 - i][0] == ')') {
+    for (i = 0; i < left_length/2; ++i) {
+        if (n->tokens[i][0] == '(' && n->tokens[length - right_length - 2 - i][0] == ')') {
             left_length -= 2;
             left_braces++;
         }
     }
 
     for (i = 0; i < right_length; ++i) {
-        if (n->tokens[left_length + 1 + i][0] == '(' && n->tokens[length - 1 - i][0] == ')') {
+        if (n->tokens[left_length + 1 + 2 * left_braces + i][0] == '(' && n->tokens[length - 1 - i][0] == ')') {
             right_length -= 2;
             right_braces++;
-        }
+        } else break;
     }
 
-    // printf("lengths: %llu, %llu\n\n", left_length, right_length);
+    printf("braces: %llu, %llu\n", left_braces, right_braces);
+    printf("lengths: %llu, %llu\n\n", left_length, right_length);
 
     n->left->tokens = (char**) calloc(left_length + 1, sizeof(char*)); // one extra for NULL
     n->right->tokens = (char**) calloc(right_length + 1, sizeof(char*));
@@ -119,81 +127,73 @@ void node_create_children(Node* n) {
     n->left->tokens[left_length - 1] = NULL;
     n->right->tokens[right_length - 1] = NULL;
 
-    // printf("OP: %c\n\n", op);
 
     unsigned long long n_ind = 0;
 
     if (left_length == 1) {
-        // printf("GET THIS FOCKING LEFT MATE\n");
+        printf("GET THIS FOCKING LEFT MATE\n");
         n_ind = left_braces;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->left->value = atoll(n->tokens[n_ind]);
-            // printf("NUMBER! %llu\n", n->left->value);
+            printf("NUMBER! %llu\n", n->left->value);
         } else {
             n->left->constant = n->tokens[n_ind];
-            // printf("CONST! %s\n", n->left->constant);
+            printf("CONST! %s\n", n->left->constant);
         }
     } else {
-        // printf("COPY TO L:\n");
+        printf("COPY TO L:\n");
         for (i = 0; i < left_length; ++i) {
             n_ind = i + left_braces;
             n->left->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->left->tokens[i][j] = n->tokens[n_ind][j];
             }
-            // printf("%s", n->left->tokens[i]);
+            printf("%s", n->left->tokens[i]);
         }
-        // printf("\n");
+        printf("\n");
     }
-    // printf("\n");
+    printf("\n");
 
     if (right_length == 1) {
-        // printf("GET THIS FOCKING RIGHT MATE\n");
+        printf("GET THIS FOCKING RIGHT MATE\n");
         n_ind = left_length + 1 + 2 * left_braces + right_braces;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->right->value = atoll(n->tokens[n_ind]);
-            // printf("NUMBER! %llu\n", n->right->value);
+            printf("NUMBER! %llu\n", n->right->value);
         } else {
             n->right->constant = n->tokens[n_ind];
-            // printf("CONST! %s\n", n->right->constant);
+            printf("CONST! %s\n", n->right->constant);
         }
     } else {
-        // printf("COPY TO R:\n");
+        printf("COPY TO R:\n");
         for (i = 0; i < right_length; ++i) {
-            n_ind = left_length + 1 + i + right_braces + 2 * left_braces;
+            n_ind = left_length + 1 + 2 * left_braces + right_braces + i;
             n->right->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->right->tokens[i][j] = n->tokens[n_ind][j];
             }
-            // printf("%s", n->right->tokens[i]);
+            printf("%s", n->right->tokens[i]);
         }
-        // printf("\n");
+        printf("\n");
     }
-    // printf("\n");
+    printf("\n");
 }
 
-void node_add_children(Node* n) {
-    if (n->tokens[0] == NULL) {
-        return;
-    }
-    node_create_children(n);
-}
-
-void node_empty_tokens(Node* n) {
+void node_build_tree(Node* n) {
     // printf("[NET]\n");
     unsigned long long length;
     for (length = 0; n->tokens[length] != NULL; ++length);
     // printf("\n");
     // printf("len: %llu\n", length);
     if (length > 0) {
-        // printf("===CHID===\n");
-        node_add_children(n);
-        // printf("===LEFT===\n");
-        node_empty_tokens(n->left);
-        // printf("===RIHT===\n");
-        node_empty_tokens(n->right);
-    // } else {
-    //     printf("EMPTY!\n");
+        printf("===CHID===\n");
+        node_create_children(n);
+        printf("===LEFT===\n");
+        node_build_tree(n->left);
+        printf("===RIHT===\n");
+        node_build_tree(n->right);
+    } else {
+        printf("EMPTY!\n");
     }
 }
 
