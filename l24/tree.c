@@ -181,10 +181,10 @@ void node_create_children(Node* n) {
 
 void node_build_tree(Node* n) {
     // printf("[NET]\n");
+    if (n->tokens == NULL) return;
+
     unsigned long long length;
     for (length = 0; n->tokens[length] != NULL; ++length);
-    // printf("\n");
-    // printf("len: %llu\n", length);
     if (length > 0) {
         printf("===CHID===\n");
         node_create_children(n);
@@ -193,7 +193,7 @@ void node_build_tree(Node* n) {
         printf("===RIHT===\n");
         node_build_tree(n->right);
     } else {
-        printf("EMPTY!\n");
+        printf("EMPTY!\n\n");
     }
 }
 
