@@ -19,16 +19,16 @@ void node_zero(Node* n) {
 
 void node_create_root(Node* n, char* lex) {
     node_zero(n);
-    char** tokens = (char**) calloc(strlen(lex), sizeof(char*));
+    char** tokens = (char**) calloc(strlen(lex) + 1, sizeof(char*));
+    tokens[strlen(lex)] = NULL;
 
-    char lop = ' ';
     unsigned long long i, j, t = 0;
 
     for (i = 0; lex[i] != '\0'; ++i) {
         j = 0;
         if (lex[i] == ' ') continue;
 
-        if (char_is_operation(lex[i])) {
+        if (char_is_operation(lex[i]) || lex[i] == '(' || lex[i] == ')') {
             tokens[t] = (char*) calloc(1, sizeof(char));
             tokens[t][0] = lex[i];
             j = 1;
@@ -58,39 +58,122 @@ void node_create_children(Node* n) {
     node_zero(n->left);
     node_zero(n->right);
 
-    unsigned long long length, i, j;
+    unsigned long long length = 0, i = 0, j = 0;
+    unsigned long long lowest_priority_op_ind = 0, bracket_depth = 0, last_bracket_depth = 0;
+    char op = ' ';
 
-    for (length = 0; n->tokens[length] != NULL; ++length);
-    n->left->tokens = (char**) calloc(length - 1, sizeof(char*)); // one extra for NULL
-
-    if (char_is_number(n->tokens[length - 1][0])) {
-        n->right->value = atoll(n->tokens[length - 1]);
-    } else {
-        n->right->constant = n->tokens[length - 1];
-    }
-
-    n->left->op = n->tokens[length - 2][0]; 
-    // TODO: move to right node tokens whole expression and handle them; example: 2^(3 + 5)
-    // TODO: handle priorities of operations
-    if (length == 3) {
-        if (char_is_number(n->tokens[0][0])) {
-            n->left->value = atoll(n->tokens[0]);
-        } else {
-            n->left->constant = n->tokens[0];
+    for (length = 0; n->tokens[length] != NULL; ++length) {
+        // printf("LEN = %llu\n", length);
+        if (n->tokens[length][0] == '(') {
+            bracket_depth++;
+            // printf("+BD: %llu\n", bracket_depth);
+            continue;
+        } else if (n->tokens[length][0] == ')') {
+            bracket_depth--;
+            // printf("-BD: %llu\n", bracket_depth);
+            continue;
         }
-    } else {
-        for (i = 0; i < length - 2; ++i) {
-            n->left->tokens[i] = (char*) calloc(strlen(n->tokens[i]), sizeof(char));
-            for (j = 0; j < strlen(n->tokens[i]); ++j) {
-                n->left->tokens[i][j] = n->tokens[i][j];
+
+        if (bracket_depth > last_bracket_depth) continue;
+
+        if (char_is_operation(n->tokens[length][0])) {
+            last_bracket_depth = bracket_depth;
+
+            if (op == ' ') {
+                op = n->tokens[length][0];
+                lowest_priority_op_ind = length;
+            } else if (op == '^') {
+                op = n->tokens[length][0];
+                lowest_priority_op_ind = length;
+            } else if ((op == '*' || op == '/') && (n->tokens[length][0] == '+' || n->tokens[length][0] == '-')) {
+                op = n->tokens[length][0];
+                lowest_priority_op_ind = length;
             }
         }
     }
-    n->left->tokens[length - 2] = NULL;
+    n->left->op = op;
+
+    unsigned long long left_length = lowest_priority_op_ind;
+    unsigned long long right_length = length - left_length - 1;
+
+    unsigned long long left_braces = 0, right_braces = 0;
+    for (i = 0; i < left_length; ++i) {
+        if (n->tokens[i][0] == '(' && n->tokens[left_length - 1 - i][0] == ')') {
+            left_length -= 2;
+            left_braces++;
+        }
+    }
+
+    for (i = 0; i < right_length; ++i) {
+        if (n->tokens[left_length + 1 + i][0] == '(' && n->tokens[length - 1 - i][0] == ')') {
+            right_length -= 2;
+            right_braces++;
+        }
+    }
+
+    // printf("lengths: %llu, %llu\n\n", left_length, right_length);
+
+    n->left->tokens = (char**) calloc(left_length + 1, sizeof(char*)); // one extra for NULL
+    n->right->tokens = (char**) calloc(right_length + 1, sizeof(char*));
+
+    n->left->tokens[left_length - 1] = NULL;
+    n->right->tokens[right_length - 1] = NULL;
+
+    // printf("OP: %c\n\n", op);
+
+    unsigned long long n_ind = 0;
+
+    if (left_length == 1) {
+        // printf("GET THIS FOCKING LEFT MATE\n");
+        n_ind = left_braces;
+        if (char_is_number(n->tokens[n_ind][0])) {
+            n->left->value = atoll(n->tokens[n_ind]);
+            // printf("NUMBER! %llu\n", n->left->value);
+        } else {
+            n->left->constant = n->tokens[n_ind];
+            // printf("CONST! %s\n", n->left->constant);
+        }
+    } else {
+        // printf("COPY TO L:\n");
+        for (i = 0; i < left_length; ++i) {
+            n_ind = i + left_braces;
+            n->left->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
+            for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
+                n->left->tokens[i][j] = n->tokens[n_ind][j];
+            }
+            // printf("%s", n->left->tokens[i]);
+        }
+        // printf("\n");
+    }
+    // printf("\n");
+
+    if (right_length == 1) {
+        // printf("GET THIS FOCKING RIGHT MATE\n");
+        n_ind = left_length + 1 + 2 * left_braces + right_braces;
+        if (char_is_number(n->tokens[n_ind][0])) {
+            n->right->value = atoll(n->tokens[n_ind]);
+            // printf("NUMBER! %llu\n", n->right->value);
+        } else {
+            n->right->constant = n->tokens[n_ind];
+            // printf("CONST! %s\n", n->right->constant);
+        }
+    } else {
+        // printf("COPY TO R:\n");
+        for (i = 0; i < right_length; ++i) {
+            n_ind = left_length + 1 + i + right_braces + 2 * left_braces;
+            n->right->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
+            for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
+                n->right->tokens[i][j] = n->tokens[n_ind][j];
+            }
+            // printf("%s", n->right->tokens[i]);
+        }
+        // printf("\n");
+    }
+    // printf("\n");
 }
 
 void node_add_children(Node* n) {
-    if (n->tokens == NULL) {
+    if (n->tokens[0] == NULL) {
         return;
     }
     node_create_children(n);
@@ -103,11 +186,14 @@ void node_empty_tokens(Node* n) {
     // printf("\n");
     // printf("len: %llu\n", length);
     if (length > 0) {
+        // printf("===CHID===\n");
         node_add_children(n);
-        // printf("children have ben added succesfully\n");
-        // printf("%lld and %lld\n", n->left->value, n->right->value);
-        // printf("\n");
+        // printf("===LEFT===\n");
         node_empty_tokens(n->left);
+        // printf("===RIHT===\n");
+        node_empty_tokens(n->right);
+    // } else {
+    //     printf("EMPTY!\n");
     }
 }
 
