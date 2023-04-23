@@ -78,19 +78,18 @@ void node_create_children(Node* n) {
         if (bracket_depth > last_bracket_depth) continue;
 
         if (char_is_operation(n->tokens[length][0])) {
-            // printf("found op: %c; type: ", n->tokens[length][0]);
             last_bracket_depth = bracket_depth;
 
             if (op == ' ') {
-                // printf("1");
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             } else if (op == '^') {
-                // printf("2");
+                op = n->tokens[length][0];
+                lowest_priority_op_ind = length;
+            } else if (op == '/' && n->tokens[length][0] == '*') {
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             } else if ((op == '*' || op == '/') && (n->tokens[length][0] == '+' || n->tokens[length][0] == '-')) {
-                // printf("3");
                 op = n->tokens[length][0];
                 lowest_priority_op_ind = length;
             }
@@ -130,9 +129,10 @@ void node_create_children(Node* n) {
 
     unsigned long long n_ind = 0;
 
+    unsigned long long left_start = left_braces;
     if (left_length == 1) {
         printf("GET THIS FOCKING LEFT MATE\n");
-        n_ind = left_braces;
+        n_ind = left_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->left->value = atoll(n->tokens[n_ind]);
             printf("NUMBER! %llu\n", n->left->value);
@@ -143,7 +143,7 @@ void node_create_children(Node* n) {
     } else {
         printf("COPY TO L:\n");
         for (i = 0; i < left_length; ++i) {
-            n_ind = i + left_braces;
+            n_ind = left_start + i;
             n->left->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->left->tokens[i][j] = n->tokens[n_ind][j];
@@ -154,9 +154,10 @@ void node_create_children(Node* n) {
     }
     printf("\n");
 
+    unsigned long long right_start = left_length + 1 + 2 * left_braces + right_braces;
     if (right_length == 1) {
         printf("GET THIS FOCKING RIGHT MATE\n");
-        n_ind = left_length + 1 + 2 * left_braces + right_braces;
+        n_ind = right_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->right->value = atoll(n->tokens[n_ind]);
             printf("NUMBER! %llu\n", n->right->value);
@@ -167,7 +168,7 @@ void node_create_children(Node* n) {
     } else {
         printf("COPY TO R:\n");
         for (i = 0; i < right_length; ++i) {
-            n_ind = left_length + 1 + 2 * left_braces + right_braces + i;
+            n_ind = right_start + i;
             n->right->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->right->tokens[i][j] = n->tokens[n_ind][j];

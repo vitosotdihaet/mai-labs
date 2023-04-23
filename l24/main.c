@@ -4,7 +4,7 @@
 int main() {
     Node root;
 
-    char initial_expression[256];
+    char initial_expression[256] = {};
     printf("Input math expression: ");
     scanf("%s", &initial_expression);
 
