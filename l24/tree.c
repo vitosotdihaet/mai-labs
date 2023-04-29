@@ -6,9 +6,12 @@
 #include "tree.h"
 #include "misc.h"
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
 
 #define SEPARATOR "  "
-#define DEBUG 0
+#define TABS "\t\t\t\t\t\t\t\t\t\t"
 
 
 void node_zero(Node* n) {
@@ -236,6 +239,7 @@ void node_build_tree(Node* n) {
 }
 
 
+
 void node_print(Node n) {
     if (n.left != NULL) {
         printf("(");
@@ -279,6 +283,47 @@ void node_print_tree(Node* n, int lvl) {
     node_print_tree(n->left, lvl);
 }
 
+void node_print_debug(Node n) {
+    _node_print_debug(n, 1);
+}
+
+void _node_print_debug(Node n, int lvl) {
+    printf("Node {\n" "%*ctokens: ", lvl, '\t');
+    if (n.tokens != NULL) {
+        for (unsigned long long i = 0; n.tokens[i] != NULL; ++i)
+            printf("%s ", n.tokens[i]);
+    }
+    printf(
+        "\n"
+        "%.*sop: %c\n"
+        "%.*sconstant: %s\n"
+        "%.*svalue: %lld\n"
+        "%.*sleft: ",
+        lvl, TABS, n.op,
+        lvl, TABS, n.constant,
+        lvl, TABS, n.value,
+        lvl, TABS
+    );
+
+    if (n.left != NULL) {
+        _node_print_debug(*n.left, lvl + 1);
+    } else {
+        printf("(null)\n");
+    }
+
+    printf("%*cright: ", lvl, '\t');
+
+    if (n.right != NULL) {
+        _node_print_debug(*n.right, lvl + 1);
+    } else {
+        printf("(null)\n");
+    }
+
+    printf("%*c}\n", lvl, '\t');
+}
+
+
+
 # if 0
 void node_task(Node* n) {
     if (
@@ -308,20 +353,22 @@ void node_task(Node* n) {
 }
 #endif
 
-void node_task(Node* l, Node* r) {
-    
+
+
+void node_task(Node* n) {
+    // TODO: Find pairs of nodes that need to be processed 
 }
 
-void node_take_out_factors(Node* n) {    
-    long long llv = n->left->left->value, lrv = n->left->right->value;
-    long long rlv = n->right->left->value, rrv = n->right->right->value;
+void node_take_out_factors(Node* r, Node* l) {    
+    long long llv = l->left->value, lrv = l->right->value;
+    long long rlv = r->left->value, rrv = r->right->value;
 
-    char *ll = n->left->left->constant, *lr = n->left->right->constant;
-    char *rl = n->right->left->constant, *rr = n->right->right->constant;
+    char *llc = l->left->constant, *lrc = l->right->constant;
+    char *rlc = r->left->constant, *rrc = r->right->constant;
 
     if (
-        (n->left->op != '-' || n->left->left->op != '*') ||
-        (n->left->left->op != n->right->left->op) ||
+        (l->op != '-' || l->left->op != '*') ||
+        (l->left->op != r->left->op) ||
         (
             ( // check if no matching numbers are present
                 ((llv != -1 && rlv != -1) && llv != rlv) ||
@@ -331,16 +378,16 @@ void node_take_out_factors(Node* n) {
             )
             ||
             ( // check if no matching constants are present
-                ((ll != NULL && rl != NULL) && strcmp(ll, rl) != 0) ||
-                ((ll != NULL && rr != NULL) && strcmp(ll, rr) != 0) ||
-                ((lr != NULL && rl != NULL) && strcmp(lr, rl) != 0) ||
-                ((lr != NULL && rr != NULL) && strcmp(lr, rr) != 0)
+                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) != 0) ||
+                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) != 0) ||
+                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) != 0) ||
+                ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) != 0)
             )
         )
     ) return;
 
-    n->right->left->op = n->left->op;
-    n->left->op = n->left->left->op;
+    r->left->op = l->op;
+    l->op = l->left->op;
 
     long long value1 = -1, value2 = -1;
 
@@ -365,41 +412,41 @@ void node_take_out_factors(Node* n) {
             value2 = rlv;
         }
 
-        n->left->value = factor;
-    } else if ((ll != NULL || lr != NULL) && (rl != NULL || rr != NULL)) {
+        l->value = factor;
+    } else if ((llc != NULL || lrc != NULL) && (rlc != NULL || rrc != NULL)) {
         char* constant;
 
-        if (ll != NULL) {
-            if (rl != NULL && strcmp(ll, rl) == 0) {
-                constant = ll;
-                n->right->left->constant = NULL;
+        if (llc != NULL) {
+            if (rlc != NULL && strcmp(llc, rlc) == 0) {
+                constant = llc;
+                r->left->constant = NULL;
                 value1 = lrv;
                 value2 = rrv;
-            } else if (rr != NULL && strcmp(ll, rr) == 0) {
-                constant = ll;
-                n->right->right->constant = NULL;
+            } else if (rrc != NULL && strcmp(llc, rrc) == 0) {
+                constant = llc;
+                r->right->constant = NULL;
                 value1 = lrv;
                 value2 = rlv;
             }
-        } else if (lr != NULL) {
-            if (rl != NULL && strcmp(lr, rl) == 0) {
-                constant = lr;
-                n->right->left->constant = NULL;
+        } else if (lrc != NULL) {
+            if (rlc != NULL && strcmp(lrc, rlc) == 0) {
+                constant = lrc;
+                r->left->constant = NULL;
                 value1 = llv;
                 value2 = rrv;
-            } else if (rr != NULL && strcmp(lr, rr) == 0) {
-                constant = lr;
-                n->right->right->constant = NULL;
+            } else if (rrc != NULL && strcmp(lrc, rrc) == 0) {
+                constant = lrc;
+                r->right->constant = NULL;
                 value1 = llv;
                 value2 = rlv;
             }
         }
 
-        n->left->constant = constant;
+        l->constant = constant;
     }
-    n->right->left->value = value1;
-    n->right->right->value = value2;
+    r->left->value = value1;
+    r->right->value = value2;
 
-    n->left->left = NULL;
-    n->left->right = NULL;
+    l->left = NULL;
+    l->right = NULL;
 }
