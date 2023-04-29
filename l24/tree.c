@@ -311,7 +311,7 @@ void _node_print_debug(Node n, int lvl) {
         printf("(null)\n");
     }
 
-    printf("%*cright: ", lvl, '\t');
+    printf("%.*sright: ", lvl, TABS);
 
     if (n.right != NULL) {
         _node_print_debug(*n.right, lvl + 1);
