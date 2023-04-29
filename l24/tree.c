@@ -361,7 +361,7 @@ void node_task(Node* n) {
     // TODO: Find pairs of nodes that need to be processed 
 }
 
-void node_take_out_factors(Node* r, Node* l) {    
+void node_take_out_factors(Node* l, Node* r) {    
     long long llv = l->left->value, lrv = l->right->value;
     long long rlv = r->left->value, rrv = r->right->value;
 
@@ -373,20 +373,22 @@ void node_take_out_factors(Node* r, Node* l) {
         (l->left->op != r->left->op) ||
         (
             ( // check if no matching numbers are present
-                ((llv != -1 && rlv != -1) && llv != rlv) ||
-                ((llv != -1 && rrv != -1) && llv != rrv) ||
-                ((lrv != -1 && rlv != -1) && lrv != rlv) ||
+                ((llv != -1 && rlv != -1) && llv != rlv) &&
+                ((llv != -1 && rrv != -1) && llv != rrv) &&
+                ((lrv != -1 && rlv != -1) && lrv != rlv) &&
                 ((lrv != -1 && rrv != -1) && lrv != rrv)
             )
             ||
             ( // check if no matching constants are present
-                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) != 0) ||
-                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) != 0) ||
-                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) != 0) ||
+                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) != 0) &&
+                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) != 0) &&
+                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) != 0) &&
                 ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) != 0)
             )
         )
     ) return;
+
+    // TODO: Redo this fucking function so it works
 
     r->left->op = l->op;
     l->op = l->left->op;

@@ -23,29 +23,21 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+
     printf("\n");
     node_print_tree(&root, 0);
+    printf("\n");
+
+    node_print_debug(*root.left);
+    node_print_debug(*root.right->left);
     printf("\n");
 
     printf("Task:\n");
     // node_task(&root);
 
-    node_print(*root.left);
+    node_take_out_factors(root.left, root.right->left);
+    node_print(root);
     printf("\n");
-    node_print(*root.right->left);
-    printf("\n");
-
-    // printf("\n");
-
-    // node_take_out_factors(root.left, root.right->left);
-    node_print_debug(*root.left);
-    // printf("\n");
-    node_print_debug(*root.right->left);
-    // printf("\n");
-
-    // printf("\n");
-    // node_print(root);
-    // printf("\n");
 
     return 0;
 }
