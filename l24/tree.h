@@ -21,7 +21,7 @@ void node_build_tree(Node* n);
 void node_print(Node n);
 void node_print_tree(Node* n, int lvl);
 
-void node_task(Node* n);
+void node_task(Node* l, Node* r);
 void node_take_out_factors(Node* n);
 
 
