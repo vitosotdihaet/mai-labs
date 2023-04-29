@@ -319,7 +319,7 @@ void _node_print_debug(Node n, int lvl) {
         printf("(null)\n");
     }
 
-    printf("%.*s}\n", lvl, TABS);
+    printf("%.*s}\n", lvl - 1, TABS);
 }
 
 
