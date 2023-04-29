@@ -39,13 +39,13 @@ int main() {
 
     // node_take_out_factors(root.left, root.right->left);
     node_print_debug(*root.left);
-    printf("\n");
-    // node_print_debug(*root.right->left);
+    // printf("\n");
+    node_print_debug(*root.right->left);
     // printf("\n");
 
     // printf("\n");
     // node_print(root);
-    printf("\n");
+    // printf("\n");
 
     return 0;
 }

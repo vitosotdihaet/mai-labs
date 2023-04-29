@@ -292,9 +292,12 @@ void _node_print_debug(Node n, int lvl) {
     if (n.tokens != NULL) {
         for (unsigned long long i = 0; n.tokens[i] != NULL; ++i)
             printf("%s ", n.tokens[i]);
+        printf("\n");
+    } else {
+        printf("(null)\n");
     }
+
     printf(
-        "\n"
         "%.*sop: %c\n"
         "%.*sconstant: %s\n"
         "%.*svalue: %lld\n"
@@ -312,7 +315,6 @@ void _node_print_debug(Node n, int lvl) {
     }
 
     printf("%.*sright: ", lvl, TABS);
-
     if (n.right != NULL) {
         _node_print_debug(*n.right, lvl + 1);
     } else {
