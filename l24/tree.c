@@ -288,7 +288,7 @@ void node_print_debug(Node n) {
 }
 
 void _node_print_debug(Node n, int lvl) {
-    printf("Node {\n" "%*ctokens: ", lvl, '\t');
+    printf("Node {\n" "%.*stokens: ", lvl, TABS);
     if (n.tokens != NULL) {
         for (unsigned long long i = 0; n.tokens[i] != NULL; ++i)
             printf("%s ", n.tokens[i]);
@@ -319,7 +319,7 @@ void _node_print_debug(Node n, int lvl) {
         printf("(null)\n");
     }
 
-    printf("%*c}\n", lvl, '\t');
+    printf("%.*s}\n", lvl, TABS);
 }
 
 
