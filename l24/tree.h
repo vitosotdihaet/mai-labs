@@ -1,7 +1,7 @@
 #ifndef TREE_H
 #define TREE_H
 
-struct Node {
+typedef struct Node {
     char** tokens;
     char op;
     char* constant;
@@ -9,8 +9,7 @@ struct Node {
     struct Node* left;
     struct Node* right;
     struct Node* prev;
-};
-typedef struct Node Node;
+} Node;
 
 void node_zero(Node* n);
 void node_create_root(Node* n, char* lex);

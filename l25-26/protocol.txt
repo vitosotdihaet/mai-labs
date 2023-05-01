@@ -1,0 +1,361 @@
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat makefile
+CC = gcc
+CFLAGS = -std=c99 -Wall -Wextra
+
+main: main.o stack.o
+        $(CC) $(CFLAGS) -o main.out main.o stack.o
+main_o:
+        $(CC) $(CFLAGS) -c main.c
+stack_o:
+        $(CC) $(CFLAGS) -c stack.c
+clean:
+        rm -f *.o main.out
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  main.o  main.out*  makefile  stack.c  stack.h  stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make clean
+rm -f *.o main.out
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  makefile  stack.c  stack.h
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make stack_o
+gcc -std=c99 -Wall -Wextra -c stack.c
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  makefile  stack.c  stack.h  stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make
+gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
+gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat main.c
+#include <stdio.h>
+#include "stack.h"
+
+int main() {
+    stack* s = stack_empty();
+    int64_t arr[3] = {1, -5, 342};
+
+    for (int i = 0; i < 5; ++i) {
+        stack_push(s, i);
+    }
+
+    printf("Top 3 after adding 0 1 2 3 4:\n");
+    for (int i = 0; i < 3; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    printf("Top 5 after adding array {1, -5, 342}:\n");
+    stack_push_array(s, 3, arr);
+    stack_sort(s);
+    stack_delete_max(s);
+    for (int i = 0; i < 4; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    return 0;
+}
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat stack.h
+#include <inttypes.h>
+#include <stdbool.h>
+
+typedef struct stack {
+    uint64_t _size;
+    uint64_t _capacity;
+    int64_t *_arr;
+} stack;
+
+
+stack* stack_empty();
+stack* stack_from_array(uint64_t size, int64_t* elements);
+
+uint64_t stack_size(stack* s);
+uint64_t stack_capacity(stack* s);
+bool stack_is_empty(stack* s);
+
+int64_t stack_pop(stack* s);
+void stack_delete_at(stack* s, uint64_t index);
+
+void stack_push(stack* s, int64_t e);
+void stack_push_array(stack* s, uint64_t size, int64_t* elements);
+
+void stack_free (stack *s);
+
+
+void stack_sort(stack* s);
+void stack_delete_max(stack* s);
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat stack.c
+#ifndef STACK_H
+#define STACK_H
+
+#include "stack.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+
+
+stack* stack_empty() {
+    stack* s;
+    s = (stack*) calloc(1, sizeof(stack));
+    s->_arr = calloc(1, sizeof(int64_t));
+    s->_size = 0;
+    s->_capacity = 1;
+    return s;
+}
+
+stack* stack_from_array(uint64_t size, int64_t* elements) {
+    stack* s = stack_empty();
+    stack_push_array(s, size, elements);
+    return s;
+}
+
+
+uint64_t stack_size(stack* s) {
+    return s->_size;
+}
+
+uint64_t stack_capacity(stack* s) {
+    return s->_capacity;
+}
+
+bool stack_is_empty(stack* s) {
+    return s->_size == 0;
+}
+
+
+int64_t stack_pop(stack* s) {
+    if (s->_size == 0) {
+        printf("Stack size is zero! Bailing...\n");
+        exit(1);
+    }
+    s->_size--;
+    return s->_arr[s->_size];
+}
+
+void stack_delete_at(stack* s, uint64_t index) {
+    for (uint64_t i = index; i < s->_size; ++i) {
+        s->_arr[i] = s->_arr[i + 1];
+    }
+    s->_size--;
+}
+
+
+void _stack_resize(stack* s, uint64_t new_capacity) {
+    s->_capacity = new_capacity;
+    s->_arr = (int64_t*) realloc(s->_arr, new_capacity * sizeof(int64_t));
+}
+
+void stack_push(stack* s, int64_t e) {
+    if (s->_size + 1 > s->_capacity) {
+        _stack_resize(s, 2 * s->_capacity);
+    }
+    s->_arr[s->_size] = e;
+    s->_size++;
+    s->_arr[s->_size] = 0;
+}
+
+void stack_push_array(stack* s, uint64_t size, int64_t* elements) {
+    for (uint64_t i = 0; i < size; ++i) {
+        stack_push(s, elements[i]);
+    }
+}
+
+
+void stack_free(stack* s) {
+    s->_size = 0;
+    s->_capacity = 0;
+    free(s->_arr);
+}
+
+
+
+void stack_sort(stack* s) {
+    for (uint64_t i = 0; i < s->_size - 1; i++) {
+        uint64_t min_index = i;
+
+        for (uint64_t j = i + 1; j < s->_size; j++) {
+            if (s->_arr[j] < s->_arr[min_index])
+                min_index = j;
+        }
+
+        if (min_index != i) {
+            int64_t temp = s->_arr[i];
+            s->_arr[i] = s->_arr[min_index];
+            s->_arr[min_index] = temp;
+        }
+    }
+}
+
+void stack_delete_max(stack* s) {
+    uint64_t max_index = 0;
+    int64_t max_element = INT64_MIN;
+    for (uint64_t i = 0; i < s->_size; ++i) {
+        if (s->_arr[i] > max_element) max_index = i;
+    }
+    stack_delete_at(s, max_index);
+}
+
+#endif
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ./main.out
+Top 3 after adding 0 1 2 3 4:
+4
+3
+2
+Top 5 after adding array {1, -5, 342}:
+1
+1
+0
+-5
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat main.c
+#include <stdio.h>
+#include "stack.h"
+
+int main() {
+    stack* s = stack_empty();
+    int64_t arr[3] = {1, -5, 342};
+
+    for (int i = 0; i < 5; ++i) {
+        stack_push(s, i);
+    }
+
+    printf("Top 3 after adding 0 1 2 3 4:\n");
+    for (int i = 0; i < 3; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    stack_push_array(s, 3, arr);
+    printf("Top 5 after adding array {1, -5, 342} and sorting it:\n");
+    stack_sort(s);
+    // stack_delete_max(s);
+    for (int i = 0; i < 5; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    return 0;
+}
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make
+gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
+gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ./main.out
+Top 3 after adding 0 1 2 3 4:
+4
+3
+2
+Top 5 after adding array {1, -5, 342} and sorting it:
+342
+1
+1
+0
+-5
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat main.c
+#include <stdio.h>
+#include "stack.h"
+
+int main() {
+    stack* s = stack_empty();
+    int64_t arr[3] = {1, -5, 342};
+
+    for (int i = 0; i < 5; ++i) {
+        stack_push(s, i);
+    }
+
+    printf("Top 3 after adding 0 1 2 3 4:\n");
+    for (int i = 0; i < 3; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    stack_push_array(s, 3, arr);
+    printf("Top 5 after adding array {1, -5, 342} and deleting max element from it:\n");
+    // stack_sort(s);
+    stack_delete_max(s);
+    for (int i = 0; i < 5; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    return 0;
+}
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make
+gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
+gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ./main.out
+Top 3 after adding 0 1 2 3 4:
+4
+3
+2
+Top 5 after adding array {1, -5, 342} and deleting max element from it:
+-5
+1
+1
+0
+Stack size is zero! Bailing...
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ cat main.c
+#include <stdio.h>
+#include "stack.h"
+
+int main() {
+    stack* s = stack_empty();
+    int64_t arr[3] = {1, -5, 342};
+
+    for (int i = 0; i < 5; ++i) {
+        stack_push(s, i);
+    }
+
+    printf("Top 3 after adding 0 1 2 3 4:\n");
+    for (int i = 0; i < 3; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    stack_push_array(s, 3, arr);
+    printf("Top 4 after adding array {1, -5, 342} and deleting max element from it:\n");
+    // stack_sort(s);
+    stack_delete_max(s);
+    for (int i = 0; i < 4; ++i) {
+        printf("%I64d\n", stack_pop(s));
+    }
+
+    return 0;
+}
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ make
+gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
+gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ./main.out
+Top 3 after adding 0 1 2 3 4:
+4
+3
+2
+Top 4 after adding array {1, -5, 342} and deleting max element from it:
+-5
+1
+1
+0

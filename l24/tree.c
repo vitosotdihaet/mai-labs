@@ -66,8 +66,8 @@ void node_create_children(Node* n) {
     node_zero(n->left);
     node_zero(n->right);
 
-    n->left->prev = &n;
-    n->right->prev = &n;
+    n->left->prev = n;
+    n->right->prev = n;
 
     unsigned long long length = 0, i = 0, j = 0;
     unsigned long long lowest_priority_op_ind = 0, bracket_depth = 0, last_bracket_depth = 0;
@@ -358,8 +358,105 @@ void node_task(Node* n) {
 
 
 void node_task(Node* n) {
-    // TODO: Find pairs of nodes that need to be processed 
+    // TODO: Find pairs of nodes that need to be processed
+    // TODO: they should be connected only via + and -
 }
+
+#if 0
+void node_take_out_factors(Node* l, Node* r) {    
+    long long llv = l->left->value, lrv = l->right->value;
+    long long rlv = r->left->value, rrv = r->right->value;
+
+    char *llc = l->left->constant, *lrc = l->right->constant;
+    char *rlc = r->left->constant, *rrc = r->right->constant;
+
+    if (
+        (l->op != '-' || l->left->op != '*') ||
+        (l->left->op != r->left->op) ||
+        !(
+            ( // check if matching numbers are present
+                ((llv != -1 && rlv != -1) && llv == rlv) ||
+                ((llv != -1 && rrv != -1) && llv == rrv) ||
+                ((lrv != -1 && rlv != -1) && lrv == rlv) ||
+                ((lrv != -1 && rrv != -1) && lrv == rrv)
+            )
+            ||
+            ( // check if matching constants are present
+                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) == 0) ||
+                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) == 0) ||
+                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) == 0) ||
+                ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) == 0)
+            )
+        )
+    ) return;
+
+    // TODO: Redo this fucking function so it works
+
+    r->left->op = l->op;
+    l->op = l->left->op;
+
+    long long value1 = -1, value2 = -1;
+
+    if (llv != -1 && lrv != -1 && rlv != -1 && rrv != -1) {
+        long long factor = -1;
+
+        if (llv == rlv) {
+            factor = llv;
+            value1 = lrv;
+            value2 = rrv;
+        } else if (llv == rrv) {
+            factor = llv;
+            value1 = lrv;
+            value2 = rlv;
+        } else if (lrv == rlv) {
+            factor = lrv;
+            value1 = llv;
+            value2 = rrv;
+        } else {
+            factor = lrv;
+            value1 = llv;
+            value2 = rlv;
+        }
+
+        l->value = factor;
+    } else if ((llc != NULL || lrc != NULL) && (rlc != NULL || rrc != NULL)) {
+        char* constant;
+
+        if (llc != NULL) {
+            if (rlc != NULL && strcmp(llc, rlc) == 0) {
+                constant = llc;
+                r->left->constant = NULL;
+                value1 = lrv;
+                value2 = rrv;
+            } else if (rrc != NULL && strcmp(llc, rrc) == 0) {
+                constant = llc;
+                r->right->constant = NULL;
+                value1 = lrv;
+                value2 = rlv;
+            }
+        } else if (lrc != NULL) {
+            if (rlc != NULL && strcmp(lrc, rlc) == 0) {
+                constant = lrc;
+                r->left->constant = NULL;
+                value1 = llv;
+                value2 = rrv;
+            } else if (rrc != NULL && strcmp(lrc, rrc) == 0) {
+                constant = lrc;
+                r->right->constant = NULL;
+                value1 = llv;
+                value2 = rlv;
+            }
+        }
+
+        l->constant = constant;
+    }
+    r->left->value = value1;
+    r->right->value = value2;
+
+    l->left = NULL;
+    l->right = NULL;
+}
+#endif
 
 void node_take_out_factors(Node* l, Node* r) {    
     long long llv = l->left->value, lrv = l->right->value;
@@ -371,24 +468,39 @@ void node_take_out_factors(Node* l, Node* r) {
     if (
         (l->op != '-' || l->left->op != '*') ||
         (l->left->op != r->left->op) ||
-        (
-            ( // check if no matching numbers are present
-                ((llv != -1 && rlv != -1) && llv != rlv) &&
-                ((llv != -1 && rrv != -1) && llv != rrv) &&
-                ((lrv != -1 && rlv != -1) && lrv != rlv) &&
-                ((lrv != -1 && rrv != -1) && lrv != rrv)
+        !(
+            ( // check if matching numbers are present
+                ((llv != -1 && rlv != -1) && llv == rlv) ||
+                ((llv != -1 && rrv != -1) && llv == rrv) ||
+                ((lrv != -1 && rlv != -1) && lrv == rlv) ||
+                ((lrv != -1 && rrv != -1) && lrv == rrv)
             )
             ||
-            ( // check if no matching constants are present
-                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) != 0) &&
-                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) != 0) &&
-                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) != 0) &&
-                ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) != 0)
+            ( // check if matching constants are present
+                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) == 0) ||
+                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) == 0) ||
+                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) == 0) ||
+                ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) == 0)
             )
         )
     ) return;
 
-    // TODO: Redo this fucking function so it works
+    Node *right_part = r->prev;
+
+    right_part->op = right_part->left->op;
+    if (right_part->left == r) {
+        right_part->value = right_part->right->value;
+        right_part->constant = right_part->right->constant;
+    } else {
+        right_part->value = right_part->left->value;
+        right_part->constant = right_part->left->constant;
+    }
+
+    node_print_debug(*right_part);
+
+    Node *left_part = l;
+    node_print_debug(*left_part);
+    node_zero(left_part->left);
 
     r->left->op = l->op;
     l->op = l->left->op;
