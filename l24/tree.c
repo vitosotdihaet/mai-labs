@@ -458,6 +458,7 @@ void node_take_out_factors(Node* l, Node* r) {
 }
 #endif
 
+// move right part's multiplier to l and other stuff to r->prev
 void node_take_out_factors(Node* l, Node* r) {    
     long long llv = l->left->value, lrv = l->right->value;
     long long rlv = r->left->value, rrv = r->right->value;
