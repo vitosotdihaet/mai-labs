@@ -13,6 +13,9 @@ typedef struct Node {
 
 void node_empty(Node* n);
 void node_set_children(Node* n, Node** children, uint64_t count);
+void node_add_children(Node* n, Node** children, uint64_t count);
+void node_delete_child(Node* n, uint64_t index);
+
 uint64_t node_get_children_count(Node* n);
 
 void node_print_tree(Node* n);

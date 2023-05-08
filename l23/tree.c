@@ -22,13 +22,41 @@ void node_empty(Node* n) {
 
 void node_set_children(Node* n, Node** children, uint64_t count) {
     n->children = (Node**) calloc(count + 1, sizeof(Node*));
+
     for (uint64_t i = 0; i < count; ++i) {
         n->children[i] = children[i];
         n->children[i]->prev = n;
         n->children[i]->value = children[i]->value;
     }
+
     n->children[count] = NULL;
 }
+
+void node_add_children(Node* n, Node** children, uint64_t count) {
+    uint64_t old_count = node_get_children_count(n);
+
+    n->children = (Node**) realloc(n->children, (old_count + count + 1) * sizeof(Node*));
+
+    for (uint64_t i = old_count; i < old_count + count; ++i) {
+        n->children[i] = children[i - old_count];
+        n->children[i]->prev = n;
+        n->children[i]->value = children[i - old_count]->value;
+    }
+
+    n->children[old_count + count] = NULL;
+}
+
+void node_delete_child(Node* n, uint64_t index) {
+    uint64_t count = node_get_children_count(n);
+
+    for (uint64_t i = index; i < count + 1; ++i) {
+        n->children[i] = n->children[i + 1];
+    }
+
+    n->children = (Node**) realloc(n->children, (count + 1) * sizeof(Node*));
+    n->children[count] = NULL;
+}
+
 
 uint64_t node_get_children_count(Node* n) {
     uint64_t count = 0;
@@ -61,7 +89,9 @@ void node_print_tree(Node* n) {
 
 bool node_is_width_descending(Node* n) {
     if (n == NULL) return true;
+
     uint64_t node_count = node_get_children_count(n), count = 0;
+
     for (uint64_t i = 0; n->children[i] != NULL; ++i) {
         count = max(count, node_get_children_count(n->children[i]));
     }
