@@ -21,26 +21,52 @@ int main() {
 
     int64_t arr[9] = {5, 13, 7, 4, 8, 1, -152, 7, 12};
 
-    // for (int i = 0; i < 5; ++i) {
-    //     stack_push(s, i);
-    // }
+    for (int i = 0; i < 5; ++i) {
+        stack_push(s, i);
+    }
 
-    // printf("Top 3 after adding 0 1 2 3 4:\n");
-    // for (int i = 0; i < 3; ++i) {
-    //     printf("%I64d\n", stack_pop(s));
-    // }
+    for (int i = 0; i < 9; ++i) {
+        stack_push(s, arr[i]);
+    }
+    printf("Stack before popping:\n");
+    stack_print(s);
 
-    stack_push_array(s, 9, arr);
-
-    printf("Initial stack:\n");
+    for (int i = 0; i < 3; ++i) {
+        stack_pop(s);
+    }
+    printf("Stack after popping:\n");
     stack_print(s);
 
     stack_delete_max(s);
     printf("Stack after deleting max element from it:\n");
+    stack_print(s);
 
-    // stack_sort(s);
-    // printf("Stack after sorting:\n");
+    stack_sort(s);
+    printf("Stack after sorting:\n");
+    stack_print(s);
 
+    stack_delete_max(s);
+    printf("Stack after deleting max element from it:\n");
+    stack_print(s);
+
+    for (int i = 0; i < 3; ++i) {
+        stack_pop(s);
+    }
+    printf("Stack after popping 3 elements from it:\n");
+    stack_print(s);
+
+    for (int i = 10; i < 15; ++i) {
+        stack_push(s, -i + 40);
+    }
+    printf("Stack after pushing to it:\n");
+    stack_print(s);
+
+    stack_delete_max(s);
+    printf("Stack after deleting max element from it:\n");
+    stack_print(s);
+
+    stack_sort(s);
+    printf("Stack after sorting:\n");
     stack_print(s);
 
     return 0;
@@ -259,39 +285,21 @@ $ make stack_o
 gcc -std=c99 -Wall -Wextra -c stack.c
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ ls
-./  ../  l25-2012.djvu  l26-2012.djvu  main.c  makefile  stack.c  stack.h  stack.o
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
 $ make
 gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
 gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ ./main.out
-Initial stack:
-12
-7
--152
-1
-8
-4
-7
-13
-5
-Stack after deleting max element from it:
-12
-7
--152
-1
-8
-4
-7
-5
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  main.o  main.out*  makefile  protocol.txt  report.pdf  stack.c  stack.h  stack.o
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
 $ make clean
 rm -f *.o main.out
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  makefile  protocol.txt  report.pdf  stack.c  stack.h
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
 $ make
@@ -300,8 +308,12 @@ gcc -std=c99 -Wall -Wextra   -c -o stack.o stack.c
 gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
+$ ls
+./  ../  l25-2012.djvu  l26-2012.djvu  main.c  main.o  main.out*  makefile  protocol.txt  report.pdf  stack.c  stack.h  stack.o
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
 $ ./main.out
-Initial stack:
+Stack before popping:
 12
 7
 -152
@@ -311,35 +323,28 @@ Initial stack:
 7
 13
 5
+4
+3
+2
+1
+0
+Stack after popping:
+1
+8
+4
+7
+13
+5
+4
+3
+2
+1
+0
 Stack after deleting max element from it:
-12
-7
--152
 1
 8
 4
 7
-5
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ nano main.c
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ make
-gcc -std=c99 -Wall -Wextra   -c -o main.o main.c
-gcc -std=c99 -Wall -Wextra -o main.out main.o stack.o
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ ./main.out
-Initial stack:
-12
-7
--152
-1
-8
-4
-7
-13
 5
 4
 3
@@ -347,10 +352,7 @@ Initial stack:
 1
 0
 Stack after sorting:
-13
-12
 8
-7
 7
 5
 4
@@ -360,39 +362,54 @@ Stack after sorting:
 1
 1
 0
--152
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l25-26 (master)
-$ cat main.c
-#include <stdio.h>
-#include "stack.h"
-
-int main() {
-    stack* s = stack_empty();
-
-    int64_t arr[9] = {5, 13, 7, 4, 8, 1, -152, 7, 12};
-
-    for (int i = 0; i < 5; ++i) {
-        stack_push(s, i);
-    }
-
-    // printf("Top 3 after adding 0 1 2 3 4:\n");
-    // for (int i = 0; i < 3; ++i) {
-    //     printf("%I64d\n", stack_pop(s));
-    // }
-
-    stack_push_array(s, 9, arr);
-
-    printf("Initial stack:\n");
-    stack_print(s);
-
-    // stack_delete_max(s);
-    // printf("Stack after deleting max element from it:\n");
-
-    stack_sort(s);
-    printf("Stack after sorting:\n");
-
-    stack_print(s);
-
-    return 0;
-}
+Stack after deleting max element from it:
+7
+5
+4
+4
+3
+2
+1
+1
+0
+Stack after popping 3 elements from it:
+4
+3
+2
+1
+1
+0
+Stack after pushing to it:
+26
+27
+28
+29
+30
+4
+3
+2
+1
+1
+0
+Stack after deleting max element from it:
+26
+27
+28
+29
+4
+3
+2
+1
+1
+0
+Stack after sorting:
+29
+28
+27
+26
+4
+3
+2
+1
+1
+0

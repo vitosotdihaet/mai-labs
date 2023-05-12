@@ -10,22 +10,48 @@ int main() {
         stack_push(s, i);
     }
 
-    // printf("Top 3 after adding 0 1 2 3 4:\n");
-    // for (int i = 0; i < 3; ++i) {
-    //     printf("%I64d\n", stack_pop(s));
-    // }
-
-    stack_push_array(s, 9, arr);
-
-    printf("Initial stack:\n");
+    for (int i = 0; i < 9; ++i) {
+        stack_push(s, arr[i]);
+    }
+    printf("Stack before popping:\n");
     stack_print(s);
 
-    // stack_delete_max(s);
-    // printf("Stack after deleting max element from it:\n");
+    for (int i = 0; i < 3; ++i) {
+        stack_pop(s);
+    }
+    printf("Stack after popping:\n");
+    stack_print(s);
+
+    stack_delete_max(s);
+    printf("Stack after deleting max element from it:\n");
+    stack_print(s);
 
     stack_sort(s);
     printf("Stack after sorting:\n");
+    stack_print(s);
 
+    stack_delete_max(s);
+    printf("Stack after deleting max element from it:\n");
+    stack_print(s);
+
+    for (int i = 0; i < 3; ++i) {
+        stack_pop(s);
+    }
+    printf("Stack after popping 3 elements from it:\n");
+    stack_print(s);
+
+    for (int i = 10; i < 15; ++i) {
+        stack_push(s, -i + 40);
+    }
+    printf("Stack after pushing to it:\n");
+    stack_print(s);
+
+    stack_delete_max(s);
+    printf("Stack after deleting max element from it:\n");
+    stack_print(s);
+
+    stack_sort(s);
+    printf("Stack after sorting:\n");
     stack_print(s);
 
     return 0;
