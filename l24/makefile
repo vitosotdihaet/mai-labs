@@ -1,6 +1,11 @@
-CC = gcc -std=c99
-CFLAGS = -Wall -Wextra
-FILES = main.c tree.c
+CC = gcc
+CFLAGS = -std=c99 -Wall -Wextra
 
-main:
-	$(CC) $(CFLAGS) -o main.out $(FILES)
+main: main_o tree_o
+	$(CC) $(CFLAGS) -o main.out main.o tree.o
+main_o:
+	$(CC) $(CFLAGS) -c main.c
+tree_o:
+	$(CC) $(CFLAGS) -c tree.c
+clean:
+	rm -f main.out *.o

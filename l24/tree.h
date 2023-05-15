@@ -3,10 +3,6 @@
 
 #include <inttypes.h>
 
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
 typedef struct Node {
     char** tokens;
     char op;

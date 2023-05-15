@@ -1,7 +1,6 @@
 #include <stdio.h>
-
-#define DEBUG 1
 #include "tree.h"
+
 
 int main() {
     Node root;
@@ -15,21 +14,51 @@ int main() {
     // node_create_root(&root, "1+2+3+4");
     // node_create_root(&root, initial_expression);
 
+    // printf("DEBUG in main.c: %d\n", DEBUG);
+
     node_create_root(&root, "3*9 - 3 * 5 + 50");
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
     printf("\n");
 
-    // printf("Task:\n");
-    // // node_task(&root);
-    // node_take_out_factors(root.left, root.right->left);
-    // node_print(root);
-    // printf("\n");
+    printf("Task:\n");
+    // node_task(&root);
+    node_take_out_factors(root.left->left, root.left->right);
+    node_print(root);
+    printf("\n");
+
+    printf("\n");
+
+    node_create_root(&root, "3*9 + 50 - 3 * 5");
+    printf("Original:\n");
+    node_build_tree(&root);
+    node_print(root);
+    printf("\n");
+
+    printf("Task:\n");
+    // node_task(&root);
+    node_take_out_factors(root.left, root.right->right);
+    node_print(root);
+    printf("\n");
+    
+    printf("\n");
+
+    node_create_root(&root, "y*x - z * x + 50");
+    printf("Original:\n");
+    node_build_tree(&root);
+    node_print(root);
+    printf("\n");
+
+    printf("Task:\n");
+    // node_task(&root);
+    node_take_out_factors(root.left->left, root.left->right);
+    node_print(root);
+    printf("\n");
 
     // printf("\n");
 
-    // node_create_root(&root, "3*9 - 3 * 5");
+    // node_create_root(&root, "3*9 + 50 - 3 * 5 + 13");
     // printf("Original:\n");
     // node_build_tree(&root);
     // node_print(root);
@@ -37,7 +66,7 @@ int main() {
 
     // printf("Task:\n");
     // // node_task(&root);
-    // node_take_out_factors(root.left, root.right);
+    // node_take_out_factors(root.left, root.right->right);
     // node_print(root);
     // printf("\n");
 

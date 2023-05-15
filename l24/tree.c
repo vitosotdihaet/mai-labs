@@ -6,6 +6,8 @@
 #include "tree.h"
 #include "misc.h"
 
+#define DEBUG 0
+
 #define SEPARATOR "  "
 #define TABS "\t\t\t\t\t\t\t\t\t\t"
 
@@ -25,10 +27,10 @@ void node_create_root(Node* n, char* lex) {
     char** tokens = (char**) calloc(strlen(lex) + 1, sizeof(char*));
     tokens[strlen(lex)] = NULL;
 
-    uint64_t i, j, t = 0;
+    uint64_t t = 0;
 
-    for (i = 0; lex[i] != '\0'; ++i) {
-        j = 0;
+    for (uint64_t i = 0; lex[i] != '\0'; ++i) {
+        uint64_t j = 0;
         if (lex[i] == ' ') continue;
 
         if (char_is_operation(lex[i]) || char_is_bracket(lex[i])) {
@@ -460,9 +462,22 @@ void node_take_out_factors(Node* l, Node* r) {
     char *llc = l->left->constant, *lrc = l->right->constant;
     char *rlc = r->left->constant, *rrc = r->right->constant;
 
-    if (
-        (l->op != '-' || l->left->op != '*') ||
-        (l->left->op != r->left->op) ||
+    int cmp_ll = 0, cmp_lr = 0, cmp_rl = 0, cmp_rr = 0;
+
+    if (llc != NULL && rlc != NULL)
+        cmp_ll = (strcmp(llc, rlc) == 0);
+    
+    if (llc != NULL && rrc != NULL)
+        cmp_lr = strcmp(llc, rrc) == 0;
+    
+    if (lrc != NULL && rlc != NULL)
+        cmp_rl = strcmp(lrc, rlc) == 0;
+    
+    if (lrc != NULL && rrc != NULL)
+        cmp_rr = strcmp(lrc, rrc) == 0;
+
+
+    if ( // checks for operations are done in node_task()
         !(
             ( // check if matching numbers are present
                 ((llv != -1 && rlv != -1) && llv == rlv) ||
@@ -472,37 +487,38 @@ void node_take_out_factors(Node* l, Node* r) {
             )
             ||
             ( // check if matching constants are present
-                ((llc != NULL && rlc != NULL) && strcmp(llc, rlc) == 0) ||
-                ((llc != NULL && rrc != NULL) && strcmp(llc, rrc) == 0) ||
-                ((lrc != NULL && rlc != NULL) && strcmp(lrc, rlc) == 0) ||
-                ((lrc != NULL && rrc != NULL) && strcmp(lrc, rrc) == 0)
+                cmp_ll || cmp_lr || cmp_rl || cmp_rr
             )
         )
     ) return;
 
-    Node *right_part = r->prev;
 
-    right_part->op = right_part->left->op;
-    if (right_part->left == r) {
-        right_part->value = right_part->right->value;
-        right_part->constant = right_part->right->constant;
+    Node* new_l = (Node*) calloc(1, sizeof(Node));
+    node_zero(new_l);
+
+    new_l->left = (Node*) calloc(1, sizeof(Node));
+    node_zero(new_l->left);
+    new_l->right = (Node*) calloc(1, sizeof(Node));
+    node_zero(new_l->right);
+
+    new_l->right->left = (Node*) calloc(1, sizeof(Node));
+    node_zero(new_l->right->left);
+    new_l->right->right = (Node*) calloc(1, sizeof(Node));
+    node_zero(new_l->right->right);
+
+
+    new_l->prev = l->prev;
+    if (l->prev == r->prev) {
+        new_l->op = l->prev->op;
     } else {
-        right_part->value = right_part->left->value;
-        right_part->constant = right_part->left->constant;
+        new_l->op = l->op;
     }
+    new_l->left->op = l->left->op;
+    new_l->right->left->op = r->prev->left->op;
 
-    node_print_debug(*right_part);
-
-    Node *left_part = l;
-    node_print_debug(*left_part);
-    node_zero(left_part->left);
-
-    r->left->op = l->op;
-    l->op = l->left->op;
-
-    int64_t value1 = -1, value2 = -1;
 
     if (llv != -1 && lrv != -1 && rlv != -1 && rrv != -1) {
+        int64_t value1 = -1, value2 = -1;
         int64_t factor = -1;
 
         if (llv == rlv) {
@@ -523,41 +539,43 @@ void node_take_out_factors(Node* l, Node* r) {
             value2 = rlv;
         }
 
-        l->value = factor;
-    } else if ((llc != NULL || lrc != NULL) && (rlc != NULL || rrc != NULL)) {
-        char* constant;
+        new_l->left->value = factor;
+        new_l->right->left->value = value1;
+        new_l->right->right->value = value2;
+    } else if (cmp_ll || cmp_lr || cmp_rl || cmp_rr) {
+        char *constant1 = NULL, *constant2 = NULL;
+        char *factor = NULL;
 
-        if (llc != NULL) {
-            if (rlc != NULL && strcmp(llc, rlc) == 0) {
-                constant = llc;
-                r->left->constant = NULL;
-                value1 = lrv;
-                value2 = rrv;
-            } else if (rrc != NULL && strcmp(llc, rrc) == 0) {
-                constant = llc;
-                r->right->constant = NULL;
-                value1 = lrv;
-                value2 = rlv;
-            }
-        } else if (lrc != NULL) {
-            if (rlc != NULL && strcmp(lrc, rlc) == 0) {
-                constant = lrc;
-                r->left->constant = NULL;
-                value1 = llv;
-                value2 = rrv;
-            } else if (rrc != NULL && strcmp(lrc, rrc) == 0) {
-                constant = lrc;
-                r->right->constant = NULL;
-                value1 = llv;
-                value2 = rlv;
-            }
+        if (cmp_ll) {
+            factor = llc;
+            constant1 = lrc;
+            constant2 = rrc;
+        } else if (cmp_lr) {
+            factor = llc;
+            constant1 = lrc;
+            constant2 = rlc;
+        } else if (cmp_rl) {
+            factor = lrc;
+            constant1 = llc;
+            constant2 = rrc;
+        } else {
+            factor = lrc;
+            constant1 = llc;
+            constant2 = rlc;
         }
 
-        l->constant = constant;
+        new_l->left->constant = factor;
+        new_l->right->left->constant = constant1;
+        new_l->right->right->constant = constant2;
     }
-    r->left->value = value1;
-    r->right->value = value2;
 
-    l->left = NULL;
-    l->right = NULL;
+    if (l->prev == r->prev) {
+        *l->prev = *new_l;
+    } else {
+        *l = *new_l;
+        Node* temp = r->prev->left;
+        temp->op = ' ';
+        temp->prev = r->prev->prev;
+        r->prev->prev->right = temp;
+    }
 }
