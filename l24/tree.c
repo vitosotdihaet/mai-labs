@@ -6,10 +6,6 @@
 #include "tree.h"
 #include "misc.h"
 
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
 #define SEPARATOR "  "
 #define TABS "\t\t\t\t\t\t\t\t\t\t"
 
@@ -29,7 +25,7 @@ void node_create_root(Node* n, char* lex) {
     char** tokens = (char**) calloc(strlen(lex) + 1, sizeof(char*));
     tokens[strlen(lex)] = NULL;
 
-    unsigned long long i, j, t = 0;
+    uint64_t i, j, t = 0;
 
     for (i = 0; lex[i] != '\0'; ++i) {
         j = 0;
@@ -69,37 +65,35 @@ void node_create_children(Node* n) {
     n->left->prev = n;
     n->right->prev = n;
 
-    unsigned long long length = 0, i = 0, j = 0;
-    unsigned long long lowest_priority_op_ind = 0, bracket_depth = 0, last_bracket_depth = 0;
+    uint64_t length = 0, i = 0, j = 0;
+    uint64_t lowest_priority_op_ind = 0, bracket_depth = 0, last_bracket_depth = 0;
     char op = ' ';
 
     for (length = 0; n->tokens[length] != NULL; ++length) {
-        if (DEBUG) printf("LEN = %llu\n", length);
-        if (n->tokens[length][0] == '(') {
+        if (DEBUG) printf("LEN = %I64d\n", length);
+        char cop = n->tokens[length][0];
+
+        if (cop == '(') {
             bracket_depth++;
-            if (DEBUG) printf("+BD = %llu\n", bracket_depth);
+            if (DEBUG) printf("+BD = %I64d\n", bracket_depth);
             continue;
-        } else if (n->tokens[length][0] == ')') {
+        } else if (cop == ')') {
             bracket_depth--;
-            if (DEBUG) printf("-BD = %llu\n", bracket_depth);
+            if (DEBUG) printf("-BD = %I64d\n", bracket_depth);
             continue;
         }
 
         if (bracket_depth > last_bracket_depth) continue;
 
-        if (char_is_operation(n->tokens[length][0])) {
+        if (char_is_operation(cop)) {
             last_bracket_depth = bracket_depth;
-            if (op == ' ') {
-                op = n->tokens[length][0];
-                lowest_priority_op_ind = length;
-            } else if (op == '^') {
-                op = n->tokens[length][0];
-                lowest_priority_op_ind = length;
-            } else if (op == '/' && n->tokens[length][0] == '*') {
-                op = n->tokens[length][0];
-                lowest_priority_op_ind = length;
-            } else if ((op == '*' || op == '/') && (n->tokens[length][0] == '+' || n->tokens[length][0] == '-')) {
-                op = n->tokens[length][0];
+            if (
+                op == ' ' || op == '^' ||
+                (op == '/' && cop == '*') ||
+                ((op == '*' || op == '/') && (cop == '+' || cop == '-')) ||
+                (op == '-' && cop == '+')
+            ) {
+                op = cop;
                 lowest_priority_op_ind = length;
             }
         }
@@ -107,10 +101,10 @@ void node_create_children(Node* n) {
     n->left->op = op;
     if (DEBUG) printf("OP: %c\n\n", n->left->op);
 
-    unsigned long long left_length = lowest_priority_op_ind;
-    unsigned long long right_length = length - left_length - 1;
+    uint64_t left_length = lowest_priority_op_ind;
+    uint64_t right_length = length - left_length - 1;
 
-    unsigned long long left_braces = 0, right_braces = 0, cur_braces = 0, off = 0;
+    uint64_t left_braces = 0, right_braces = 0, cur_braces = 0, off = 0;
     for (i = 0; i < left_length/2; ++i) {
         if (n->tokens[i][0] == '(' && n->tokens[left_length - 1 - i][0] == ')') {
             left_braces++;
@@ -157,8 +151,8 @@ void node_create_children(Node* n) {
     right_length -= 2*right_braces;
 
 
-    if (DEBUG) printf("braces: %llu, %llu\n", left_braces, right_braces);
-    if (DEBUG) printf("lengths: %llu, %llu\n\n", left_length, right_length);
+    if (DEBUG) printf("braces: %I64d, %I64d\n", left_braces, right_braces);
+    if (DEBUG) printf("lengths: %I64d, %I64d\n\n", left_length, right_length);
 
     n->left->tokens = (char**) calloc(left_length + 1, sizeof(char*)); // one extra for NULL
     n->right->tokens = (char**) calloc(right_length + 1, sizeof(char*));
@@ -167,15 +161,15 @@ void node_create_children(Node* n) {
     n->right->tokens[right_length - 1] = NULL;
 
 
-    unsigned long long n_ind = 0;
+    uint64_t n_ind = 0;
 
-    unsigned long long left_start = left_braces;
+    uint64_t left_start = left_braces;
     if (left_length == 1) {
         if (DEBUG) printf("GET THIS FOCKING LEFT MATE\n");
         n_ind = left_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->left->value = atoll(n->tokens[n_ind]);
-            if (DEBUG) printf("NUMBER! %llu\n", n->left->value);
+            if (DEBUG) printf("NUMBER! %I64d\n", n->left->value);
         } else {
             n->left->constant = n->tokens[n_ind];
             if (DEBUG) printf("CONST! %s\n", n->left->constant);
@@ -194,13 +188,13 @@ void node_create_children(Node* n) {
     }
     if (DEBUG) printf("\n");
 
-    unsigned long long right_start = left_length + 1 + 2 * left_braces + right_braces;
+    uint64_t right_start = left_length + 1 + 2 * left_braces + right_braces;
     if (right_length == 1) {
         if (DEBUG) printf("GET THIS FOCKING RIGHT MATE\n");
         n_ind = right_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->right->value = atoll(n->tokens[n_ind]);
-            if (DEBUG) printf("NUMBER! %llu\n", n->right->value);
+            if (DEBUG) printf("NUMBER! %I64d\n", n->right->value);
         } else {
             n->right->constant = n->tokens[n_ind];
             if (DEBUG) printf("CONST! %s\n", n->right->constant);
@@ -224,7 +218,7 @@ void node_build_tree(Node* n) {
     if (DEBUG) printf("[NET]\n");
     if (n->tokens == NULL) return;
 
-    unsigned long long length;
+    uint64_t length;
     for (length = 0; n->tokens[length] != NULL; ++length);
     if (length > 0) {
         if (DEBUG) printf("===CHID===\n");
@@ -249,7 +243,7 @@ void node_print(Node n) {
 
     if (n.constant == NULL) {
         if (n.value != -1) {
-            printf("%lld", n.value);
+            printf("%I64d", n.value);
         }
     } else {
         printf("%s", n.constant);
@@ -271,7 +265,7 @@ void node_print_tree(Node* n, int lvl) {
 
     if (n->constant == NULL) {
         if (n->value != -1) {
-            printf("%*s%lld", (int) (seps - strlen(SEPARATOR)), SEPARATOR, n->value);
+            printf("%*s%I64d", (int) (seps - strlen(SEPARATOR)), SEPARATOR, n->value);
         }
     } else {
         printf("%*s%s", (int) (seps - strlen(SEPARATOR)), SEPARATOR, n->constant);
@@ -283,14 +277,10 @@ void node_print_tree(Node* n, int lvl) {
     node_print_tree(n->left, lvl);
 }
 
-void node_print_debug(Node n) {
-    _node_print_debug(n, 1);
-}
-
 void _node_print_debug(Node n, int lvl) {
     printf("Node {\n" "%.*stokens: ", lvl, TABS);
     if (n.tokens != NULL) {
-        for (unsigned long long i = 0; n.tokens[i] != NULL; ++i)
+        for (uint64_t i = 0; n.tokens[i] != NULL; ++i)
             printf("%s ", n.tokens[i]);
         printf("\n");
     } else {
@@ -300,7 +290,7 @@ void _node_print_debug(Node n, int lvl) {
     printf(
         "%.*sop: %c\n"
         "%.*sconstant: %s\n"
-        "%.*svalue: %lld\n"
+        "%.*svalue: %I64d\n"
         "%.*sleft: ",
         lvl, TABS, n.op,
         lvl, TABS, n.constant,
@@ -322,6 +312,10 @@ void _node_print_debug(Node n, int lvl) {
     }
 
     printf("%.*s}\n", lvl - 1, TABS);
+}
+
+void node_print_debug(Node n) {
+    _node_print_debug(n, 1);
 }
 
 
@@ -364,8 +358,8 @@ void node_task(Node* n) {
 
 #if 0
 void node_take_out_factors(Node* l, Node* r) {    
-    long long llv = l->left->value, lrv = l->right->value;
-    long long rlv = r->left->value, rrv = r->right->value;
+    int64_t llv = l->left->value, lrv = l->right->value;
+    int64_t rlv = r->left->value, rrv = r->right->value;
 
     char *llc = l->left->constant, *lrc = l->right->constant;
     char *rlc = r->left->constant, *rrc = r->right->constant;
@@ -395,10 +389,10 @@ void node_take_out_factors(Node* l, Node* r) {
     r->left->op = l->op;
     l->op = l->left->op;
 
-    long long value1 = -1, value2 = -1;
+    int64_t value1 = -1, value2 = -1;
 
     if (llv != -1 && lrv != -1 && rlv != -1 && rrv != -1) {
-        long long factor = -1;
+        int64_t factor = -1;
 
         if (llv == rlv) {
             factor = llv;
@@ -460,8 +454,8 @@ void node_take_out_factors(Node* l, Node* r) {
 
 // move right part's multiplier to l and other stuff to r->prev
 void node_take_out_factors(Node* l, Node* r) {    
-    long long llv = l->left->value, lrv = l->right->value;
-    long long rlv = r->left->value, rrv = r->right->value;
+    int64_t llv = l->left->value, lrv = l->right->value;
+    int64_t rlv = r->left->value, rrv = r->right->value;
 
     char *llc = l->left->constant, *lrc = l->right->constant;
     char *rlc = r->left->constant, *rrc = r->right->constant;
@@ -506,10 +500,10 @@ void node_take_out_factors(Node* l, Node* r) {
     r->left->op = l->op;
     l->op = l->left->op;
 
-    long long value1 = -1, value2 = -1;
+    int64_t value1 = -1, value2 = -1;
 
     if (llv != -1 && lrv != -1 && rlv != -1 && rrv != -1) {
-        long long factor = -1;
+        int64_t factor = -1;
 
         if (llv == rlv) {
             factor = llv;

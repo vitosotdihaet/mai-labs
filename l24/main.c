@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include "tree.h"
 
 #define DEBUG 1
+#include "tree.h"
 
 int main() {
-    Node root, other;
+    Node root;
 
     // char initial_expression[256] = {};
     // printf("Input math expression: ");
@@ -21,11 +21,11 @@ int main() {
     node_print(root);
     printf("\n");
 
-    printf("Task:\n");
-    // node_task(&root);
-    node_take_out_factors(root.left, root.right->left);
-    node_print(root);
-    printf("\n");
+    // printf("Task:\n");
+    // // node_task(&root);
+    // node_take_out_factors(root.left, root.right->left);
+    // node_print(root);
+    // printf("\n");
 
     // printf("\n");
 
