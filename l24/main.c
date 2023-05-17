@@ -1,4 +1,8 @@
 #include <stdio.h>
+
+#define DEBUG 1
+#define TREE_IMPLEMENTATION
+
 #include "tree.h"
 
 
