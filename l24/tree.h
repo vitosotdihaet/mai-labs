@@ -1,8 +1,8 @@
 #ifndef TREE_H
 #define TREE_H
 
-#ifndef DEBUG
-#define DEBUG 0
+#ifndef TREE_DEBUG
+#define TREE_DEBUG 0
 #endif
 
 #include <inttypes.h>
@@ -107,16 +107,16 @@ void node_create_children(Node* n) {
     char op = ' ';
 
     for (length = 0; n->tokens[length] != NULL; ++length) {
-        if (DEBUG) printf("LEN = %I64d\n", length);
+        if (TREE_DEBUG) printf("LEN = %I64d\n", length);
         char cop = n->tokens[length][0];
 
         if (cop == '(') {
             bracket_depth++;
-            if (DEBUG) printf("+BD = %I64d\n", bracket_depth);
+            if (TREE_DEBUG) printf("+BD = %I64d\n", bracket_depth);
             continue;
         } else if (cop == ')') {
             bracket_depth--;
-            if (DEBUG) printf("-BD = %I64d\n", bracket_depth);
+            if (TREE_DEBUG) printf("-BD = %I64d\n", bracket_depth);
             continue;
         }
 
@@ -136,7 +136,7 @@ void node_create_children(Node* n) {
         }
     }
     n->left->op = op;
-    if (DEBUG) printf("OP: %c\n\n", n->left->op);
+    if (TREE_DEBUG) printf("OP: %c\n\n", n->left->op);
 
     uint64_t left_length = lowest_priority_op_ind;
     uint64_t right_length = length - left_length - 1;
@@ -188,8 +188,8 @@ void node_create_children(Node* n) {
     right_length -= 2*right_braces;
 
 
-    if (DEBUG) printf("braces: %I64d, %I64d\n", left_braces, right_braces);
-    if (DEBUG) printf("lengths: %I64d, %I64d\n\n", left_length, right_length);
+    if (TREE_DEBUG) printf("braces: %I64d, %I64d\n", left_braces, right_braces);
+    if (TREE_DEBUG) printf("lengths: %I64d, %I64d\n\n", left_length, right_length);
 
     n->left->tokens = (char**) calloc(left_length + 1, sizeof(char*)); // one extra for NULL
     n->right->tokens = (char**) calloc(right_length + 1, sizeof(char*));
@@ -202,70 +202,70 @@ void node_create_children(Node* n) {
 
     uint64_t left_start = left_braces;
     if (left_length == 1) {
-        if (DEBUG) printf("GET THIS FOCKING LEFT MATE\n");
+        if (TREE_DEBUG) printf("GET THIS FOCKING LEFT MATE\n");
         n_ind = left_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->left->value = atoll(n->tokens[n_ind]);
-            if (DEBUG) printf("NUMBER! %I64d\n", n->left->value);
+            if (TREE_DEBUG) printf("NUMBER! %I64d\n", n->left->value);
         } else {
             n->left->constant = n->tokens[n_ind];
-            if (DEBUG) printf("CONST! %s\n", n->left->constant);
+            if (TREE_DEBUG) printf("CONST! %s\n", n->left->constant);
         }
     } else {
-        if (DEBUG) printf("COPY TO L:\n");
+        if (TREE_DEBUG) printf("COPY TO L:\n");
         for (i = 0; i < left_length; ++i) {
             n_ind = left_start + i;
             n->left->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->left->tokens[i][j] = n->tokens[n_ind][j];
             }
-            if (DEBUG) printf("%s", n->left->tokens[i]);
+            if (TREE_DEBUG) printf("%s", n->left->tokens[i]);
         }
-        if (DEBUG) printf("\n");
+        if (TREE_DEBUG) printf("\n");
     }
-    if (DEBUG) printf("\n");
+    if (TREE_DEBUG) printf("\n");
 
     uint64_t right_start = left_length + 1 + 2 * left_braces + right_braces;
     if (right_length == 1) {
-        if (DEBUG) printf("GET THIS FOCKING RIGHT MATE\n");
+        if (TREE_DEBUG) printf("GET THIS FOCKING RIGHT MATE\n");
         n_ind = right_start;
         if (char_is_number(n->tokens[n_ind][0])) {
             n->right->value = atoll(n->tokens[n_ind]);
-            if (DEBUG) printf("NUMBER! %I64d\n", n->right->value);
+            if (TREE_DEBUG) printf("NUMBER! %I64d\n", n->right->value);
         } else {
             n->right->constant = n->tokens[n_ind];
-            if (DEBUG) printf("CONST! %s\n", n->right->constant);
+            if (TREE_DEBUG) printf("CONST! %s\n", n->right->constant);
         }
     } else {
-        if (DEBUG) printf("COPY TO R:\n");
+        if (TREE_DEBUG) printf("COPY TO R:\n");
         for (i = 0; i < right_length; ++i) {
             n_ind = right_start + i;
             n->right->tokens[i] = (char*) calloc(strlen(n->tokens[n_ind]), sizeof(char));
             for (j = 0; j < strlen(n->tokens[n_ind]); ++j) {
                 n->right->tokens[i][j] = n->tokens[n_ind][j];
             }
-            if (DEBUG) printf("%s", n->right->tokens[i]);
+            if (TREE_DEBUG) printf("%s", n->right->tokens[i]);
         }
-        if (DEBUG) printf("\n");
+        if (TREE_DEBUG) printf("\n");
     }
-    if (DEBUG) printf("\n");
+    if (TREE_DEBUG) printf("\n");
 }
 
 void node_build_tree(Node* n) {
-    if (DEBUG) printf("[NET]\n");
+    if (TREE_DEBUG) printf("[NET]\n");
     if (n->tokens == NULL) return;
 
     uint64_t length;
     for (length = 0; n->tokens[length] != NULL; ++length);
     if (length > 0) {
-        if (DEBUG) printf("===CHID===\n");
+        if (TREE_DEBUG) printf("===CHID===\n");
         node_create_children(n);
-        if (DEBUG) printf("===LEFT===\n");
+        if (TREE_DEBUG) printf("===LEFT===\n");
         node_build_tree(n->left);
-        if (DEBUG) printf("===RIHT===\n");
+        if (TREE_DEBUG) printf("===RIHT===\n");
         node_build_tree(n->right);
     } else {
-        if (DEBUG) printf("EMPTY!\n\n");
+        if (TREE_DEBUG) printf("EMPTY!\n\n");
     }
 }
 
