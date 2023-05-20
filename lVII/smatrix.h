@@ -35,6 +35,7 @@ float smatrix_at(SMatrix m, uint64_t i, uint64_t j);
 void smatrix_print(SMatrix m);
 void smatrix_print_debug(SMatrix m);
 void smatrix_set(SMatrix *m, uint64_t i, uint64_t j, float v);
+void smatrix_free(SMatrix *m);
 
 
 #endif // SPARSE_MATRIX_H
@@ -56,8 +57,8 @@ SMatrix smatrix_alloc(uint64_t rows, uint64_t cols) {
     m.rows_s = (uint64_t*) calloc(rows + 1, sizeof(*m.rows_s));
     assert(m.rows_s != NULL);
 
-    m.cols_i = (uint64_t*) calloc(0, sizeof(*m.cols_i));
-    m.values = (float*) calloc(0, sizeof(*m.values));
+    m.cols_i = (uint64_t*) calloc(1, sizeof(*m.cols_i));
+    m.values = (float*) calloc(1, sizeof(*m.values));
 
     m.elements = 0;
 
@@ -65,12 +66,15 @@ SMatrix smatrix_alloc(uint64_t rows, uint64_t cols) {
 }
 
 SMatrix smatrix_from_file(FILE *f) {
-    char row_buf[256];
+    char *row_buf = (char*) calloc(256, sizeof(char));
+    fgets(row_buf, 256, f);
+
     uint64_t rows = 0, cols = 0;
 
-    fgets(row_buf, 256, f);
     for (uint64_t i = 0; i < strlen(row_buf); ++i) { // pre-count column count
-        if (char_is_in_float(row_buf[i]) && (row_buf[i + 1] == ' ' || row_buf[i + 1] == '\n')) {
+        if (char_is_in_float(row_buf[i]) &&
+            (row_buf[i + 1] == ' ' || row_buf[i + 1] == '\n')
+        ) { // check how many times space or \n is present after float chars
             cols++;
         }
     }
@@ -82,10 +86,10 @@ SMatrix smatrix_from_file(FILE *f) {
         if (row_buf[len - 1] == '\n') row_buf[len - 1] = '\0';
 
         for (uint64_t i = 0; i < len; ++i) { // parse current line
-            char *num_buf = (char*) calloc(256, sizeof(char));
-            float number = 0.f;
-
             while (row_buf[i] == ' ') ++i; // skip spaces before current number
+            if (row_buf[i] == '\n') break;
+
+            char *num_buf = (char*) calloc(256, sizeof(char)); // current number buffer
 
             for (uint64_t j = 0; j < len - i; ++j) { // parse current number
                 char cur_c = row_buf[i + j];
@@ -98,30 +102,45 @@ SMatrix smatrix_from_file(FILE *f) {
                 }
             }
 
-            number = strtof(num_buf, NULL);
+            if (strlen(num_buf) == 0) {
+                free(num_buf);
+                break;
+            }
 
             if (c == 0) { // alloc every time there is a new row
                 numbers[rows] = (float*) calloc(cols, sizeof(float));
             }
 
-            numbers[rows][c] = number;
+            // printf("%f at r=%lu, c=%lu\n", strtof(num_buf, NULL), rows, c);
+            numbers[rows][c] = strtof(num_buf, NULL);
 
             c++;
+            free(num_buf);
         }
+
         rows++;
     } while (fgets(row_buf, 256, f) != NULL);
+
+    free(row_buf);
+
+    // printf("dims: %lu, %lu\n", rows, cols);
 
     SMatrix m = smatrix_alloc(rows, cols);
 
     for (uint64_t i = 0; i < rows; ++i) {
         for (uint64_t j = 0; j < cols; ++j) {
-            if (numbers[i][j] != 0.f) {
-                printf("%I64d, %I64d:\n", i, j);
-                smatrix_set(&m, i, j, numbers[i][j]);
-                smatrix_print_debug(m);
+            float n = numbers[i][j];
+            if (n != 0.f) {
+                // printf("set %f at %lu %lu\n", numbers[i][j], i, j);
+                smatrix_set(&m, i, j, n);
             }
         }
     }
+
+    for (uint64_t i = 0; i < 256; ++i) {
+        free(numbers[i]);
+    }
+    free(numbers);
 
     return m;
 }
@@ -149,12 +168,12 @@ void smatrix_print(SMatrix m) {
 }
 
 void smatrix_print_debug(SMatrix m) {
-    printf("rows = %I64d, cols = %I64d, elements = %I64d\n", m.rows, m.cols, m.elements);
+    printf("rows = %lu, cols = %lu, elements = %lu\n", m.rows, m.cols, m.elements);
 
     printf("rows_s: [");
     for (uint64_t i = 0; i < m.rows; ++i)
-        printf("%I64d ", m.rows_s[i]);
-    printf("(%I64d) ", m.rows_s[m.rows]);
+        printf("%lu ", m.rows_s[i]);
+    printf("(%lu) ", m.rows_s[m.rows]);
     printf("\b]\n");
 
     if (m.elements == 0)
@@ -162,7 +181,7 @@ void smatrix_print_debug(SMatrix m) {
 
     printf("cols_i: [");
     for (uint64_t i = 0; i < m.elements; ++i)
-        printf("%I64d ", m.cols_i[i]);
+        printf("%lu ", m.cols_i[i]);
     printf("\b]\n");
 
     printf("values: [");
@@ -181,34 +200,40 @@ void smatrix_set(SMatrix *m, uint64_t i, uint64_t j, float v) {
             m->rows_s[ind]++;
         } else if (i == ind) {
             m->elements++;
-            m->cols_i = (uint64_t*) realloc(m->cols_i, m->elements);
+            // printf("m->elements = %lu\n", m->elements);
+            // printf("realloc cols_i...\n");
+            m->cols_i = (uint64_t*) realloc(m->cols_i, m->elements * sizeof(*m->cols_i));
+            // printf("realloc values...\n");
+            m->values = (float*) realloc(m->values, m->elements * sizeof(*m->values));
 
+            // printf("lb...\n");
             uint64_t lb = m->rows_s[i];
+            // printf("rb...\n");
             uint64_t rb = m->elements - 1;
 
-            printf("\n");
-            printf("pre-moved:\n");
-            printf("value = %f\n", m->values[0]);
-            smatrix_print_debug(*m);
+            // printf("lb = %lu, rb = %lu\n", lb, rb);
 
-            printf("l = %I64d, r = %I64d\n", lb, rb);
             for (uint64_t move = rb; move > lb; --move) { // move right column indecies and values to right
-                m->cols_i[move] = m->cols_i[move - 1]; // move-1 to safely get to 0
+                m->cols_i[move] = m->cols_i[move - 1]; // move - 1 to safely get to 0
                 m->values[move] = m->values[move - 1];
             }
 
-            printf("value = %f\n", m->values[0]);
-            printf("m.rows_s[%I64d] = %I64d\n", i, m->rows_s[i]);
-
-            m->cols_i[m->rows_s[i]] = j;
-            m->values[m->rows_s[i]] = v;
-
-            printf("post-post:\n");
-            printf("value = %f\n", m->values[0]);
-            smatrix_print_debug(*m);
-            printf("\n");
+            m->cols_i[lb] = j;
+            m->values[lb] = v;
         }
     }
+}
+
+void smatrix_free(SMatrix *m) {
+    m->cols = 0;
+    m->rows = 0;
+    m->elements = 0;
+
+    free(m->rows_s);
+    free(m->cols_i);
+    free(m->values);
+
+    m = NULL;
 }
 
 
