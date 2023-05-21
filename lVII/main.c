@@ -6,14 +6,32 @@ int main() {
     FILE *f = fopen("m2.txt", "r");
     assert(f != NULL);
 
-    // printf("?\n");
     SMatrix m = smatrix_from_file(f);
 
+    printf("Initial matrix:\n");
+    printf("(Real matrix)\n");
     smatrix_print(m);
+    printf("(Internal structure)\n");
     smatrix_print_debug(m);
 
-    fclose(f);
+    printf(
+        "========================================\n"
+        "Transposed by secondary diagonal matrix:\n"
+    );
+    SMatrix t = smatrix_transpose_sec_diag(m);
+    printf("(Real matrix)\n");
+    smatrix_print(t);
+    printf("(Internal structure)\n");
+    smatrix_print_debug(t);
 
+    printf("\n");
+    if (smatrix_is_skew_symmetric(t)) {
+        printf("The matrix is skew-symmetric!\n");
+    } else {
+        printf("The matrix is not skew-symmetric...\n");
+    }
+
+    fclose(f);
     smatrix_free(&m);
 
     return 0;
