@@ -1,4 +1,8 @@
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
+$ ls
+./  ../  l24-2012.djvu  main.c  makefile  misc.h  protocol.txt  report.pdf  tree.h
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
 $ cat makefile
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra
@@ -26,11 +30,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left->left, root.left->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("\n");
@@ -38,12 +46,16 @@ int main() {
     node_create_root(&root, "3*9 + 50 - 3 * 5");
     printf("Original:\n");
     node_build_tree(&root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     node_print(root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left, root.right->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("\n");
@@ -52,11 +64,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left->left, root.left->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
 
@@ -68,11 +84,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left, root.right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     return 0;
@@ -105,7 +125,7 @@ void node_create_children(Node* n);
 void node_build_tree(Node* n);
 
 void node_print(Node n);
-void node_print_tree(Node* n, int lvl);
+void node_print_tree(Node* n);
 void node_print_debug(Node n);
 
 void node_task(Node* n);
@@ -373,13 +393,13 @@ void node_print(Node n) {
     }
 }
 
-void node_print_tree(Node* n, int lvl) {
+void _node_print_tree(Node* n, int lvl) {
     if (n == NULL) return;
 
     lvl += 1;
     int seps = (int) (strlen(SEPARATOR) * lvl);
 
-    node_print_tree(n->right, lvl);
+    _node_print_tree(n->right, lvl);
 
     if (n->constant == NULL) {
         if (n->value != -1) {
@@ -392,7 +412,11 @@ void node_print_tree(Node* n, int lvl) {
     if (n->left != NULL) printf("%*s%c", seps, SEPARATOR, n->left->op);
     printf("\n");
 
-    node_print_tree(n->left, lvl);
+    _node_print_tree(n->left, lvl);
+}
+
+void node_print_tree(Node* n) {
+    _node_print_tree(n, 1);
 }
 
 void _node_print_debug(Node n, int lvl) {
@@ -580,69 +604,235 @@ void node_take_out_factors(Node* l, Node* r) {
 
 #endif // TREE_IMPLEMENTATION
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
+$ cat misc.h
+#ifndef MISC_H
+#define MISC_H
+
+
+int char_is_operation(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+}
+
+int char_is_number(char c) {
+    return '0' <= c && c <= '9';
+}
+
+int char_is_bracket(char c) {
+    return c == '(' || c == ')';
+}
+
+#endif
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
 $ make
 gcc -std=c99 -Wall -Wextra -c main.c
 In file included from main.c:6:
 tree.h: In function 'node_task':
-tree.h:366:12: warning: unused variable 'right_nodes' [-Wunused-variable]
+tree.h:370:12: warning: unused variable 'right_nodes' [-Wunused-variable]
      Node** right_nodes;
             ^~~~~~~~~~~
-tree.h:365:12: warning: unused variable 'left_nodes' [-Wunused-variable]
+tree.h:369:12: warning: unused variable 'left_nodes' [-Wunused-variable]
      Node** left_nodes;
             ^~~~~~~~~~
 main.c: In function 'main':
-main.c:52:13: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'char (*)[256]' [-Wformat=]
+main.c:64:13: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'char (*)[256]' [-Wformat=]
      scanf("%s", &expr);
             ~^   ~~~~~
-main.c:52:13: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'char (*)[256]' [-Wformat=]
+main.c:64:13: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'char (*)[256]' [-Wformat=]
 gcc -std=c99 -Wall -Wextra -o main.out main.o
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
-$ ls
-./  ../  l24-2012.djvu  main.c  main.o  main.out*  makefile  misc.h  tree.h
+$ ./main.out
+Original:
+(((3*9)-(3*5))+50)
+Tree form:
+    50
+    +
+        5
+        *
+        3
+      -
+        9
+        *
+        3
+
+Task:
+((3*(9-5))+50)
+Tree form:
+    50
+    +
+        5
+        -
+        9
+      *
+      3
+
+
+Original:
+
+Tree form:
+        5
+        *
+        3
+      -
+      50
+    +
+      9
+      *
+      3
+((3*9)+(50-(3*5)))
+Task:
+((3*(9-5))+50)
+Tree form:
+    50
+    +
+        5
+        -
+        9
+      *
+      3
+
+
+Original:
+(((y*x)-(z*x))+50)
+Tree form:
+    50
+    +
+        x
+        *
+        z
+      -
+        x
+        *
+        y
+
+Task:
+((x*(y-z))+50)
+Tree form:
+    50
+    +
+        z
+        -
+        y
+      *
+      x
+
+
+Input your math expression (without spaces): a*b-c*b
+Original:
+((a*b)-(c*b))
+Tree form:
+      b
+      *
+      c
+    -
+      b
+      *
+      a
+
+Task:
+(b*(a-c))
+Tree form:
+      c
+      -
+      a
+    *
+    b
+
 
 vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
 $ ./main.out
 Original:
 (((3*9)-(3*5))+50)
+Tree form:
+    50
+    +
+        5
+        *
+        3
+      -
+        9
+        *
+        3
+
 Task:
 ((3*(9-5))+50)
+Tree form:
+    50
+    +
+        5
+        -
+        9
+      *
+      3
+
 
 Original:
+
+Tree form:
+        5
+        *
+        3
+      -
+      50
+    +
+      9
+      *
+      3
 ((3*9)+(50-(3*5)))
 Task:
 ((3*(9-5))+50)
+Tree form:
+    50
+    +
+        5
+        -
+        9
+      *
+      3
+
 
 Original:
 (((y*x)-(z*x))+50)
+Tree form:
+    50
+    +
+        x
+        *
+        z
+      -
+        x
+        *
+        y
+
 Task:
 ((x*(y-z))+50)
+Tree form:
+    50
+    +
+        z
+        -
+        y
+      *
+      x
 
-Input your math expression (without spaces): 1*15-15*2
-Original:
-((1*15)-(15*2))
-Task:
-(15*(1-2))
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/l24 (master)
-$ ./main.out
+Input your math expression (without spaces): 1*14-15*14
 Original:
-(((3*9)-(3*5))+50)
-Task:
-((3*(9-5))+50)
+((1*14)-(15*14))
+Tree form:
+      14
+      *
+      15
+    -
+      14
+      *
+      1
 
-Original:
-((3*9)+(50-(3*5)))
 Task:
-((3*(9-5))+50)
-
-Original:
-(((y*x)-(z*x))+50)
-Task:
-((x*(y-z))+50)
-
-Input your math expression (without spaces): ab*abba-ab*lo
-Original:
-((ab*abba)-(ab*lo))
-Task:
-(ab*(abba-lo))
+(14*(1-15))
+Tree form:
+      15
+      -
+      1
+    *
+    14

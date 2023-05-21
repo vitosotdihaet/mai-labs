@@ -24,7 +24,7 @@ void node_create_children(Node* n);
 void node_build_tree(Node* n);
 
 void node_print(Node n);
-void node_print_tree(Node* n, int lvl);
+void node_print_tree(Node* n);
 void node_print_debug(Node n);
 
 void node_task(Node* n);
@@ -292,13 +292,13 @@ void node_print(Node n) {
     }
 }
 
-void node_print_tree(Node* n, int lvl) {
+void _node_print_tree(Node* n, int lvl) {
     if (n == NULL) return;
 
     lvl += 1;
     int seps = (int) (strlen(SEPARATOR) * lvl);
 
-    node_print_tree(n->right, lvl);
+    _node_print_tree(n->right, lvl);
 
     if (n->constant == NULL) {
         if (n->value != -1) {
@@ -311,7 +311,11 @@ void node_print_tree(Node* n, int lvl) {
     if (n->left != NULL) printf("%*s%c", seps, SEPARATOR, n->left->op);
     printf("\n");
 
-    node_print_tree(n->left, lvl);
+    _node_print_tree(n->left, lvl);
+}
+
+void node_print_tree(Node* n) {
+    _node_print_tree(n, 1);
 }
 
 void _node_print_debug(Node n, int lvl) {

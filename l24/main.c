@@ -13,11 +13,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left->left, root.left->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("\n");
@@ -25,12 +29,16 @@ int main() {
     node_create_root(&root, "3*9 + 50 - 3 * 5");
     printf("Original:\n");
     node_build_tree(&root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     node_print(root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left, root.right->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
     
     printf("\n");
@@ -39,11 +47,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left->left, root.left->right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
 
@@ -55,11 +67,15 @@ int main() {
     printf("Original:\n");
     node_build_tree(&root);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     printf("Task:\n");
     node_take_out_factors(root.left, root.right);
     node_print(root);
+    printf("\nTree form:\n");
+    node_print_tree(&root);
     printf("\n");
 
     return 0;
