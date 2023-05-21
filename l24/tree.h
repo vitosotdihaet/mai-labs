@@ -43,7 +43,6 @@ void node_take_out_factors(Node* l, Node* r);
 
 #include "misc.h"
 
-#define SEPARATOR "  "
 #define TABS "\t\t\t\t\t\t\t\t\t\t"
 
 
@@ -296,19 +295,18 @@ void _node_print_tree(Node* n, int lvl) {
     if (n == NULL) return;
 
     lvl += 1;
-    int seps = (int) (strlen(SEPARATOR) * lvl);
 
     _node_print_tree(n->right, lvl);
 
     if (n->constant == NULL) {
         if (n->value != -1) {
-            printf("%*s%I64d", (int) (seps - strlen(SEPARATOR)), SEPARATOR, n->value);
+            printf("%*s%I64d", lvl, "", n->value);
         }
     } else {
-        printf("%*s%s", (int) (seps - strlen(SEPARATOR)), SEPARATOR, n->constant);
+        printf("%*s%s", lvl, "", n->constant);
     }
 
-    if (n->left != NULL) printf("%*s%c", seps, SEPARATOR, n->left->op);
+    if (n->left != NULL) printf("%*s%c", lvl, "", n->left->op);
     printf("\n");
 
     _node_print_tree(n->left, lvl);
