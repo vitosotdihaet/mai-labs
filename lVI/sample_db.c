@@ -19,7 +19,7 @@ int create_sample_db() {
     database_add(&db, "bsczxzxciw",  "Kasd",   1, 5,    0, 100, 1);
     database_add(&db, "bsazxaxw",    "sd",     0, 5,    0, 10,  1);
     database_add(&db, "bsznxxw",     "ab",     1, 10,   1, 12,  0);
-    database_add(&db, "bascxiaw",    "as",     0, 3,    0, 175, 1);
+    database_add(&db, "bascxiaw",    "as",     1, 3,    1, 175, 1);
     database_add(&db, "bznixsw",     "d",      1, 14,   0, 2,   0);
     database_add(&db, "aaxw",        "aaab",   1, 10,   1, 60,  0);
     database_add(&db, "xniaw",       "aaas",   0, 3,    0, 135, 1);
@@ -30,7 +30,7 @@ int create_sample_db() {
     database_add(&db, "bzxciw",      "aaaasd", 1, 1337, 0, 100, 1);
     database_add(&db, "baxw",        "aaad",   0, 5,    0, 10,  0);
     database_add(&db, "bxw",         "aaab",   1, 10,   1, 13,  0);
-    database_add(&db, "biaw",        "aaas",   0, 3,    0, 175, 0);
+    database_add(&db, "biaw",        "aaas",   0, 3,    1, 175, 0);
     database_add(&db, "bsw",         "aaa",    1, 14,   0, 2,   0);
 
     // database_print(db);

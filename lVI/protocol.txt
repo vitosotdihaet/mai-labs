@@ -1,13 +1,22 @@
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
 $ cat makefile
 CC = gcc
 CFLAGS = -Wall -Wextra
-FILES = main.c db.c
 
-main:
-        $(CC) $(CFLAGS) -o main.out $(FILES) -lm
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ cat main.c
+main: main.o db.o
+        $(CC) $(CFLAGS) -o main.out main.o db.o -lm
+bad: bad.o db.o
+        $(CC) $(CFLAGS) -o bad.out bad.o db.o
+main_o: db.o
+        $(CC) $(CFLAGS) -c main.c
+bad_o:
+        $(CC) $(CFLAGS) -c bad.c
+db_o:
+        $(CC) $(CFLAGS) -c db.c -lm
+clean:
+        rm -f *.o *.out
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ cat bad.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,19 +47,14 @@ int main(int argc, char const *argv[]) {
 
     char *filename = (char*) calloc(256, sizeof(char));
 
-    int fields_num = (argc - 3)/3;
+    int fields_num = 2;
 
-    char **fields = (char**) calloc(fields_num, sizeof(char*));
-    for (int i = 0; i < fields_num; ++i) {
-        fields[i] = (char*) calloc(10, sizeof(char));
-    }
-
+    char *value = (char*) calloc(10, sizeof(char));
     char **values = (char**) calloc(fields_num, sizeof(char*));
     for (int i = 0; i < fields_num; ++i) {
         values[i] = (char*) calloc(10, sizeof(char));
     }
 
-    int off = 0;
     for (int arg_ind = 1; arg_ind < argc; ++arg_ind) {
         // printf("param: %s\n", argv[arg_ind]);
         switch (argv[arg_ind][1]) {
@@ -61,13 +65,7 @@ int main(int argc, char const *argv[]) {
                 }
                 break;
             case 'p':
-                if (arg_ind + 2 < argc) {
-                    fields[off] = argv[arg_ind + 1];
-                    values[off] = argv[arg_ind + 2];
-                    off++;
-                    arg_ind++;
-                    arg_ind++;
-                }
+                value = argv[arg_ind + 1];
                 break;
         }
     }
@@ -82,15 +80,84 @@ int main(int argc, char const *argv[]) {
 
     database_read(&db, f);
 
-    database_print_matching(db, fields, values, fields_num);
+    char **fields = (char**) calloc(2, sizeof(char*));
+    fields[0] = (char*) calloc(256, sizeof(char));
+    fields[1] = (char*) calloc(256, sizeof(char));
 
-    // printf("%s\n", filename);
-    // printf("%s\n%d\n", field, maximal_value);
+    if (value[0] != '\0') {
+        fields[0] = "Medal";
+        fields[1] = "Points";
+
+        values[0] = "1";
+        char *temp = (char*) calloc(256, sizeof(char));
+        temp[0] = 'l';
+        temp[1] = 'e';
+        strcat(temp, value);
+        values[1] = temp;
+
+        database_print_matching(db, fields, values, fields_num);
+    } else {
+        database_print(db);
+    }
+
 
     fclose(f);
+
     return 0;
 }
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ cat sample_db.c
+#include <stdio.h>
+
+#include "db.h"
+
+int create_sample_db() {
+    Database db;
+    database_init(&db, 30);
+    database_add(&db, "zniatos",     "KM",     0, 5,    1, 100, 0);
+    database_add(&db, "xzzniascasw", "mv",     0, 5,    1, 0,   1);
+    database_add(&db, "asczniaw",    "xasd",   1, 2,    0, 130, 1);
+    database_add(&db, "ascznczxciw", "Kasd",   1, 5,    0, 100, 1);
+    database_add(&db, "asazniaxw",   "sd",     0, 5,    0, 10,  0);
+    database_add(&db, "aszniaxw",    "ab",     1, 10,   1, 60,  0);
+    database_add(&db, "xasczniaw",   "as",     0, 3,    0, 135, 1);
+    database_add(&db, "azniaasw",    "d",      1, 134,  1, 2,   0);
+    database_add(&db, "bniaxs",      "KM",     0, 5,    1, 100, 0);
+    database_add(&db, "bzznxscasw",  "mv",     0, 5,    1, 0,   1);
+    database_add(&db, "bsczxaw",     "xasd",   1, 2,    0, 130, 1);
+    database_add(&db, "bsczxzxciw",  "Kasd",   1, 5,    0, 100, 1);
+    database_add(&db, "bsazxaxw",    "sd",     0, 5,    0, 10,  1);
+    database_add(&db, "bsznxxw",     "ab",     1, 10,   1, 12,  0);
+    database_add(&db, "bascxiaw",    "as",     1, 3,    1, 175, 1);
+    database_add(&db, "bznixsw",     "d",      1, 14,   0, 2,   0);
+    database_add(&db, "aaxw",        "aaab",   1, 10,   1, 60,  0);
+    database_add(&db, "xniaw",       "aaas",   0, 3,    0, 135, 1);
+    database_add(&db, "aasw",        "aaa",    1, 134,  1, 2,   0);
+    database_add(&db, "bs",          "aaaM",   0, 77,   1, 100, 0);
+    database_add(&db, "bscasw",      "aaav",   0, 5,    1, 0,   1);
+    database_add(&db, "baw",         "aaaasd", 1, 228,  0, 50,  1);
+    database_add(&db, "bzxciw",      "aaaasd", 1, 1337, 0, 100, 1);
+    database_add(&db, "baxw",        "aaad",   0, 5,    0, 10,  0);
+    database_add(&db, "bxw",         "aaab",   1, 10,   1, 13,  0);
+    database_add(&db, "biaw",        "aaas",   0, 3,    1, 175, 0);
+    database_add(&db, "bsw",         "aaa",    1, 14,   0, 2,   0);
+
+    // database_print(db);
+    FILE *fw = fopen("test.db4l", "wb");
+    database_dump(db, fw);
+    fclose(fw);
+
+
+    // Database dbr;
+    // FILE *fr = fopen("test.db4l", "rb");
+    // database_read(&dbr, fr);
+    // database_print(dbr);
+    // fclose(fr);
+
+
+    return 0;
+}
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
 $ cat db.h
 #ifndef DB_H
 #define DB_H
@@ -127,7 +194,7 @@ void database_add_stdin(Database *db);
 
 
 #endif
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
 $ cat db.c
 #include <stdio.h>
 #include <stdlib.h>
@@ -444,59 +511,7 @@ void database_add_stdin(Database *db) {
     scanf("%hd", &db->essay[i]);
 }
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ cat sample_db.c
-#include <stdio.h>
-
-#include "db.h"
-
-int create_sample_db() {
-    Database db;
-    database_init(&db, 30);
-    database_add(&db, "zniatos",     "KM",     0, 5,    1, 100, 0);
-    database_add(&db, "xzzniascasw", "mv",     0, 5,    1, 0,   1);
-    database_add(&db, "asczniaw",    "xasd",   1, 2,    0, 130, 1);
-    database_add(&db, "ascznczxciw", "Kasd",   1, 5,    0, 100, 1);
-    database_add(&db, "asazniaxw",   "sd",     0, 5,    0, 10,  0);
-    database_add(&db, "aszniaxw",    "ab",     1, 10,   1, 60,  0);
-    database_add(&db, "xasczniaw",   "as",     0, 3,    0, 135, 1);
-    database_add(&db, "azniaasw",    "d",      1, 134,  1, 2,   0);
-    database_add(&db, "bniaxs",      "KM",     0, 5,    1, 100, 0);
-    database_add(&db, "bzznxscasw",  "mv",     0, 5,    1, 0,   1);
-    database_add(&db, "bsczxaw",     "xasd",   1, 2,    0, 130, 1);
-    database_add(&db, "bsczxzxciw",  "Kasd",   1, 5,    0, 100, 1);
-    database_add(&db, "bsazxaxw",    "sd",     0, 5,    0, 10,  1);
-    database_add(&db, "bsznxxw",     "ab",     1, 10,   1, 12,  0);
-    database_add(&db, "bascxiaw",    "as",     0, 3,    0, 175, 1);
-    database_add(&db, "bznixsw",     "d",      1, 14,   0, 2,   0);
-    database_add(&db, "aaxw",        "aaab",   1, 10,   1, 60,  0);
-    database_add(&db, "xniaw",       "aaas",   0, 3,    0, 135, 1);
-    database_add(&db, "aasw",        "aaa",    1, 134,  1, 2,   0);
-    database_add(&db, "bs",          "aaaM",   0, 77,   1, 100, 0);
-    database_add(&db, "bscasw",      "aaav",   0, 5,    1, 0,   1);
-    database_add(&db, "baw",         "aaaasd", 1, 228,  0, 50,  1);
-    database_add(&db, "bzxciw",      "aaaasd", 1, 1337, 0, 100, 1);
-    database_add(&db, "baxw",        "aaad",   0, 5,    0, 10,  0);
-    database_add(&db, "bxw",         "aaab",   1, 10,   1, 13,  0);
-    database_add(&db, "biaw",        "aaas",   0, 3,    0, 175, 0);
-    database_add(&db, "bsw",         "aaa",    1, 14,   0, 2,   0);
-
-    // database_print(db);
-    FILE *fw = fopen("test.db4l", "wb");
-    database_dump(db, fw);
-    fclose(fw);
-
-
-    // Database dbr;
-    // FILE *fr = fopen("test.db4l", "rb");
-    // database_read(&dbr, fr);
-    // database_print(dbr);
-    // fclose(fr);
-
-
-    return 0;
-}
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
 $ cat test.db4l
 
         zniatos        KMd
@@ -534,25 +549,32 @@ $ cat test.db4l
 
            biaw      aaas□
             bsw       aaa
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ make
-gcc -Wall -Wextra -o main.out main.c db.c -lm
-main.c: In function 'main':
-main.c:49:30: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ make bad
+gcc -Wall -Wextra   -c -o bad.o bad.c
+bad.c: In function 'main':
+bad.c:44:30: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
                      filename = argv[arg_ind + 1];
                               ^
-main.c:55:33: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-                     fields[off] = argv[arg_ind + 1];
-                                 ^
-main.c:56:33: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-                     values[off] = argv[arg_ind + 2];
-                                 ^
-main.c:65:19: warning: comparison between pointer and integer
+bad.c:49:23: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+                 value = argv[arg_ind + 1];
+                       ^
+bad.c:54:19: warning: comparison between pointer and integer
      if (*filename == NULL) {
                    ^~
+gcc -Wall -Wextra   -c -o db.o db.c
+gcc -Wall -Wextra -o bad.out bad.o db.o
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out
+Usage of program:
+        Necessary:
+                -f [FILE]                Filename of database that needs to be read
+        Unnecessary:
+                -p [FIELD] [MIN]         Print all rows that have given field with minimum value
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l
 Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
          zniatos|         KM|          0|          5|          1|        100|          0|
      xzzniascasw|         mv|          0|          5|          1|          0|          1|
@@ -581,78 +603,12 @@ Name            |Initials   |Gender     |School     |Medal      |Points     |Ess
              bxw|       aaab|          1|         10|          1|         13|          0|
             biaw|       aaas|          0|          3|          0|        175|          0|
              bsw|        aaa|          1|         14|          0|          2|          0|
+                |           |         -1|         -1|         -1|         -1|         -1|
+                |           |         -1|         -1|         -1|         -1|         -1|
+                |           |         -1|         -1|         -1|         -1|         -1|
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points gt10
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-         zniatos|         KM|          0|          5|          1|        100|          0|
-        asczniaw|       xasd|          1|          2|          0|        130|          1|
-     ascznczxciw|       Kasd|          1|          5|          0|        100|          1|
-        aszniaxw|         ab|          1|         10|          1|         60|          0|
-       xasczniaw|         as|          0|          3|          0|        135|          1|
-          bniaxs|         KM|          0|          5|          1|        100|          0|
-         bsczxaw|       xasd|          1|          2|          0|        130|          1|
-      bsczxzxciw|       Kasd|          1|          5|          0|        100|          1|
-         bsznxxw|         ab|          1|         10|          1|         12|          0|
-        bascxiaw|         as|          0|          3|          0|        175|          1|
-            aaxw|       aaab|          1|         10|          1|         60|          0|
-           xniaw|       aaas|          0|          3|          0|        135|          1|
-              bs|       aaaM|          0|         77|          1|        100|          0|
-             baw|     aaaasd|          1|        228|          0|         50|          1|
-          bzxciw|     aaaasd|          1|       1337|          0|        100|          1|
-             bxw|       aaab|          1|         10|          1|         13|          0|
-            biaw|       aaas|          0|          3|          0|        175|          0|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points gt130
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-       xasczniaw|         as|          0|          3|          0|        135|          1|
-        bascxiaw|         as|          0|          3|          0|        175|          1|
-           xniaw|       aaas|          0|          3|          0|        135|          1|
-            biaw|       aaas|          0|          3|          0|        175|          0|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points ge130
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-        asczniaw|       xasd|          1|          2|          0|        130|          1|
-       xasczniaw|         as|          0|          3|          0|        135|          1|
-         bsczxaw|       xasd|          1|          2|          0|        130|          1|
-        bascxiaw|         as|          0|          3|          0|        175|          1|
-           xniaw|       aaas|          0|          3|          0|        135|          1|
-            biaw|       aaas|          0|          3|          0|        175|          0|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points 130
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-        asczniaw|       xasd|          1|          2|          0|        130|          1|
-         bsczxaw|       xasd|          1|          2|          0|        130|          1|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points lt50 -p Medal 1
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-     xzzniascasw|         mv|          0|          5|          1|          0|          1|
-        azniaasw|          d|          1|        134|          1|          2|          0|
-      bzznxscasw|         mv|          0|          5|          1|          0|          1|
-         bsznxxw|         ab|          1|         10|          1|         12|          0|
-            aasw|        aaa|          1|        134|          1|          2|          0|
-          bscasw|       aaav|          0|          5|          1|          0|          1|
-             bxw|       aaab|          1|         10|          1|         13|          0|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points lt100 -p Medal 1
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-     xzzniascasw|         mv|          0|          5|          1|          0|          1|
-        aszniaxw|         ab|          1|         10|          1|         60|          0|
-        azniaasw|          d|          1|        134|          1|          2|          0|
-      bzznxscasw|         mv|          0|          5|          1|          0|          1|
-         bsznxxw|         ab|          1|         10|          1|         12|          0|
-            aaxw|       aaab|          1|         10|          1|         60|          0|
-            aasw|        aaa|          1|        134|          1|          2|          0|
-          bscasw|       aaav|          0|          5|          1|          0|          1|
-             bxw|       aaab|          1|         10|          1|         13|          0|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points le100 -p Medal 1
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l -p 100
 Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
          zniatos|         KM|          0|          5|          1|        100|          0|
      xzzniascasw|         mv|          0|          5|          1|          0|          1|
@@ -667,15 +623,8 @@ Name            |Initials   |Gender     |School     |Medal      |Points     |Ess
           bscasw|       aaav|          0|          5|          1|          0|          1|
              bxw|       aaab|          1|         10|          1|         13|          0|
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points le100 -p Medal 1 -p Essay 1
-Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
-     xzzniascasw|         mv|          0|          5|          1|          0|          1|
-      bzznxscasw|         mv|          0|          5|          1|          0|          1|
-          bscasw|       aaav|          0|          5|          1|          0|          1|
-
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points le30 -p Medal 1
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l -p 50
 Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
      xzzniascasw|         mv|          0|          5|          1|          0|          1|
         azniaasw|          d|          1|        134|          1|          2|          0|
@@ -685,19 +634,39 @@ Name            |Initials   |Gender     |School     |Medal      |Points     |Ess
           bscasw|       aaav|          0|          5|          1|          0|          1|
              bxw|       aaab|          1|         10|          1|         13|          0|
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points le10 -p Medal 1
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l -p 13
 Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
      xzzniascasw|         mv|          0|          5|          1|          0|          1|
         azniaasw|          d|          1|        134|          1|          2|          0|
       bzznxscasw|         mv|          0|          5|          1|          0|          1|
+         bsznxxw|         ab|          1|         10|          1|         12|          0|
+            aasw|        aaa|          1|        134|          1|          2|          0|
+          bscasw|       aaav|          0|          5|          1|          0|          1|
+             bxw|       aaab|          1|         10|          1|         13|          0|
+
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l -p 12
+Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
+     xzzniascasw|         mv|          0|          5|          1|          0|          1|
+        azniaasw|          d|          1|        134|          1|          2|          0|
+      bzznxscasw|         mv|          0|          5|          1|          0|          1|
+         bsznxxw|         ab|          1|         10|          1|         12|          0|
             aasw|        aaa|          1|        134|          1|          2|          0|
           bscasw|       aaav|          0|          5|          1|          0|          1|
 
-vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lVI (master)
-$ ./main.out -f test.db4l -p Points le50 -p Medal 1 -p Points ne0
+vital@vitos-hp16 MINGW64 /c/important/docs/mai/labs/lvi (master)
+$ ./bad.out -f test.db4l -p 200
 Name            |Initials   |Gender     |School     |Medal      |Points     |Essay      |
+         zniatos|         KM|          0|          5|          1|        100|          0|
+     xzzniascasw|         mv|          0|          5|          1|          0|          1|
+        aszniaxw|         ab|          1|         10|          1|         60|          0|
         azniaasw|          d|          1|        134|          1|          2|          0|
+          bniaxs|         KM|          0|          5|          1|        100|          0|
+      bzznxscasw|         mv|          0|          5|          1|          0|          1|
          bsznxxw|         ab|          1|         10|          1|         12|          0|
+            aaxw|       aaab|          1|         10|          1|         60|          0|
             aasw|        aaa|          1|        134|          1|          2|          0|
+              bs|       aaaM|          0|         77|          1|        100|          0|
+          bscasw|       aaav|          0|          5|          1|          0|          1|
              bxw|       aaab|          1|         10|          1|         13|          0|

@@ -28,19 +28,14 @@ int main(int argc, char const *argv[]) {
 
     char *filename = (char*) calloc(256, sizeof(char));
 
-    int fields_num = (argc - 3)/3;
+    int fields_num = 2;
 
-    char **fields = (char**) calloc(fields_num, sizeof(char*));
-    for (int i = 0; i < fields_num; ++i) {
-        fields[i] = (char*) calloc(10, sizeof(char));
-    }
-
+    char *value = (char*) calloc(10, sizeof(char));
     char **values = (char**) calloc(fields_num, sizeof(char*));
     for (int i = 0; i < fields_num; ++i) {
         values[i] = (char*) calloc(10, sizeof(char));
     }
 
-    int off = 0;
     for (int arg_ind = 1; arg_ind < argc; ++arg_ind) {
         // printf("param: %s\n", argv[arg_ind]);
         switch (argv[arg_ind][1]) {
@@ -51,13 +46,7 @@ int main(int argc, char const *argv[]) {
                 }
                 break;
             case 'p':
-                if (arg_ind + 2 < argc) {
-                    fields[off] = argv[arg_ind + 1];
-                    values[off] = argv[arg_ind + 2];
-                    off++;
-                    arg_ind++;
-                    arg_ind++;
-                }
+                value = argv[arg_ind + 1];
                 break;
         }
     }
@@ -72,11 +61,28 @@ int main(int argc, char const *argv[]) {
 
     database_read(&db, f);
 
-    database_print_matching(db, fields, values, fields_num);
+    char **fields = (char**) calloc(2, sizeof(char*));
+    fields[0] = (char*) calloc(256, sizeof(char));
+    fields[1] = (char*) calloc(256, sizeof(char));
 
-    // printf("%s\n", filename);
-    // printf("%s\n%d\n", field, maximal_value);
+    if (value[0] != '\0') {
+        fields[0] = "Medal";
+        fields[1] = "Points";
+
+        values[0] = "1";
+        char *temp = (char*) calloc(256, sizeof(char));
+        temp[0] = 'l';
+        temp[1] = 'e';
+        strcat(temp, value);
+        values[1] = temp;
+
+        database_print_matching(db, fields, values, fields_num);
+    } else {
+        database_print(db);
+    }
+
 
     fclose(f);
+
     return 0;
 }
