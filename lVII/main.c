@@ -3,7 +3,7 @@
 
 
 int main() {
-    FILE *f = fopen("m2.txt", "r");
+    FILE *f = fopen("m3.txt", "r");
     assert(f != NULL);
 
     SMatrix m = smatrix_from_file(f);
@@ -31,8 +31,9 @@ int main() {
         printf("The matrix is not skew-symmetric...\n");
     }
 
-    fclose(f);
     smatrix_free(&m);
+    smatrix_free(&t);
+    fclose(f);
 
     return 0;
 }

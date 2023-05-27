@@ -21,9 +21,9 @@ typedef struct SMatrix {
     uint64_t rows;
     uint64_t cols;
     uint64_t elements;
-    float* values;
-    uint64_t* rows_s;
-    uint64_t* cols_i;
+    float *values;
+    uint64_t *rows_s;
+    uint64_t *cols_i;
 } SMatrix;
 
 #define SMATRIX_PRINT_NAMED(m) printf("%s = ", #m); smatrix_print(m)
@@ -67,7 +67,10 @@ SMatrix smatrix_alloc(uint64_t rows, uint64_t cols) {
     assert(m.rows_s != NULL);
 
     m.cols_i = (uint64_t*) calloc(1, sizeof(*m.cols_i));
+    assert(m.cols_i != NULL);
+
     m.values = (float*) calloc(1, sizeof(*m.values));
+    assert(m.values != NULL);
 
     m.elements = 0;
 
@@ -91,9 +94,25 @@ SMatrix smatrix_from_file(FILE *f) {
 
     // printf("cols = %llu\n", cols);
 
-    float **numbers = (float**) calloc(256, sizeof(float*)); // calloc for zeroing
+    // TODO: create 3 different vectors like in matrix
+    uint64_t *rows_s = (uint64_t*) calloc(2, sizeof(uint64_t));
+    assert(rows_s != NULL);
+
+    uint64_t *cols_i = (uint64_t*) calloc(1, sizeof(uint64_t));
+    assert(cols_i != NULL);
+
+    float *values = (float*) calloc(1, sizeof(float));
+    assert(values != NULL);
+
+    uint64_t elements = 0;
+
+    // float **numbers = (float**) calloc(256, sizeof(float*)); // calloc for zeroing
 
     do {
+        printf("rows = %d, alloced rows_s = %d\n", rows, rows + 2);
+        rows_s = (uint64_t*) realloc(rows_s, sizeof(*rows_s) * (rows + 2));
+        rows_s[rows + 1] = rows_s[rows];
+
         uint64_t len = strlen(row_buf), c = 0;
         if (row_buf[len - 1] == '\n') row_buf[len - 1] = '\0';
 
@@ -119,14 +138,53 @@ SMatrix smatrix_from_file(FILE *f) {
                 break;
             }
 
-            if (c == 0) { // alloc every time there is a new row
-                numbers[rows] = (float*) calloc(cols, sizeof(float));
-            }
+            // if (c == 0) { // alloc every time there is a new row
+            //     numbers[rows] = (float*) calloc(cols, sizeof(float));
+            // }
 
             // printf("%f at r=%llu, c=%llu\n", strtof(num_buf, NULL), rows, c);
-            numbers[rows][c] = strtof(num_buf, NULL);
+            // numbers[rows][c] = strtof(num_buf, NULL);
 
+            // adding elements to 3 vectors
+            
             c++;
+
+            float number = strtof(num_buf, NULL);
+            if (number == 0.f) {
+                free(num_buf);
+                continue;
+            }
+
+            for (uint64_t ind = 0; ind < rows + 2; ++ind) { // literally smatrix_set
+                if (rows < ind) {
+                    // {.., 3, 3, ..} -> {.., 3, 4, ..}
+                    rows_s[ind]++;
+                } else if (rows == ind) {
+                    elements++;
+                    // printf("elements = %llu\n", elements);
+                    // printf("realloc cols_i...\n");
+                    cols_i = (uint64_t*) realloc(cols_i, elements * sizeof(*cols_i));
+                    // printf("realloc values...\n");
+                    values = (float*) realloc(values, elements * sizeof(*values));
+
+                    uint64_t lb = rows_s[rows];
+                    uint64_t rb = elements - 1;
+
+                    // printf("lb = %llu, rb = %llu\n", lb, rb);
+
+                    for (uint64_t move = rb; move > lb; --move) { // move right column indecies and values to right
+                        cols_i[move] = cols_i[move - 1]; // move - 1 to safely get to 0
+                        values[move] = values[move - 1];
+                    }
+
+                    // printf("set cols...\n");
+                    cols_i[lb] = c - 1;
+                    // printf("set values...\n");
+                    values[lb] = strtof(num_buf, NULL);
+                }
+
+            }
+
             free(num_buf);
         }
 
@@ -137,20 +195,15 @@ SMatrix smatrix_from_file(FILE *f) {
 
     SMatrix m = smatrix_alloc(rows, cols);
 
-    for (uint64_t i = 0; i < rows; ++i) {
-        for (uint64_t j = 0; j < cols; ++j) {
-            float n = numbers[i][j];
-            if (n != 0.f) {
-                // printf("set %f at %llu %llu\n", numbers[i][j], i, j);
-                smatrix_set(&m, i, j, n);
-            }
-        }
-    }
+    m.elements = elements;
 
-    for (uint64_t i = 0; i < 256; ++i) {
-        free(numbers[i]);
-    }
-    free(numbers);
+    free(m.rows_s);
+    free(m.cols_i);
+    free(m.values);
+
+    m.rows_s = rows_s;
+    m.cols_i = cols_i;
+    m.values = values;
 
     return m;
 }
@@ -241,6 +294,7 @@ void smatrix_set(SMatrix *m, uint64_t i, uint64_t j, float v) {
     for (uint64_t ind = 0; ind < m->rows + 1; ++ind) {
         if (i < ind) {
             // {.., 3, 3, ..} -> {.., 3, 4, ..}
+            // printf("++m.rows_s[%I64d]\n", ind);
             m->rows_s[ind]++;
         } else if (i == ind) {
             m->elements++;
@@ -301,10 +355,12 @@ int smatrix_is_skew_symmetric(SMatrix m) {
     smatrix_mult(m, -1.f);
 
     if (smatrix_eq(m, t)) {
+        smatrix_free(&t);
         smatrix_mult(m, -1.f);
         return 1;
     }
 
+    smatrix_free(&t);
     smatrix_mult(m, -1.f);
     return 0;
 }
