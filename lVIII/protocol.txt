@@ -1,3 +1,61 @@
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ls
+./  ../  linked-list.h*  main.c*  makefile*
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat main.c
+#define LINKED_LIST_IMPLEMENTATION
+#include "linked-list.h"
+
+#include <assert.h>
+
+int main() {
+    linked_list *ll = ll_alloc();
+
+    ll_set_value(ll, "1");
+    
+    ll_push_right(ll, "7");
+    ll_push_right(ll, "2");
+    ll_push_right(ll, "3");
+    ll_push_right(ll, "6");
+    ll_push_right(ll, "5");
+    printf("Initial list:\n");
+    ll_print(ll);
+
+    ll = ll_remove(ll->next);
+    printf("Without second element:\n");
+    ll_print(ll);
+
+    ll = ll_remove_left(ll);
+    printf("Without leftmost element:\n");
+    ll_print(ll);
+
+    if (ll_is_sorted(ll)) {
+        printf("Linked list is sorted!\n");
+    } else {
+        printf("Linked list is not sorted!\n");
+    }
+
+    ll = ll_remove_right(ll);
+    printf("Without rightmost element:\n");
+    ll_print(ll);
+
+    if (ll_is_sorted(ll)) {
+        printf("Linked list is sorted!\n");
+    } else {
+        printf("Linked list is not sorted!\n");
+    }
+
+    ll_dealloc(ll);
+
+    return 0;
+}vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat makefile 
+CC = gcc
+CFLAGS = -std=c99 -Wall -Wextra -Wformat=0
+
+main:
+        $(CC) $(CFLAGS) -o main.out main.c
+debug:
+        $(CC) $(CFLAGS) -g -o main.out main.c
+clean:
+        rm -f *.o main.outvitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat linked-list.h 
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
@@ -182,4 +240,79 @@ void ll_dealloc(linked_list *ll) {
     free(ll);
 }
 
-#endif // LINKED_LIST_IMPLEMENTATION
+#endif // LINKED_LIST_IMPLEMENTATIONvitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ make
+gcc -std=c99 -Wall -Wextra -Wformat=0 -o main.out main.c
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./ma
+main.c    main.out  makefile
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.out
+Initial list:
+1, 7, 2, 3, 6, 5
+Without second element:
+1, 2, 3, 6, 5
+Without leftmost element:
+2, 3, 6, 5
+Linked list is not sorted!
+Without rightmost element:
+2, 3, 6
+Linked list is sorted!
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat main.c
+#define LINKED_LIST_IMPLEMENTATION
+#include "linked-list.h"
+
+#include <assert.h>
+
+int main() {
+    linked_list *ll = ll_alloc();
+
+    ll_set_value(ll, "aaa");
+
+    ll_push_right(ll, "b");
+    ll_push_right(ll, "c");
+    ll_push_right(ll, "eerh");
+    ll_push_right(ll, "d");
+    ll_push_right(ll, "faa");
+    printf("Initial list:\n");
+    ll_print(ll);
+
+    ll = ll_remove(ll->next);
+    printf("Without second element:\n");
+    ll_print(ll);
+
+    ll = ll_remove_left(ll);
+    printf("Without leftmost element:\n");
+    ll_print(ll);
+
+    if (ll_is_sorted(ll)) {
+        printf("Linked list is sorted!\n");
+    } else {
+        printf("Linked list is not sorted!\n");
+    }
+
+    ll = ll_remove_right(ll);
+    printf("Without rightmost element:\n");
+    ll_print(ll);
+
+    if (ll_is_sorted(ll)) {
+        printf("Linked list is sorted!\n");
+    } else {
+        printf("Linked list is not sorted!\n");
+    }
+
+    ll_dealloc(ll);
+
+    return 0;
+}vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ make
+gcc -std=c99 -Wall -Wextra -Wformat=0 -o main.out main.c
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.
+main.c    main.out
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.out
+Initial list:
+aaa, b, c, eerh, d, faa
+Without second element:
+aaa, c, eerh, d, faa
+Without leftmost element:
+c, eerh, d, faa
+Linked list is not sorted!
+Without rightmost element:
+c, eerh, d
+Linked list is not sorted!
