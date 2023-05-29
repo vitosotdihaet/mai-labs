@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <inttypes.h>
+
 
 typedef struct linked_list {
     struct linked_list *prev;
@@ -17,11 +19,14 @@ linked_list* ll_alloc();
 
 void ll_set_value(linked_list *ll, const char *value);
 void ll_push_right(linked_list *ll, const char *value);
+void ll_add_element(linked_list *ll, const char *value);
+void ll_add_ith(linked_list *ll, uint64_t i, const char *value);
 
 linked_list* ll_leftmost(linked_list *ll);
 linked_list* ll_rightmost(linked_list *ll);
 
 linked_list* ll_remove(linked_list *ll);
+linked_list* ll_remove_ith(linked_list *ll, uint64_t i);
 linked_list* ll_remove_right(linked_list *ll);
 linked_list* ll_remove_left(linked_list *ll);
 
@@ -39,13 +44,18 @@ void ll_dealloc(linked_list *ll);
 #ifdef LINKED_LIST_IMPLEMENTATION
 
 linked_list* ll_alloc() {
-    linked_list *ll = (linked_list*) calloc(1, sizeof(linked_list));
+    linked_list *lb = (linked_list*) calloc(1, sizeof(linked_list));
+    linked_list *rb = (linked_list*) calloc(1, sizeof(linked_list));
 
-    ll->prev = NULL;
-    ll->next = NULL;
-    ll->value = (char*) calloc(1, sizeof(char)); // barrier element = "\0";
+    lb->prev = NULL;
+    lb->next = rb;
+    lb->value = (char*) calloc(1, sizeof(char)); // barrier element = "\0";
 
-    return ll;
+    rb->prev = lb;
+    rb->next = NULL;
+    rb->value = (char*) calloc(1, sizeof(char));
+
+    return lb;
 }
 
 
@@ -76,12 +86,47 @@ void ll_set_value(linked_list *ll, const char *value) {
     ll->value = s;
 }
 
+void ll_add_element(linked_list *ll, const char *value) {
+    linked_list *nl = ll_alloc();
+
+    free(nl->next->value);
+    free(nl->next);
+    free(nl->value);
+
+    char* s = (char*) calloc(strlen(value) + 1, sizeof(char));
+    strcpy(s, value);
+
+    nl->value = s;
+
+    nl->prev = ll->prev;
+    nl->next = ll;
+
+    ll->prev = nl;
+
+    nl->next->prev = nl;
+    nl->prev->next = nl;
+}
+
 void ll_push_right(linked_list *ll, const char *value) {
     ll_set_value(ll_rightmost(ll), value);
 }
 
+void ll_add_ith(linked_list *ll, uint64_t i, const char *value) {
+    ll = ll_leftmost(ll);
+    ll = ll->next;
 
+    for (uint64_t ind = 0; ind < i && strcmp(ll->value, "") != 0; ++ind) {
+        ll = ll->next;
+    }
+
+    ll_add_element(ll, value);
+}
+
+
+// left barrier element
 linked_list* ll_leftmost(linked_list *ll) {
+    if (strcmp(ll->value, "") == 0 && ll->next == NULL) ll = ll->prev;
+
     while (strcmp(ll->value, "") != 0) {
         ll = ll->prev;
     }
@@ -89,7 +134,10 @@ linked_list* ll_leftmost(linked_list *ll) {
     return ll;
 }
 
+// right barrier element
 linked_list* ll_rightmost(linked_list *ll) {
+    if (strcmp(ll->value, "") == 0 && ll->prev == NULL) ll = ll->next;
+
     while (strcmp(ll->value, "") != 0) {
         ll = ll->next;
     }
@@ -113,6 +161,19 @@ linked_list* ll_remove(linked_list *ll) {
     return prev;
 }
 
+linked_list* ll_remove_ith(linked_list *ll, uint64_t i) {
+    ll = ll_leftmost(ll);
+    ll = ll->next;
+
+    for (uint64_t ind = 0; ind < i && strcmp(ll->value, "") != 0; ++ind) {
+        ll = ll->next;
+    }
+
+    if (strcmp(ll->value, "") == 0) { return ll; }
+
+    return ll_remove(ll);
+}
+
 linked_list* ll_remove_right(linked_list *ll) {
     ll = ll_rightmost(ll);
     return ll_remove(ll->prev)->prev;
@@ -125,13 +186,13 @@ linked_list* ll_remove_left(linked_list *ll) {
 
 
 void ll_print(linked_list *ll) {
+    ll = ll_leftmost(ll);
+    ll = ll->next;
+
     if (strcmp(ll->value, "") == 0) {
         printf("\n");
         return;
     }
-
-    ll = ll_leftmost(ll);
-    ll = ll->next;
 
     while (strcmp(ll->value, "") != 0) {
         printf("%s, ", ll->value);

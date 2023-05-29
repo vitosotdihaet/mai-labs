@@ -1,318 +1,164 @@
 vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ls
-./  ../  linked-list.h*  main.c*  makefile*
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat main.c
-#define LINKED_LIST_IMPLEMENTATION
-#include "linked-list.h"
-
-#include <assert.h>
-
-int main() {
-    linked_list *ll = ll_alloc();
-
-    ll_set_value(ll, "1");
-    
-    ll_push_right(ll, "7");
-    ll_push_right(ll, "2");
-    ll_push_right(ll, "3");
-    ll_push_right(ll, "6");
-    ll_push_right(ll, "5");
-    printf("Initial list:\n");
-    ll_print(ll);
-
-    ll = ll_remove(ll->next);
-    printf("Without second element:\n");
-    ll_print(ll);
-
-    ll = ll_remove_left(ll);
-    printf("Without leftmost element:\n");
-    ll_print(ll);
-
-    if (ll_is_sorted(ll)) {
-        printf("Linked list is sorted!\n");
-    } else {
-        printf("Linked list is not sorted!\n");
-    }
-
-    ll = ll_remove_right(ll);
-    printf("Without rightmost element:\n");
-    ll_print(ll);
-
-    if (ll_is_sorted(ll)) {
-        printf("Linked list is sorted!\n");
-    } else {
-        printf("Linked list is not sorted!\n");
-    }
-
-    ll_dealloc(ll);
-
-    return 0;
-}vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat makefile 
-CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Wformat=0
-
-main:
-        $(CC) $(CFLAGS) -o main.out main.c
-debug:
-        $(CC) $(CFLAGS) -g -o main.out main.c
-clean:
-        rm -f *.o main.outvitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat linked-list.h 
-#ifndef LINKED_LIST_H
-#define LINKED_LIST_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
-typedef struct linked_list {
-    struct linked_list *prev;
-    struct linked_list *next;
-    char *value;
-} linked_list;
-
-
-linked_list* ll_alloc();
-
-void ll_set_value(linked_list *ll, const char *value);
-void ll_push_right(linked_list *ll, const char *value);
-
-linked_list* ll_leftmost(linked_list *ll);
-linked_list* ll_rightmost(linked_list *ll);
-
-linked_list* ll_remove(linked_list *ll);
-linked_list* ll_remove_right(linked_list *ll);
-linked_list* ll_remove_left(linked_list *ll);
-
-void ll_print(linked_list *ll);
-void ll_print_debug(linked_list *ll);
-
-size_t ll_is_sorted(linked_list *ll);
-
-void ll_dealloc(linked_list *ll);
-
-#endif // LINKED_LIST_H
-
-
-
-#ifdef LINKED_LIST_IMPLEMENTATION
-
-linked_list* ll_alloc() {
-    linked_list *ll = (linked_list*) calloc(1, sizeof(linked_list));
-
-    ll->prev = NULL;
-    ll->next = NULL;
-    ll->value = (char*) calloc(1, sizeof(char)); // barrier element = "\0";
-
-    return ll;
-}
-
-
-void ll_set_value(linked_list *ll, const char *value) {
-    if (strcmp(ll->value, "") == 0) {
-        linked_list *pl, *nl;
-
-        if (ll->prev == NULL) {
-            pl = ll_alloc();
-            pl->next = ll;
-            pl->prev = ll->prev;
-            ll->prev = pl;
-        }
-
-        if (ll->next == NULL) {
-            nl = ll_alloc();
-            nl->next = ll->next;
-            nl->prev = ll;
-            ll->next = nl;
-        }
-    }
-
-    free(ll->value);
-
-    char* s = (char*) calloc(strlen(value) + 1, sizeof(char));
-    strcpy(s, value);
-
-    ll->value = s;
-}
-
-void ll_push_right(linked_list *ll, const char *value) {
-    ll_set_value(ll_rightmost(ll), value);
-}
-
-
-linked_list* ll_leftmost(linked_list *ll) {
-    while (strcmp(ll->value, "") != 0) {
-        ll = ll->prev;
-    }
-
-    return ll;
-}
-
-linked_list* ll_rightmost(linked_list *ll) {
-    while (strcmp(ll->value, "") != 0) {
-        ll = ll->next;
-    }
-
-    return ll;
-}
-
-
-linked_list* ll_remove(linked_list *ll) {
-    linked_list *next = ll->next;
-    linked_list *prev = ll->prev;
-
-    free(ll->value);
-    free(ll);
-
-    ll = prev;
-
-    ll->next = next;
-    ll->next->prev = prev;
-
-    return prev;
-}
-
-linked_list* ll_remove_right(linked_list *ll) {
-    ll = ll_rightmost(ll);
-    return ll_remove(ll->prev)->prev;
-}
-
-linked_list* ll_remove_left(linked_list *ll) {
-    ll = ll_leftmost(ll);
-    return ll_remove(ll->next)->next;
-}
-
-
-void ll_print(linked_list *ll) {
-    if (strcmp(ll->value, "") == 0) {
-        printf("\n");
-        return;
-    }
-
-    ll = ll_leftmost(ll);
-    ll = ll->next;
-
-    while (strcmp(ll->value, "") != 0) {
-        printf("%s, ", ll->value);
-        ll = ll->next;
-    }
-
-    printf("\b\b \b\n");
-}
-
-void ll_print_debug(linked_list *ll) {
-    printf("ll: *%d, prev: *%d, next: *%d, value: %s\n", ll, ll->prev, ll->next, ll->value);
-}
-
-
-size_t ll_is_sorted(linked_list *ll) {
-    ll = ll_leftmost(ll);
-
-    while (strcmp(ll->next->value, "") != 0 && strcmp(ll->value, ll->next->value) <= 0) {
-        ll = ll->next;
-    }
-
-    if (strcmp(ll->next->value, "") == 0) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-
-void ll_dealloc(linked_list *ll) {
-    ll = ll_leftmost(ll);
-
-    // do this outside of while loop, because ll.value = "\0"
-    free(ll->value);
-    ll = ll->next;
-
-    while (strcmp(ll->value, "") != 0) {
-        // printf("freeing value = %s\n", ll->value);
-        // ll_print(ll);
-        free(ll->value);
-        free(ll->prev);
-
-        ll = ll->next;
-    }
-
-    free(ll->prev);
-    free(ll->value);
-    free(ll);
-}
-
-#endif // LINKED_LIST_IMPLEMENTATIONvitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ make
+./  ../  linked-list.h*  main.c*  makefile*  protocol.txt*  report.pdf*
+vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ make
 gcc -std=c99 -Wall -Wextra -Wformat=0 -o main.out main.c
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./ma
-main.c    main.out  makefile
 vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.out
-Initial list:
-1, 7, 2, 3, 6, 5
-Without second element:
-1, 2, 3, 6, 5
-Without leftmost element:
-2, 3, 6, 5
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list:
+
+Your command: 1
+
+Input index, where you want to add your value in: 0
+Input value you want to add at 0 is one
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: one
+
+Your command: 1
+
+Input index, where you want to add your value in: 0
+Input value you want to add at 0 is two
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: two, one
+
+Your command: 3
+
 Linked list is not sorted!
-Without rightmost element:
-2, 3, 6
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: two, one
+
+Your command: 1
+
+Input index, where you want to add your value in: 0
+Input value you want to add at 0 is a
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: a, two, one
+
+Your command: 2
+
+Input index of element that you want to remove: 2
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: a, two
+
+Your command: 3
+
 Linked list is sorted!
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ cat main.c
-#define LINKED_LIST_IMPLEMENTATION
-#include "linked-list.h"
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
 
-#include <assert.h>
+Current list: a, two
 
-int main() {
-    linked_list *ll = ll_alloc();
+Your command: 2
 
-    ll_set_value(ll, "aaa");
+Input index of element that you want to remove: 1
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
 
-    ll_push_right(ll, "b");
-    ll_push_right(ll, "c");
-    ll_push_right(ll, "eerh");
-    ll_push_right(ll, "d");
-    ll_push_right(ll, "faa");
-    printf("Initial list:\n");
-    ll_print(ll);
+Current list: a
 
-    ll = ll_remove(ll->next);
-    printf("Without second element:\n");
-    ll_print(ll);
+Your command: 3
 
-    ll = ll_remove_left(ll);
-    printf("Without leftmost element:\n");
-    ll_print(ll);
+Linked list is sorted!
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
 
-    if (ll_is_sorted(ll)) {
-        printf("Linked list is sorted!\n");
-    } else {
-        printf("Linked list is not sorted!\n");
-    }
+Current list: a
 
-    ll = ll_remove_right(ll);
-    printf("Without rightmost element:\n");
-    ll_print(ll);
+Your command: 1
 
-    if (ll_is_sorted(ll)) {
-        printf("Linked list is sorted!\n");
-    } else {
-        printf("Linked list is not sorted!\n");
-    }
+Input index, where you want to add your value in: 0
+Input value you want to add at 0 is b
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
 
-    ll_dealloc(ll);
+Current list: b, a
 
-    return 0;
-}vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ make
-gcc -std=c99 -Wall -Wextra -Wformat=0 -o main.out main.c
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.
-main.c    main.out
-vitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ ./main.out
-Initial list:
-aaa, b, c, eerh, d, faa
-Without second element:
-aaa, c, eerh, d, faa
-Without leftmost element:
-c, eerh, d, faa
+Your command: 1
+
+Input index, where you want to add your value in: 0
+Input value you want to add at 0 is c
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: c, b, a
+
+Your command: 2
+
+Input index of element that you want to remove: 1
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: c, a
+
+Your command: 3
+
 Linked list is not sorted!
-Without rightmost element:
-c, eerh, d
-Linked list is not sorted!
+===========================================
+Input number of command you want to execute
+1 - Add element
+2 - Remove element
+3 - Check if list is sorted
+To exit - press Ctrl + C
+
+Current list: c, a
+
+Your command: ^Cvitos@vitos-hp16:/mnt/c/important/docs/mai/labs/lviii$ 
