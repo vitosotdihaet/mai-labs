@@ -13,7 +13,13 @@ ewrl[ 121 jump
 otwe 53 ioew
 mai 123 labs
 kek 754 lol
-keyone 1 value1
+kek 112 value1
 key2 13 zombie
 gain 3235 m
 sodfm 2345 oooror
+kek
+112
+1
+gain
+3235
+0

@@ -17,3 +17,6 @@ gain 3235 m
 sodfm 2345 oooror
 keyone 1 value1
 key2 13 zombie
+key2
+13
+0

@@ -33,9 +33,23 @@ int main() {
 
     table_print(t);
     printf("\n");
-    table temp = table_quick_sort(t);
-    table_print(temp);
+    t = table_quick_sort(t);
+    table_print(t);
 
-    table_dealloc(&temp);
+    int search = 1;
+    while (search) {
+        char *key_s = (char*) calloc(256, sizeof(char));
+        int key_int = 0;
+        printf("Search for:\n");
+        scanf("%s", key_s);
+        scanf("%d", &key_int);
+
+        printf("Found string: %s\n", table_binary_search(t, key_s, key_int));
+        free(key_s);
+
+        printf("Do you want to continue the search? (0/1): ");
+        scanf("%d", &search);
+    }
+
     table_dealloc(&t);
 }

@@ -90,14 +90,26 @@ void _table_quick_sort(table *t, uint64_t l, uint64_t r) {
     uint64_t l_init = l, r_init = r;
 
     while (l < r) {
-        while (strcmp(pivot_value, t->rows[r].value) <= 0 && (l < r)) r--;
+        while (
+            (
+                strcmp(pivot_key.key_s, t->rows[r].key.key_s) < 0 ||
+                (
+                    strcmp(pivot_key.key_s, t->rows[r].key.key_s) == 0 &&
+                    pivot_key.key_int <= t->rows[r].key.key_int
+                )
+            ) && (l < r)
+        ) r--;
+
         if (l != r) {
             t->rows[l].value = t->rows[r].value;
             t->rows[l].key = t->rows[r].key;
             l++;
         }
 
-        while (strcmp(pivot_value, t->rows[l].value) > 0 && (l < r)) l++;
+        while (
+            strcmp(pivot_key.key_s, t->rows[l].key.key_s) > 0 &&
+            (l < r)
+        ) l++;
 
         if (l != r) {
             t->rows[r].value = t->rows[l].value;
@@ -128,12 +140,30 @@ table table_quick_sort(table t) {
 
 
 char *table_binary_search(table t, char *key_s, int key_int) {
-    char *answ = NULL;
-    uint64_t l = 0, r = t.count, m = (l + r)/2;
+    uint64_t l = 0, r = t.count - 1, m = (l + r)/2;
 
-    // bs in t.rows
+    while (l <= r) {
+        m = (l + r)/2;
 
-    return answ;
+        char *curr_key_s = t.rows[m].key.key_s;
+        int curr_key_int = t.rows[m].key.key_int;
+
+        if (strcmp(key_s, curr_key_s) == 0 && key_int == curr_key_int) {
+            return t.rows[m].value;
+        }
+ 
+        if (strcmp(key_s, curr_key_s) > 0 ||
+            (
+                strcmp(key_s, curr_key_s) == 0 && key_int < curr_key_int
+            )
+        ) {
+            l = m + 1;
+        } else {
+            r = m - 1;
+        }
+    }
+
+    return NULL;
 }
 
 
